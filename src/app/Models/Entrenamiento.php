@@ -44,4 +44,9 @@ class Entrenamiento extends Model
     {
         return $this->belongsToMany(Grupo::class, 'entrenamientos_grupos', 'entrenamientoId', 'grupoId');
     }
+
+    public function resultados()
+    {
+        return $this->hasMany(EntrenamientoResultado::class, 'entrenamientoId');
+    }
 }

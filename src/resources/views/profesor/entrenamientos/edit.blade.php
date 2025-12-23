@@ -1,6 +1,9 @@
 @extends('layouts.dashboard')
 
 @section('content')
+@php
+    $tieneResultados = $entrenamiento->resultados()->exists();
+@endphp
 <div class="max-w-4xl mx-auto">
     <div class="mb-6 flex items-center justify-between">
         <div>
@@ -33,7 +36,15 @@
                     <label for="fecha" class="text-sm font-semibold text-gray-700">Fecha Programada</label>
                     <input type="date" name="fecha" id="fecha"
                            value="{{ old('fecha', \Carbon\Carbon::parse($entrenamiento->fecha)->format('Y-m-d')) }}" required
-                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition">
+                           {{ $tieneResultados ? 'disabled' : '' }}
+                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition {{ $tieneResultados ? 'bg-gray-100 cursor-not-allowed' : '' }}">
+                    @if($tieneResultados)
+                        <input type="hidden" name="fecha" value="{{ \Carbon\Carbon::parse($entrenamiento->fecha)->format('Y-m-d') }}">
+                        <p class="text-xs text-amber-600 mt-1 flex items-center gap-1">
+                            <i class="fas fa-info-circle"></i>
+                            La fecha no se puede cambiar porque ya hay devoluciones.
+                        </p>
+                    @endif
                     @error('fecha')
                         <p class="text-red-500 text-xs">{{ $message }}</p>
                     @enderror
@@ -145,6 +156,7 @@
                 inputTrabajo: '',
                 inputEnfriamiento: '',
                 addExercise(type) {
+                    if ({{ $tieneResultados ? 'true' : 'false' }}) return;
                     let val = this['input' + type.charAt(0).toUpperCase() + type.slice(1)];
                     if (val.trim()) {
                         this[type].push(val.trim());
@@ -153,6 +165,7 @@
                     }
                 },
                 removeExercise(type, index) {
+                    if ({{ $tieneResultados ? 'true' : 'false' }}) return;
                     this[type].splice(index, 1);
                     this.updateHidden();
                 },
@@ -172,21 +185,27 @@
                         <h3 class="text-orange-800 font-bold mb-3 flex items-center gap-2">
                             <i class="fas fa-fire"></i> Calentamiento
                         </h3>
-                        <div class="flex gap-2 mb-3">
-                            <input type="text" x-model="inputCalentamiento" @keydown.enter.prevent="addExercise('calentamiento')"
-                                   class="flex-1 px-3 py-1.5 border border-orange-200 rounded-lg outline-none focus:ring-2 focus:ring-orange-500 transition text-sm"
-                                   placeholder="Nuevo ejercicio de calentamiento...">
-                            <button type="button" @click="addExercise('calentamiento')" class="bg-orange-500 text-white px-3 py-1.5 rounded-lg hover:bg-orange-600 transition">
-                                <i class="fas fa-plus"></i>
-                            </button>
-                        </div>
+                        @if(!$tieneResultados)
+                            <div class="flex gap-2 mb-3">
+                                <input type="text" x-model="inputCalentamiento" @keydown.enter.prevent="addExercise('calentamiento')"
+                                       class="flex-1 px-3 py-1.5 border border-orange-200 rounded-lg outline-none focus:ring-2 focus:ring-orange-500 transition text-sm"
+                                       placeholder="Nuevo ejercicio de calentamiento...">
+                                <button type="button" @click="addExercise('calentamiento')" class="bg-orange-500 text-white px-3 py-1.5 rounded-lg hover:bg-orange-600 transition">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </div>
+                        @else
+                            <p class="text-[10px] text-amber-600 mb-2 italic">No se pueden editar los ejercicios una vez recibidas devoluciones.</p>
+                        @endif
                         <div class="flex flex-wrap gap-2">
                             <template x-for="(ex, index) in calentamiento" :key="index">
                                 <span class="bg-white text-orange-700 px-3 py-1 rounded-full text-sm border border-orange-200 flex items-center gap-2">
                                     <span x-text="ex"></span>
-                                    <button type="button" @click="removeExercise('calentamiento', index)" class="text-orange-400 hover:text-orange-600">
-                                        <i class="fas fa-times"></i>
-                                    </button>
+                                    @if(!$tieneResultados)
+                                        <button type="button" @click="removeExercise('calentamiento', index)" class="text-orange-400 hover:text-orange-600">
+                                            <i class="fas fa-times"></i>
+                                        </button>
+                                    @endif
                                 </span>
                             </template>
                         </div>
@@ -197,21 +216,25 @@
                         <h3 class="text-blue-800 font-bold mb-3 flex items-center gap-2">
                             <i class="fas fa-dumbbell"></i> Trabajo Principal
                         </h3>
-                        <div class="flex gap-2 mb-3">
-                            <input type="text" x-model="inputTrabajo" @keydown.enter.prevent="addExercise('trabajo')"
-                                   class="flex-1 px-3 py-1.5 border border-blue-200 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 transition text-sm"
-                                   placeholder="Nuevo ejercicio principal...">
-                            <button type="button" @click="addExercise('trabajo')" class="bg-blue-500 text-white px-3 py-1.5 rounded-lg hover:bg-blue-600 transition">
-                                <i class="fas fa-plus"></i>
-                            </button>
-                        </div>
+                        @if(!$tieneResultados)
+                            <div class="flex gap-2 mb-3">
+                                <input type="text" x-model="inputTrabajo" @keydown.enter.prevent="addExercise('trabajo')"
+                                       class="flex-1 px-3 py-1.5 border border-blue-200 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 transition text-sm"
+                                       placeholder="Nuevo ejercicio principal...">
+                                <button type="button" @click="addExercise('trabajo')" class="bg-blue-500 text-white px-3 py-1.5 rounded-lg hover:bg-blue-600 transition">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </div>
+                        @endif
                         <div class="flex flex-wrap gap-2">
                             <template x-for="(ex, index) in trabajo" :key="index">
                                 <span class="bg-white text-blue-700 px-3 py-1 rounded-full text-sm border border-blue-200 flex items-center gap-2">
                                     <span x-text="ex"></span>
-                                    <button type="button" @click="removeExercise('trabajo', index)" class="text-blue-400 hover:text-blue-600">
-                                        <i class="fas fa-times"></i>
-                                    </button>
+                                    @if(!$tieneResultados)
+                                        <button type="button" @click="removeExercise('trabajo', index)" class="text-blue-400 hover:text-blue-600">
+                                            <i class="fas fa-times"></i>
+                                        </button>
+                                    @endif
                                 </span>
                             </template>
                         </div>
@@ -222,21 +245,25 @@
                         <h3 class="text-green-800 font-bold mb-3 flex items-center gap-2">
                             <i class="fas fa-wind"></i> Enfriamiento
                         </h3>
-                        <div class="flex gap-2 mb-3">
-                            <input type="text" x-model="inputEnfriamiento" @keydown.enter.prevent="addExercise('enfriamiento')"
-                                   class="flex-1 px-3 py-1.5 border border-green-200 rounded-lg outline-none focus:ring-2 focus:ring-green-500 transition text-sm"
-                                   placeholder="Nuevo ejercicio de enfriamiento...">
-                            <button type="button" @click="addExercise('enfriamiento')" class="bg-green-500 text-white px-3 py-1.5 rounded-lg hover:bg-green-600 transition">
-                                <i class="fas fa-plus"></i>
-                            </button>
-                        </div>
+                        @if(!$tieneResultados)
+                            <div class="flex gap-2 mb-3">
+                                <input type="text" x-model="inputEnfriamiento" @keydown.enter.prevent="addExercise('enfriamiento')"
+                                       class="flex-1 px-3 py-1.5 border border-green-200 rounded-lg outline-none focus:ring-2 focus:ring-green-500 transition text-sm"
+                                       placeholder="Nuevo ejercicio de enfriamiento...">
+                                <button type="button" @click="addExercise('enfriamiento')" class="bg-green-500 text-white px-3 py-1.5 rounded-lg hover:bg-green-600 transition">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </div>
+                        @endif
                         <div class="flex flex-wrap gap-2">
                             <template x-for="(ex, index) in enfriamiento" :key="index">
                                 <span class="bg-white text-green-700 px-3 py-1 rounded-full text-sm border border-green-200 flex items-center gap-2">
                                     <span x-text="ex"></span>
-                                    <button type="button" @click="removeExercise('enfriamiento', index)" class="text-green-400 hover:text-green-600">
-                                        <i class="fas fa-times"></i>
-                                    </button>
+                                    @if(!$tieneResultados)
+                                        <button type="button" @click="removeExercise('enfriamiento', index)" class="text-green-400 hover:text-green-600">
+                                            <i class="fas fa-times"></i>
+                                        </button>
+                                    @endif
                                 </span>
                             </template>
                         </div>

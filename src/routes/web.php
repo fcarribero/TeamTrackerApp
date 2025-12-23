@@ -21,7 +21,9 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard/profesor', [StatsController::class, 'profesorDashboard'])->name('dashboard.profesor');
-    Route::get('/dashboard/alumno', [StatsController::class, 'alumnoDashboard'])->name('dashboard.alumno');
+    Route::get('/dashboard/alumno', function() {
+        return redirect()->route('alumno.entrenamientos');
+    })->name('dashboard.alumno');
 
     // Rutas para Alumnos (Profesor)
     Route::resource('/dashboard/profesor/alumnos', AlumnoController::class)->names([
@@ -74,4 +76,6 @@ Route::middleware(['auth'])->group(function () {
 
     // Rutas para Alumno
     Route::get('/dashboard/alumno/entrenamientos', [EntrenamientoController::class, 'indexAlumno'])->name('alumno.entrenamientos');
+    Route::post('/dashboard/alumno/entrenamientos/{id}/completar', [EntrenamientoController::class, 'completarAlumno'])->name('alumno.entrenamientos.completar');
+    Route::get('/dashboard/alumno/pagos', [PagoController::class, 'indexAlumno'])->name('alumno.pagos');
 });

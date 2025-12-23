@@ -32,6 +32,14 @@
                             @endif
                             • {{ \Carbon\Carbon::parse($entrenamiento->fecha)->format('d/m/Y') }}
                         </p>
+                        @if($entrenamiento->resultados_count > 0)
+                            <a href="{{ route('entrenamientos.show', $entrenamiento->id) }}" class="inline-flex items-center gap-1 mt-1 text-xs font-bold text-blue-600 hover:underline">
+                                <i class="fas fa-comment-dots"></i>
+                                {{ $entrenamiento->resultados_count }} {{ $entrenamiento->resultados_count == 1 ? 'devolución' : 'devoluciones' }}
+                            </a>
+                        @else
+                            <p class="text-[10px] text-gray-400 mt-1 italic">Sin devoluciones aún</p>
+                        @endif
                     </div>
                     <div class="flex items-center gap-2">
                         <a href="{{ route('entrenamientos.edit', $entrenamiento->id) }}" class="p-2 text-gray-400 hover:text-blue-600 transition">

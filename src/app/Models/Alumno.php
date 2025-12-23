@@ -50,4 +50,9 @@ class Alumno extends Model
     {
         return $this->hasMany(ObjetivoCompetencia::class, 'alumnoId');
     }
+
+    public function resultadosEntrenamientos()
+    {
+        return $this->hasMany(EntrenamientoResultado::class, 'alumnoId');
+    }
 }

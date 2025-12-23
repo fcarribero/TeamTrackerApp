@@ -63,11 +63,11 @@
                         <i class="fas fa-file-alt w-5 text-center"></i> <span class="font-medium">Plantillas</span>
                     </a>
                 @else
-                    <a href="{{ route('dashboard.alumno') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all {{ request()->routeIs('dashboard.alumno') ? 'bg-white text-blue-600 shadow-lg' : 'text-blue-50 hover:bg-white/10' }}">
-                        <i class="fas fa-home w-5 text-center"></i> <span class="font-medium">Dashboard</span>
-                    </a>
                     <a href="/dashboard/alumno/entrenamientos" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all {{ request()->is('dashboard/alumno/entrenamientos*') ? 'bg-white text-blue-600 shadow-lg' : 'text-blue-50 hover:bg-white/10' }}">
                         <i class="fas fa-calendar w-5 text-center"></i> <span class="font-medium">Mis Entrenamientos</span>
+                    </a>
+                    <a href="/dashboard/alumno/pagos" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all {{ request()->is('dashboard/alumno/pagos*') ? 'bg-white text-blue-600 shadow-lg' : 'text-blue-50 hover:bg-white/10' }}">
+                        <i class="fas fa-credit-card w-5 text-center"></i> <span class="font-medium">Mis Pagos</span>
                     </a>
                 @endif
             </nav>

@@ -3,7 +3,7 @@ namespace App\Repositories;
 use App\Models\Entrenamiento;
 class EntrenamientoRepository extends BaseRepository {
     public function __construct(Entrenamiento $model) { parent::__construct($model); }
-    public function getAllWithRelations() { return $this->model->with(['alumnos', 'grupos', 'plantilla'])->get(); }
+    public function getAllWithRelations() { return $this->model->with(['alumnos', 'grupos', 'plantilla'])->withCount('resultados')->orderBy('fecha', 'desc')->get(); }
 
     public function getForAlumno(string $alumnoId)
     {
@@ -13,8 +13,14 @@ class EntrenamientoRepository extends BaseRepository {
             $q->whereHas('alumnos', function($sq) use ($alumnoId) {
                 $sq->where('alumnoId', $alumnoId);
             });
-        })->with(['alumnos', 'grupos', 'plantilla'])
+        })->with(['alumnos', 'grupos', 'plantilla', 'resultados' => function($q) use ($alumnoId) {
+            $q->where('alumnoId', $alumnoId);
+        }])
           ->orderBy('fecha', 'desc')
           ->get();
+    }
+    public function getWithResultados(string $id)
+    {
+        return $this->model->with(['resultados.alumno', 'alumnos', 'grupos'])->find($id);
     }
 }

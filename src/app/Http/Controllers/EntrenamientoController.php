@@ -29,6 +29,12 @@ class EntrenamientoController extends Controller {
         return view('profesor.entrenamientos.index', compact('entrenamientos'));
     }
 
+    public function show($id) {
+        $entrenamiento = $this->service->getWithResultados($id);
+        if (!$entrenamiento) return redirect()->route('entrenamientos.index')->with('error', 'Entrenamiento no encontrado');
+        return view('profesor.entrenamientos.show', compact('entrenamiento'));
+    }
+
     public function create(Request $request) {
         $alumnos = $this->alumnoService->getAllAlumnos();
         $grupos = $this->grupoService->getAll();
@@ -138,6 +144,12 @@ class EntrenamientoController extends Controller {
             $data['contenidoPersonalizado'] = json_decode($data['contenidoPersonalizado'], true);
         }
 
+        // Si ya existen devoluciones, no permitimos cambiar fecha ni ejercicios
+        if ($entrenamiento->resultados()->exists()) {
+            unset($data['fecha']);
+            unset($data['contenidoPersonalizado']);
+        }
+
         // Si ya tenía una plantilla, no permitimos cambiarla
         if ($entrenamiento->plantillaId) {
             unset($data['plantillaId']);
@@ -166,5 +178,29 @@ class EntrenamientoController extends Controller {
 
         $entrenamientos = $this->service->getForAlumno($alumno->id);
         return view('alumno.entrenamientos.index', compact('entrenamientos'));
+    }
+
+    public function completarAlumno(Request $request, $id) {
+        $user = auth()->user();
+        $alumno = \App\Models\Alumno::where('userId', $user->id)->first();
+        if (!$alumno) return back()->with('error', 'Perfil de alumno no encontrado');
+
+        $data = $request->validate([
+            'sensacion' => 'nullable|string',
+            'dificultad' => 'required|integer|min:1|max:10',
+            'molestias' => 'nullable|string',
+            'comentarios' => 'nullable|string',
+        ]);
+
+        $data['id'] = 'er' . bin2hex(random_bytes(10));
+        $data['entrenamientoId'] = $id;
+        $data['alumnoId'] = $alumno->id;
+
+        \App\Models\EntrenamientoResultado::updateOrCreate(
+            ['entrenamientoId' => $id, 'alumnoId' => $alumno->id],
+            $data
+        );
+
+        return back()->with('success', '¡Entrenamiento completado! Gracias por tu feedback.');
     }
 }

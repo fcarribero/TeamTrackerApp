@@ -79,4 +79,13 @@ class PagoController extends Controller {
         $this->service->delete($id);
         return redirect()->route('pagos.index')->with('success', 'Pago eliminado correctamente');
     }
+
+    public function indexAlumno() {
+        $user = auth()->user();
+        $alumno = \App\Models\Alumno::where('userId', $user->id)->first();
+        if (!$alumno) return redirect('/')->with('error', 'Perfil de alumno no encontrado');
+
+        $pagos = $this->service->getForAlumno($alumno->id);
+        return view('alumno.pagos.index', compact('pagos', 'alumno'));
+    }
 }
