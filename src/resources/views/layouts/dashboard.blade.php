@@ -7,6 +7,12 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    @stack('styles')
+    <style>
+        .anuncio-contenido p:last-child { margin-bottom: 0; }
+        .anuncio-contenido ul { list-style-type: disc; margin-left: 1.5rem; }
+        .anuncio-contenido ol { list-style-type: decimal; margin-left: 1.5rem; }
+    </style>
 </head>
 <body class="bg-gray-100 font-sans" x-data="{ sidebarOpen: false }">
     <div class="flex min-h-screen">
@@ -61,6 +67,9 @@
                     </a>
                     <a href="/dashboard/profesor/plantillas" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all {{ request()->is('dashboard/profesor/plantillas*') ? 'bg-white text-blue-600 shadow-lg' : 'text-blue-50 hover:bg-white/10' }}">
                         <i class="fas fa-file-alt w-5 text-center"></i> <span class="font-medium">Plantillas</span>
+                    </a>
+                    <a href="{{ route('anuncios.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all {{ request()->routeIs('anuncios.index') ? 'bg-white text-blue-600 shadow-lg' : 'text-blue-50 hover:bg-white/10' }}">
+                        <i class="fas fa-bullhorn w-5 text-center"></i> <span class="font-medium">Anuncio</span>
                     </a>
                 @else
                     <a href="/dashboard/alumno/entrenamientos" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all {{ request()->is('dashboard/alumno/entrenamientos*') ? 'bg-white text-blue-600 shadow-lg' : 'text-blue-50 hover:bg-white/10' }}">
@@ -123,5 +132,6 @@
             </main>
         </div>
     </div>
+    @stack('scripts')
 </body>
 </html>

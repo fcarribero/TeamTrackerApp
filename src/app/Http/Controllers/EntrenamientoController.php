@@ -4,6 +4,7 @@ use App\Services\EntrenamientoService;
 use App\Services\AlumnoService;
 use App\Services\GrupoService;
 use App\Services\PlantillaService;
+use App\Services\AnuncioService;
 use Illuminate\Http\Request;
 
 class EntrenamientoController extends Controller {
@@ -11,17 +12,20 @@ class EntrenamientoController extends Controller {
     protected $alumnoService;
     protected $grupoService;
     protected $plantillaService;
+    protected $anuncioService;
 
     public function __construct(
         EntrenamientoService $service,
         AlumnoService $alumnoService,
         GrupoService $grupoService,
-        PlantillaService $plantillaService
+        PlantillaService $plantillaService,
+        AnuncioService $anuncioService
     ) {
         $this->service = $service;
         $this->alumnoService = $alumnoService;
         $this->grupoService = $grupoService;
         $this->plantillaService = $plantillaService;
+        $this->anuncioService = $anuncioService;
     }
 
     public function index() {
@@ -172,8 +176,9 @@ class EntrenamientoController extends Controller {
         $alumno = \App\Models\Alumno::where('userId', $user->id)->first();
         if (!$alumno) return redirect('/')->with('error', 'Perfil de alumno no encontrado');
 
+        $anuncioActivo = $this->anuncioService->getAnuncioActivo();
         $entrenamientos = $this->service->getForAlumno($alumno->id);
-        return view('alumno.entrenamientos.index', compact('entrenamientos'));
+        return view('alumno.entrenamientos.index', compact('entrenamientos', 'anuncioActivo'));
     }
 
     public function completarAlumno(Request $request, $id) {

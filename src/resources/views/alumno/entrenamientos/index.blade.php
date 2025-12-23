@@ -1,6 +1,20 @@
 @extends('layouts.dashboard')
 
 @section('content')
+@if($anuncioActivo)
+    <div class="mb-6 bg-blue-600 text-white p-4 rounded-xl shadow-lg flex items-start gap-4 animate-fade-in-down">
+        <div class="bg-white/20 p-2 rounded-lg">
+            <i class="fas fa-bullhorn text-xl"></i>
+        </div>
+        <div class="flex-1">
+            <h4 class="font-bold text-lg mb-1">Aviso Importante</h4>
+            <div class="text-blue-50 leading-relaxed anuncio-contenido">
+                {!! strip_tags($anuncioActivo->contenido, '<b><strong><i><em><u><ul><ol><li><p><br>') !!}
+            </div>
+        </div>
+    </div>
+@endif
+
 <div class="space-y-6">
     <div>
         <h1 class="text-3xl font-bold text-gray-900 flex items-center gap-2">

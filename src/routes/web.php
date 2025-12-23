@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AlumnoController;
+use App\Http\Controllers\AnuncioController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\EntrenamientoController;
 use App\Http\Controllers\GrupoController;
@@ -78,4 +79,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard/alumno/entrenamientos', [EntrenamientoController::class, 'indexAlumno'])->name('alumno.entrenamientos');
     Route::post('/dashboard/alumno/entrenamientos/{id}/completar', [EntrenamientoController::class, 'completarAlumno'])->name('alumno.entrenamientos.completar');
     Route::get('/dashboard/alumno/pagos', [PagoController::class, 'indexAlumno'])->name('alumno.pagos');
+
+    // Rutas para Anuncios
+    Route::get('/dashboard/profesor/anuncio', [AnuncioController::class, 'index'])->name('anuncios.index');
+    Route::post('/dashboard/profesor/anuncio', [AnuncioController::class, 'store'])->name('anuncios.store');
+    Route::post('/dashboard/profesor/anuncio/{anuncio}/toggle', [AnuncioController::class, 'toggle'])->name('anuncios.toggle');
 });
