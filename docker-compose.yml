@@ -1,0 +1,27 @@
+services:
+  db:
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_DATABASE: teamtracker
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    ports:
+      - "3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  app:
+    build:
+      context: ./src
+      dockerfile: Dockerfile
+    ports:
+      - "80"
+    volumes:
+      - ./src:/var/www
+    depends_on:
+      - db
+
+volumes:
+  mysql_data:

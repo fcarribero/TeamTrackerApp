@@ -1,0 +1,81 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Alumno;
+use App\Models\Entrenamiento;
+use App\Models\Pago;
+use App\Services\EntrenamientoService;
+use Illuminate\Http\Request;
+use Carbon\Carbon;
+
+class StatsController extends Controller
+{
+    protected $entrenamientoService;
+
+    public function __construct(EntrenamientoService $entrenamientoService)
+    {
+        $this->entrenamientoService = $entrenamientoService;
+    }
+
+    public function profesorDashboard()
+    {
+        $totalAlumnos = Alumno::count();
+        $pagosPendientes = Pago::where('estado', 'pendiente')->count();
+
+        $mesActual = Carbon::now()->format('Y-m');
+        $ingresosMesActual = Pago::where('mesCorrespondiente', $mesActual)
+            ->where('estado', 'pagado')
+            ->sum('monto');
+
+        $hoy = Carbon::today();
+        $enSieteDias = Carbon::today()->addDays(7);
+
+        $proximosEntrenamientos = Entrenamiento::with(['alumnos', 'grupos'])
+            ->whereBetween('fecha', [$hoy, $enSieteDias])
+            ->orderBy('fecha', 'asc')
+            ->take(5)
+            ->get();
+
+        $ultimosAlumnos = Alumno::orderBy('created_at', 'desc')
+            ->take(5)
+            ->get();
+
+        return view('profesor.dashboard', compact(
+            'totalAlumnos',
+            'pagosPendientes',
+            'ingresosMesActual',
+            'proximosEntrenamientos',
+            'ultimosAlumnos'
+        ));
+    }
+
+    public function alumnoDashboard()
+    {
+        $user = auth()->user();
+        $alumno = Alumno::where('userId', $user->id)->first();
+
+        if (!$alumno) {
+            return redirect('/')->with('error', 'Perfil de alumno no encontrado');
+        }
+
+        $hoy = Carbon::today();
+
+        $proximosEntrenamientos = $this->entrenamientoService->getForAlumno($alumno->id)
+            ->filter(fn($e) => Carbon::parse($e->fecha)->startOfDay() >= $hoy)
+            ->sortBy('fecha')
+            ->take(5);
+
+        $pagosMesActual = Pago::where('alumnoId', $alumno->id)
+            ->where('mesCorrespondiente', 'LIKE', '%' . Carbon::now()->format('Y-m') . '%')
+            ->orderBy('fechaPago', 'desc')
+            ->get();
+
+        return view('alumno.dashboard', compact(
+            'alumno',
+            'proximosEntrenamientos',
+            'pagosMesActual'
+        ));
+    }
+
+}

@@ -1,0 +1,53 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class Alumno extends Model
+{
+    use HasFactory;
+
+    protected $table = 'alumnos';
+    protected $keyType = 'string';
+    public $incrementing = false;
+
+    protected $fillable = [
+        'id',
+        'nombre',
+        'fechaNacimiento',
+        'sexo',
+        'notas',
+        'userId',
+    ];
+
+    protected $casts = [
+        'fechaNacimiento' => 'datetime',
+    ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'userId');
+    }
+
+    public function pagos()
+    {
+        return $this->hasMany(Pago::class, 'alumnoId');
+    }
+
+    public function entrenamientos()
+    {
+        return $this->belongsToMany(Entrenamiento::class, 'entrenamientos_alumnos', 'alumnoId', 'entrenamientoId');
+    }
+
+    public function grupos()
+    {
+        return $this->belongsToMany(Grupo::class, 'grupos_alumnos', 'alumnoId', 'grupoId');
+    }
+
+    public function objetivos()
+    {
+        return $this->hasMany(ObjetivoCompetencia::class, 'alumnoId');
+    }
+}

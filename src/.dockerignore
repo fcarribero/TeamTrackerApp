@@ -1,0 +1,11 @@
+vendor
+node_modules
+.env
+.phpunit.result.cache
+storage/*.key
+.vagrant
+.idea
+.vscode
+*.php-debug.log
+.php-cs-fixer.cache
+.phpunit.cache
