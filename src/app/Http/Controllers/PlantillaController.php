@@ -19,11 +19,12 @@ class PlantillaController extends Controller {
         $data = $request->validate([
             'nombre' => 'required|string|max:255',
             'descripcion' => 'nullable|string',
-            'contenido' => 'required|string',
+            'contenido' => 'required|array',
+            'contenido.calentamiento' => 'nullable|string',
+            'contenido.trabajo_principal' => 'nullable|string',
+            'contenido.enfriamiento' => 'nullable|string',
             'observaciones' => 'nullable|string',
         ]);
-
-        $data['contenido'] = json_decode($data['contenido'], true);
 
         $this->service->create($data);
         return redirect()->route('plantillas.index')->with('success', 'Plantilla creada correctamente');
@@ -39,11 +40,12 @@ class PlantillaController extends Controller {
         $data = $request->validate([
             'nombre' => 'required|string|max:255',
             'descripcion' => 'nullable|string',
-            'contenido' => 'required|string',
+            'contenido' => 'required|array',
+            'contenido.calentamiento' => 'nullable|string',
+            'contenido.trabajo_principal' => 'nullable|string',
+            'contenido.enfriamiento' => 'nullable|string',
             'observaciones' => 'nullable|string',
         ]);
-
-        $data['contenido'] = json_decode($data['contenido'], true);
 
         $this->service->update($id, $data);
         return redirect()->route('plantillas.index')->with('success', 'Plantilla actualizada correctamente');

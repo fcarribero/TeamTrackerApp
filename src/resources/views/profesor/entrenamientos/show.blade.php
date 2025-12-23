@@ -49,41 +49,23 @@
                     </div>
                     @endif
 
-                    @if($entrenamiento->contenidoPersonalizado)
                         <div>
                             <p class="text-xs text-gray-400 uppercase font-semibold mb-2">Contenido</p>
-                            @if(is_array($entrenamiento->contenidoPersonalizado))
-                                <div class="space-y-2">
-                                    @if(!empty($entrenamiento->contenidoPersonalizado['calentamiento']))
-                                        <p class="text-[10px] font-bold text-orange-500 uppercase">Calentamiento</p>
-                                        <ul class="text-xs text-gray-600 list-disc list-inside">
-                                            @foreach($entrenamiento->contenidoPersonalizado['calentamiento'] as $ej)
-                                                <li>{{ $ej }}</li>
-                                            @endforeach
-                                        </ul>
-                                    @endif
-                                    @if(!empty($entrenamiento->contenidoPersonalizado['trabajo_principal']))
-                                        <p class="text-[10px] font-bold text-blue-500 uppercase">Trabajo Principal</p>
-                                        <ul class="text-xs text-gray-600 list-disc list-inside">
-                                            @foreach($entrenamiento->contenidoPersonalizado['trabajo_principal'] as $ej)
-                                                <li>{{ $ej }}</li>
-                                            @endforeach
-                                        </ul>
-                                    @endif
-                                    @if(!empty($entrenamiento->contenidoPersonalizado['enfriamiento']))
-                                        <p class="text-[10px] font-bold text-green-500 uppercase">Enfriamiento</p>
-                                        <ul class="text-xs text-gray-600 list-disc list-inside">
-                                            @foreach($entrenamiento->contenidoPersonalizado['enfriamiento'] as $ej)
-                                                <li>{{ $ej }}</li>
-                                            @endforeach
-                                        </ul>
-                                    @endif
-                                </div>
-                            @else
-                                <p class="text-xs text-gray-600 whitespace-pre-wrap">{{ $entrenamiento->contenidoPersonalizado }}</p>
-                            @endif
+                            <div class="space-y-2">
+                                @if(!empty($entrenamiento->contenidoPersonalizado['calentamiento']))
+                                    <p class="text-[10px] font-bold text-orange-500 uppercase">Calentamiento</p>
+                                    <p class="text-xs text-gray-600 whitespace-pre-wrap">{{ is_array($entrenamiento->contenidoPersonalizado['calentamiento']) ? implode("\n", $entrenamiento->contenidoPersonalizado['calentamiento']) : $entrenamiento->contenidoPersonalizado['calentamiento'] }}</p>
+                                @endif
+                                @if(!empty($entrenamiento->contenidoPersonalizado['trabajo_principal']))
+                                    <p class="text-[10px] font-bold text-blue-500 uppercase">Trabajo Principal</p>
+                                    <p class="text-xs text-gray-600 whitespace-pre-wrap">{{ is_array($entrenamiento->contenidoPersonalizado['trabajo_principal']) ? implode("\n", $entrenamiento->contenidoPersonalizado['trabajo_principal']) : $entrenamiento->contenidoPersonalizado['trabajo_principal'] }}</p>
+                                @endif
+                                @if(!empty($entrenamiento->contenidoPersonalizado['enfriamiento']))
+                                    <p class="text-[10px] font-bold text-green-500 uppercase">Enfriamiento</p>
+                                    <p class="text-xs text-gray-600 whitespace-pre-wrap">{{ is_array($entrenamiento->contenidoPersonalizado['enfriamiento']) ? implode("\n", $entrenamiento->contenidoPersonalizado['enfriamiento']) : $entrenamiento->contenidoPersonalizado['enfriamiento'] }}</p>
+                                @endif
+                            </div>
                         </div>
-                    @endif
                 </div>
             </div>
         </div>

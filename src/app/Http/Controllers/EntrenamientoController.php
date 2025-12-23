@@ -65,13 +65,12 @@ class EntrenamientoController extends Controller {
             'grupos' => 'nullable|array',
             'grupos.*' => 'exists:grupos,id',
             'plantillaId' => 'nullable|string|exists:plantillas_entrenamiento,id',
-            'contenidoPersonalizado' => 'nullable|string',
+            'contenidoPersonalizado' => 'nullable|array',
+            'contenidoPersonalizado.calentamiento' => 'nullable|string',
+            'contenidoPersonalizado.trabajo_principal' => 'nullable|string',
+            'contenidoPersonalizado.enfriamiento' => 'nullable|string',
             'observaciones' => 'nullable|string',
         ]);
-
-        if ($request->filled('contenidoPersonalizado')) {
-            $data['contenidoPersonalizado'] = json_decode($data['contenidoPersonalizado'], true);
-        }
 
         if ($request->filled('plantillaId')) {
             $plantilla = $this->plantillaService->find($request->plantillaId);
@@ -85,11 +84,9 @@ class EntrenamientoController extends Controller {
             // Si el contenido personalizado está vacío o es exactamente el contenido por defecto,
             // usamos el contenido de la plantilla si se ha seleccionado una.
             $esPorDefecto = is_array($data['contenidoPersonalizado'] ?? null) &&
-                count($data['contenidoPersonalizado']['calentamiento'] ?? []) === 1 &&
-                ($data['contenidoPersonalizado']['calentamiento'][0] ?? '') === "20' CCL" &&
-                empty($data['contenidoPersonalizado']['trabajo_principal'] ?? []) &&
-                count($data['contenidoPersonalizado']['enfriamiento'] ?? []) === 1 &&
-                ($data['contenidoPersonalizado']['enfriamiento'][0] ?? '') === "10' CCL";
+                ($data['contenidoPersonalizado']['calentamiento'] ?? '') === "20' CCL" &&
+                empty($data['contenidoPersonalizado']['trabajo_principal'] ?? '') &&
+                ($data['contenidoPersonalizado']['enfriamiento'] ?? '') === "10' CCL";
 
             if (empty($data['contenidoPersonalizado']) ||
                 (is_array($data['contenidoPersonalizado']) &&
@@ -136,13 +133,12 @@ class EntrenamientoController extends Controller {
             'grupos' => 'nullable|array',
             'grupos.*' => 'exists:grupos,id',
             'plantillaId' => 'nullable|string|exists:plantillas_entrenamiento,id',
-            'contenidoPersonalizado' => 'nullable|string',
+            'contenidoPersonalizado' => 'nullable|array',
+            'contenidoPersonalizado.calentamiento' => 'nullable|string',
+            'contenidoPersonalizado.trabajo_principal' => 'nullable|string',
+            'contenidoPersonalizado.enfriamiento' => 'nullable|string',
             'observaciones' => 'nullable|string',
         ]);
-
-        if ($request->filled('contenidoPersonalizado')) {
-            $data['contenidoPersonalizado'] = json_decode($data['contenidoPersonalizado'], true);
-        }
 
         // Si ya existen devoluciones, no permitimos cambiar fecha ni ejercicios
         if ($entrenamiento->resultados()->exists()) {

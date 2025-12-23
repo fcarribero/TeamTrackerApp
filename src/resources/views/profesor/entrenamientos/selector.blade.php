@@ -35,13 +35,13 @@
 
                     <div class="mt-4 flex flex-wrap gap-1">
                         @if(is_array($plantilla->contenido))
-                            @if(count($plantilla->contenido['calentamiento'] ?? []) > 0)
+                            @if(!empty($plantilla->contenido['calentamiento']))
                                 <span class="bg-orange-100 text-orange-700 text-[10px] px-2 py-0.5 rounded-full">Calentamiento</span>
                             @endif
-                            @if(count($plantilla->contenido['trabajo_principal'] ?? []) > 0)
+                            @if(!empty($plantilla->contenido['trabajo_principal']))
                                 <span class="bg-blue-100 text-blue-700 text-[10px] px-2 py-0.5 rounded-full">Trabajo</span>
                             @endif
-                            @if(count($plantilla->contenido['enfriamiento'] ?? []) > 0)
+                            @if(!empty($plantilla->contenido['enfriamiento']))
                                 <span class="bg-green-100 text-green-700 text-[10px] px-2 py-0.5 rounded-full">Enfriamiento</span>
                             @endif
                         @endif
