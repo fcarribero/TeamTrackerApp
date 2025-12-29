@@ -68,7 +68,7 @@
                         </div>
                         <div class="flex-1">
                             <p class="font-medium text-gray-900">${{ $pago->monto }}</p>
-                            <p class="text-sm text-gray-600">{{ $pago->mesCorrespondiente }}</p>
+                            <p class="text-sm text-gray-600">{{ ucfirst(\Carbon\Carbon::parse($pago->mesCorrespondiente)->locale('es')->translatedFormat('F Y')) }}</p>
                         </div>
                         <div class="text-right">
                             <span class="text-xs px-2 py-1 rounded-full {{ $pago->estado === 'pagado' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700' }}">

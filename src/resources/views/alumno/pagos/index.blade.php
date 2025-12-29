@@ -25,7 +25,9 @@
                 <tbody class="divide-y divide-gray-100">
                     @forelse($pagos as $pago)
                         <tr>
-                            <td class="px-6 py-4 font-medium text-gray-900">{{ $pago->mesCorrespondiente }}</td>
+                            <td class="px-6 py-4 font-medium text-gray-900">
+                                {{ ucfirst(\Carbon\Carbon::parse($pago->mesCorrespondiente)->locale('es')->translatedFormat('F Y')) }}
+                            </td>
                             <td class="px-6 py-4 font-bold text-gray-900">${{ number_format($pago->monto, 2) }}</td>
                             <td class="px-6 py-4">
                                 @php

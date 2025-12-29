@@ -78,7 +78,7 @@
                     @forelse($pagos as $pago)
                         <tr>
                             <td class="px-6 py-4 font-medium text-gray-900">{{ $pago->alumno->nombre ?? 'N/A' }}</td>
-                            <td class="px-6 py-4 text-gray-600">{{ $pago->mesCorrespondiente }}</td>
+                            <td class="px-6 py-4 text-gray-600">{{ ucfirst(\Carbon\Carbon::parse($pago->mesCorrespondiente)->locale('es')->translatedFormat('F Y')) }}</td>
                             <td class="px-6 py-4 font-bold">${{ $pago->monto }}</td>
                             <td class="px-6 py-4">
                                 @php
