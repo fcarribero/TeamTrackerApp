@@ -58,6 +58,7 @@ Route::middleware(['auth'])->group(function () {
     ]);
 
     // Rutas para Entrenamientos y Plantillas
+    Route::post('/dashboard/profesor/entrenamientos/estimar', [EntrenamientoController::class, 'estimarMetricas'])->name('entrenamientos.estimar');
     Route::resource('/dashboard/profesor/entrenamientos', EntrenamientoController::class)->names([
         'index' => 'entrenamientos.index',
         'create' => 'entrenamientos.create',

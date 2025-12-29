@@ -16,7 +16,44 @@
         </a>
     </div>
 
-    <div class="bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden">
+    <div class="bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden"
+         x-data="{
+            distancia: {{ old('distanciaTotal', $entrenamiento->distanciaTotal ?? 0) }},
+            tiempo: {{ old('tiempoTotal', $entrenamiento->tiempoTotal ?? 0) }},
+            estimando: false,
+            estimar() {
+                this.estimando = true;
+                const cal = document.getElementsByName('contenidoPersonalizado[calentamiento]')[0].value;
+                const tra = document.getElementsByName('contenidoPersonalizado[trabajo_principal]')[0].value;
+                const enf = document.getElementsByName('contenidoPersonalizado[enfriamiento]')[0].value;
+
+                fetch('{{ route('entrenamientos.estimar') }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({
+                        contenidoPersonalizado: {
+                            calentamiento: cal,
+                            trabajo_principal: tra,
+                            enfriamiento: enf
+                        }
+                    })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.distancia) this.distancia = data.distancia;
+                    if (data.tiempo) this.tiempo = data.tiempo;
+                    this.estimando = false;
+                })
+                .catch(err => {
+                    console.error(err);
+                    alert('Error al estimar métricas');
+                    this.estimando = false;
+                });
+            }
+         }">
         <form action="{{ route('entrenamientos.update', $entrenamiento->id) }}" method="POST" class="p-8 space-y-6">
             @csrf
             @method('PUT')
@@ -49,6 +86,43 @@
                         <p class="text-red-500 text-xs">{{ $message }}</p>
                     @enderror
                 </div>
+            </div>
+
+            <div class="bg-blue-50/50 p-4 rounded-xl border border-blue-100/50">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-sm font-bold text-blue-900 flex items-center gap-2">
+                        <i class="fas fa-chart-line text-blue-600"></i>
+                        Estimaciones de Distancia y Tiempo
+                    </h3>
+                    <button type="button" @click="estimar()"
+                            :disabled="estimando"
+                            class="text-xs bg-white border border-blue-200 text-blue-600 px-3 py-1.5 rounded-lg hover:bg-blue-50 transition flex items-center gap-2 disabled:opacity-50">
+                        <i class="fas fa-robot" :class="estimando ? 'animate-pulse' : ''"></i>
+                        <span x-text="estimando ? 'Estimando...' : 'Estimar con IA'"></span>
+                    </button>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="space-y-1">
+                        <label class="text-[11px] font-bold text-gray-500 uppercase">Distancia Total (km)</label>
+                        <div class="relative">
+                            <input type="number" step="0.1" name="distanciaTotal" x-model="distancia"
+                                   class="w-full pl-4 pr-10 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition">
+                            <span class="absolute right-3 top-2.5 text-gray-400 text-sm">km</span>
+                        </div>
+                    </div>
+                    <div class="space-y-1">
+                        <label class="text-[11px] font-bold text-gray-500 uppercase">Tiempo Total (min)</label>
+                        <div class="relative">
+                            <input type="number" name="tiempoTotal" x-model="tiempo"
+                                   class="w-full pl-4 pr-10 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition">
+                            <span class="absolute right-3 top-2.5 text-gray-400 text-sm">min</span>
+                        </div>
+                    </div>
+                </div>
+                <p class="text-[10px] text-blue-600 mt-2 italic">
+                    <i class="fas fa-info-circle mr-1"></i>
+                    Las estimaciones ayudan al alumno a planificar su sesión.
+                </p>
             </div>
 
             <div class="grid grid-cols-1 gap-6" x-data="{

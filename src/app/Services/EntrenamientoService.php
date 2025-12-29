@@ -29,10 +29,13 @@ class EntrenamientoService {
 
     public function update(string $id, array $data) {
         if (isset($data['contenidoPersonalizado'])) {
-            $metrics = $this->chatGPTService->estimateTrainingMetrics($data['contenidoPersonalizado']);
-            if ($metrics) {
-                $data['distanciaTotal'] = $metrics['distancia'];
-                $data['tiempoTotal'] = $metrics['tiempo'];
+            // Solo estimar si no se han proporcionado distancia o tiempo manualmente
+            if (!isset($data['distanciaTotal']) && !isset($data['tiempoTotal'])) {
+                $metrics = $this->chatGPTService->estimateTrainingMetrics($data['contenidoPersonalizado']);
+                if ($metrics) {
+                    $data['distanciaTotal'] = $metrics['distancia'];
+                    $data['tiempoTotal'] = $metrics['tiempo'];
+                }
             }
         }
         return $this->repository->update($id, $data);

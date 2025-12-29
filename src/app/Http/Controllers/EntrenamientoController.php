@@ -5,6 +5,7 @@ use App\Services\AlumnoService;
 use App\Services\GrupoService;
 use App\Services\PlantillaService;
 use App\Services\AnuncioService;
+use App\Services\ChatGPTService;
 use Illuminate\Http\Request;
 
 class EntrenamientoController extends Controller {
@@ -13,19 +14,22 @@ class EntrenamientoController extends Controller {
     protected $grupoService;
     protected $plantillaService;
     protected $anuncioService;
+    protected $chatGPTService;
 
     public function __construct(
         EntrenamientoService $service,
         AlumnoService $alumnoService,
         GrupoService $grupoService,
         PlantillaService $plantillaService,
-        AnuncioService $anuncioService
+        AnuncioService $anuncioService,
+        ChatGPTService $chatGPTService
     ) {
         $this->service = $service;
         $this->alumnoService = $alumnoService;
         $this->grupoService = $grupoService;
         $this->plantillaService = $plantillaService;
         $this->anuncioService = $anuncioService;
+        $this->chatGPTService = $chatGPTService;
     }
 
     public function index() {
@@ -142,6 +146,8 @@ class EntrenamientoController extends Controller {
             'contenidoPersonalizado.trabajo_principal' => 'nullable|string',
             'contenidoPersonalizado.enfriamiento' => 'nullable|string',
             'observaciones' => 'nullable|string',
+            'distanciaTotal' => 'nullable|numeric|min:0',
+            'tiempoTotal' => 'nullable|integer|min:0',
         ]);
 
         // Si ya existen devoluciones, no permitimos cambiar fecha ni ejercicios
@@ -164,6 +170,23 @@ class EntrenamientoController extends Controller {
         $entrenamiento->grupos()->sync($request->grupos ?? []);
 
         return redirect()->route('entrenamientos.index')->with('success', 'Entrenamiento actualizado correctamente');
+    }
+
+    public function estimarMetricas(Request $request) {
+        $data = $request->validate([
+            'contenidoPersonalizado' => 'required|array',
+            'contenidoPersonalizado.calentamiento' => 'nullable|string',
+            'contenidoPersonalizado.trabajo_principal' => 'nullable|string',
+            'contenidoPersonalizado.enfriamiento' => 'nullable|string',
+        ]);
+
+        $metrics = $this->chatGPTService->estimateTrainingMetrics($data['contenidoPersonalizado']);
+
+        if (!$metrics) {
+            return response()->json(['error' => 'No se pudo obtener la estimación de la IA'], 500);
+        }
+
+        return response()->json($metrics);
     }
 
     public function destroy($id) {
