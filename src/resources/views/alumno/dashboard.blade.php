@@ -74,7 +74,7 @@
                             <span class="text-xs px-2 py-1 rounded-full {{ $pago->estado === 'pagado' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700' }}">
                                 {{ ucfirst($pago->estado) }}
                             </span>
-                            <p class="text-xs text-gray-500 mt-1">{{ \Carbon\Carbon::parse($pago->fechaPago)->format('d M Y') }}</p>
+                            <p class="text-xs text-gray-500 mt-1">{{ $pago->fechaPago ? $pago->fechaPago->format('d/m/Y') : '---' }}</p>
                         </div>
                     </div>
                 @empty
