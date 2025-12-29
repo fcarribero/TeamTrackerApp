@@ -28,7 +28,7 @@
                     <div>
                         <h2 class="font-bold text-xl">TeamTracker</h2>
                         @php $teamName = \App\Models\Setting::get('team_name'); @endphp
-                        @if(Auth::user()->rol === 'alumno' && $teamName)
+                        @if($teamName)
                             <p class="text-xs text-blue-100 font-bold tracking-wider uppercase opacity-90">{{ $teamName }}</p>
                         @else
                             <p class="text-xs text-blue-200 capitalize font-medium">{{ Auth::user()->rol }}</p>

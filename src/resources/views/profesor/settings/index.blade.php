@@ -10,10 +10,30 @@
         <p class="text-gray-600 mt-1">Personaliza la identidad de tu equipo y otros ajustes globales.</p>
     </div>
 
-    <div class="max-w-2xl">
+    <div class="max-w-2xl space-y-6">
         <div class="bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden">
             <form action="{{ route('settings.store') }}" method="POST" class="p-6 space-y-6">
                 @csrf
+
+                <div class="space-y-4">
+                    <h3 class="text-lg font-bold text-gray-900 flex items-center gap-2">
+                        <i class="fas fa-user-circle text-blue-600"></i>
+                        Perfil del Profesor
+                    </h3>
+
+                    <div class="bg-gray-50 p-4 rounded-xl border border-gray-100">
+                        <label for="name" class="block text-sm font-bold text-gray-700 mb-1">Tu Nombre</label>
+                        <p class="text-xs text-gray-500 mb-3">Este es el nombre que se mostrará en tu perfil y en la cabecera del panel.</p>
+
+                        <input type="text" name="name" id="name" value="{{ old('name', $user->name) }}"
+                               class="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition bg-white"
+                               placeholder="Tu nombre completo" required>
+
+                        @error('name')
+                            <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                        @enderror
+                    </div>
+                </div>
 
                 <div class="space-y-4">
                     <h3 class="text-lg font-bold text-gray-900 flex items-center gap-2">
