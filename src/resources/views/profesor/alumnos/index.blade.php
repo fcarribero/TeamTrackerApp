@@ -46,7 +46,9 @@
                             <td class="px-6 py-4">
                                 <div class="flex flex-wrap gap-1">
                                     @forelse($alumno->grupos as $grupo)
-                                        <span class="w-3 h-3 rounded-full" style="background-color: {{ $grupo->color ?? '#3B82F6' }}" title="{{ $grupo->nombre }}"></span>
+                                        <span class="px-2 py-0.5 rounded text-[10px] font-medium text-white" style="background-color: {{ $grupo->color ?? '#3B82F6' }}">
+                                            {{ $grupo->nombre }}
+                                        </span>
                                     @empty
                                         <span class="text-xs text-gray-400">-</span>
                                     @endforelse
