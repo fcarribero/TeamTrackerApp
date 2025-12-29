@@ -100,12 +100,12 @@
             </div>
             <div class="space-y-3">
                 @forelse($ultimosAlumnos as $alumno)
-                    <div class="flex items-center gap-3 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition cursor-pointer" onclick="window.location='{{ route('alumnos.edit', $alumno->id) }}'">
+                    <div class="flex items-center gap-3 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition cursor-pointer" onclick="window.location='{{ route('alumnos.show', $alumno->id) }}'">
                         <div class="bg-green-100 p-2 rounded-full text-green-600 w-10 h-10 flex items-center justify-center">
                             <i class="fas fa-user"></i>
                         </div>
                         <div class="flex-1">
-                            <p class="font-medium text-gray-900">{{ $alumno->nombre }}</p>
+                            <p class="font-medium text-gray-900">{{ $alumno->nombre }} {{ $alumno->apellido }}</p>
                             <p class="text-sm text-gray-600 capitalize">{{ $alumno->sexo }}</p>
                         </div>
                         <div class="text-right">
