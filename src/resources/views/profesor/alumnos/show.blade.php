@@ -156,6 +156,36 @@
                     @endforelse
                 </div>
             </div>
+
+            <div class="bg-white rounded-xl shadow-md p-6 border border-gray-100">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-bold">Competencias</h3>
+                    <a href="{{ route('competencias.index') }}" class="text-xs text-blue-600 hover:underline">Ver todas</a>
+                </div>
+                <div class="space-y-3">
+                    @forelse($alumno->competencias->sortBy('fecha')->take(5) as $competencia)
+                        <div class="flex items-center gap-3 p-3 bg-blue-50/50 rounded-lg border border-blue-100/50 hover:bg-blue-50 transition cursor-pointer" onclick="window.location='{{ route('competencias.edit', $competencia->id) }}'">
+                            <div class="bg-blue-100 p-2 rounded-lg text-blue-600 w-10 text-center">
+                                <i class="fas fa-medal"></i>
+                            </div>
+                            <div class="flex-1">
+                                <p class="font-medium text-sm text-gray-900">{{ $competencia->nombre }}</p>
+                                <p class="text-[10px] text-gray-500">{{ $competencia->plan_carrera ? 'Plan cargado' : 'Pendiente de plan' }}</p>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-xs font-medium text-gray-900">{{ $competencia->fecha->format('d M Y') }}</p>
+                                <span class="text-[8px] font-bold px-1.5 py-0.5 rounded-full {{ $competencia->fecha->isPast() ? 'bg-gray-100 text-gray-600' : 'bg-green-100 text-green-700' }}">
+                                    {{ $competencia->fecha->isPast() ? 'Fin' : 'Prox' }}
+                                </span>
+                            </div>
+                        </div>
+                    @empty
+                        <div class="text-center py-8 text-gray-500">
+                            No hay competencias registradas
+                        </div>
+                    @endforelse
+                </div>
+            </div>
         </div>
     </div>
 </div>

@@ -82,6 +82,9 @@
                     <a href="/dashboard/profesor/plantillas" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all {{ request()->is('dashboard/profesor/plantillas*') ? 'bg-white text-blue-600 shadow-lg' : 'text-blue-50 hover:bg-white/10' }}">
                         <i class="fas fa-file-alt w-5 text-center"></i> <span class="font-medium">Plantillas</span>
                     </a>
+                    <a href="{{ route('competencias.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all {{ request()->routeIs('competencias.*') ? 'bg-white text-blue-600 shadow-lg' : 'text-blue-50 hover:bg-white/10' }}">
+                        <i class="fas fa-medal w-5 text-center"></i> <span class="font-medium">Competencias</span>
+                    </a>
                     <a href="{{ route('anuncios.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all {{ request()->routeIs('anuncios.index') ? 'bg-white text-blue-600 shadow-lg' : 'text-blue-50 hover:bg-white/10' }}">
                         <i class="fas fa-bullhorn w-5 text-center"></i> <span class="font-medium">Anuncio</span>
                     </a>
@@ -94,6 +97,9 @@
                     </a>
                     <a href="/dashboard/alumno/pagos" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all {{ request()->is('dashboard/alumno/pagos*') ? 'bg-white text-blue-600 shadow-lg' : 'text-blue-50 hover:bg-white/10' }}">
                         <i class="fas fa-credit-card w-5 text-center"></i> <span class="font-medium">Mis Pagos</span>
+                    </a>
+                    <a href="{{ route('alumno.competencias') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all {{ request()->routeIs('alumno.competencias') ? 'bg-white text-blue-600 shadow-lg' : 'text-blue-50 hover:bg-white/10' }}">
+                        <i class="fas fa-medal w-5 text-center"></i> <span class="font-medium">Mis Competencias</span>
                     </a>
                 @endif
             </nav>

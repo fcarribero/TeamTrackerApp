@@ -3,6 +3,7 @@
 use App\Http\Controllers\AlumnoController;
 use App\Http\Controllers\AnuncioController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CompetenciaController;
 use App\Http\Controllers\EntrenamientoController;
 use App\Http\Controllers\GrupoController;
 use App\Http\Controllers\PagoController;
@@ -81,11 +82,19 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard/alumno/entrenamientos', [EntrenamientoController::class, 'indexAlumno'])->name('alumno.entrenamientos');
     Route::post('/dashboard/alumno/entrenamientos/{id}/completar', [EntrenamientoController::class, 'completarAlumno'])->name('alumno.entrenamientos.completar');
     Route::get('/dashboard/alumno/pagos', [PagoController::class, 'indexAlumno'])->name('alumno.pagos');
+    Route::get('/dashboard/alumno/competencias', [CompetenciaController::class, 'indexAlumno'])->name('alumno.competencias');
+    Route::post('/dashboard/alumno/competencias', [CompetenciaController::class, 'storeAlumno'])->name('alumno.competencias.store');
 
     // Rutas para Anuncios
     Route::get('/dashboard/profesor/anuncio', [AnuncioController::class, 'index'])->name('anuncios.index');
     Route::post('/dashboard/profesor/anuncio', [AnuncioController::class, 'store'])->name('anuncios.store');
     Route::post('/dashboard/profesor/anuncio/{anuncio}/toggle', [AnuncioController::class, 'toggle'])->name('anuncios.toggle');
+
+    // Rutas para Competencias (Profesor)
+    Route::get('/dashboard/profesor/competencias', [CompetenciaController::class, 'indexProfesor'])->name('competencias.index');
+    Route::get('/dashboard/profesor/competencias/{competencia}/edit', [CompetenciaController::class, 'editProfesor'])->name('competencias.edit');
+    Route::put('/dashboard/profesor/competencias/{competencia}', [CompetenciaController::class, 'updateProfesor'])->name('competencias.update');
+    Route::delete('/dashboard/profesor/competencias/{competencia}', [CompetenciaController::class, 'destroy'])->name('competencias.destroy');
 
     // Rutas para Configuración
     Route::get('/dashboard/profesor/settings', [SettingController::class, 'index'])->name('settings.index');

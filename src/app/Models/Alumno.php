@@ -58,6 +58,11 @@ class Alumno extends Model
         return $this->hasMany(ObjetivoCompetencia::class, 'alumnoId');
     }
 
+    public function competencias()
+    {
+        return $this->hasMany(Competencia::class, 'alumno_id');
+    }
+
     public function resultadosEntrenamientos()
     {
         return $this->hasMany(EntrenamientoResultado::class, 'alumnoId');
