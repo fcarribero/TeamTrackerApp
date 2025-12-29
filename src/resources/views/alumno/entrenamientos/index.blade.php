@@ -38,10 +38,24 @@
 
         <div class="space-y-4">
             @forelse($proximos as $entrenamiento)
-                @php $resultado = $entrenamiento->resultados->first(); @endphp
-                <div class="bg-blue-50 rounded-xl p-6 border border-blue-100" x-data="{ showFeedback: false }">
+                @php
+                    $resultado = $entrenamiento->resultados->first();
+                    $esHoy = \Carbon\Carbon::parse($entrenamiento->fecha)->isToday();
+                @endphp
+                <div class="{{ $esHoy ? 'bg-blue-100 border-2 border-blue-500 ring-2 ring-blue-200 ring-offset-2 scale-[1.01] transition-all' : 'bg-blue-50 border-blue-100' }} rounded-xl p-6 border relative" x-data="{ showFeedback: false }">
+                    @if($esHoy)
+                        <div class="absolute -top-3 left-6">
+                            <span class="bg-blue-600 text-white text-[10px] font-black px-3 py-1 rounded-full shadow-lg flex items-center gap-1 uppercase tracking-tighter">
+                                <span class="relative flex h-2 w-2">
+                                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
+                                  <span class="relative inline-flex rounded-full h-2 w-2 bg-white"></span>
+                                </span>
+                                Entrenamiento de Hoy
+                            </span>
+                        </div>
+                    @endif
                     <div class="flex items-start gap-4">
-                        <div class="bg-blue-500 p-3 rounded-lg text-white shadow-md">
+                        <div class="{{ $esHoy ? 'bg-blue-600' : 'bg-blue-500' }} p-3 rounded-lg text-white shadow-md">
                             <i class="fas fa-calendar-check fa-lg"></i>
                         </div>
                         <div class="flex-1">
