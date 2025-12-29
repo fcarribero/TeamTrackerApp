@@ -36,11 +36,20 @@
                 <div class="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
                     <div class="flex items-center gap-3">
                         <div class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center text-white font-bold text-lg">
-                            {{ substr(Auth::user()->name, 0, 1) }}
+                            @if(Auth::user()->rol === 'alumno' && Auth::user()->alumno)
+                                {{ substr(Auth::user()->alumno->nombre, 0, 1) }}
+                            @else
+                                {{ substr(Auth::user()->name, 0, 1) }}
+                            @endif
                         </div>
                         <div class="flex-1 overflow-hidden">
-                            <p class="text-sm font-semibold truncate">{{ Auth::user()->name }}</p>
-                            <p class="text-xs text-blue-200 truncate">{{ Auth::user()->email }}</p>
+                            @if(Auth::user()->rol === 'alumno' && Auth::user()->alumno)
+                                <p class="text-sm font-semibold truncate">{{ Auth::user()->alumno->nombre }} {{ Auth::user()->alumno->apellido }}</p>
+                                <p class="text-xs text-blue-200 truncate">DNI: {{ Auth::user()->alumno->dni ?? '-' }}</p>
+                            @else
+                                <p class="text-sm font-semibold truncate">{{ Auth::user()->name }}</p>
+                                <p class="text-xs text-blue-200 truncate">{{ Auth::user()->email }}</p>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -114,11 +123,20 @@
                         <div class="h-8 w-[1px] bg-gray-200"></div>
                         <div class="flex items-center gap-3">
                             <div class="text-right hidden sm:block">
-                                <p class="text-sm font-medium text-gray-900">{{ Auth::user()->name }}</p>
-                                <p class="text-xs text-gray-500 capitalize">{{ Auth::user()->rol }}</p>
+                                @if(Auth::user()->rol === 'alumno' && Auth::user()->alumno)
+                                    <p class="text-sm font-medium text-gray-900">{{ Auth::user()->alumno->nombre }} {{ Auth::user()->alumno->apellido }}</p>
+                                    <p class="text-xs text-gray-500">DNI: {{ Auth::user()->alumno->dni ?? '-' }}</p>
+                                @else
+                                    <p class="text-sm font-medium text-gray-900">{{ Auth::user()->name }}</p>
+                                    <p class="text-xs text-gray-500 capitalize">{{ Auth::user()->rol }}</p>
+                                @endif
                             </div>
                             <div class="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center text-white font-bold">
-                                {{ substr(Auth::user()->name, 0, 1) }}
+                                @if(Auth::user()->rol === 'alumno' && Auth::user()->alumno)
+                                    {{ substr(Auth::user()->alumno->nombre, 0, 1) }}
+                                @else
+                                    {{ substr(Auth::user()->name, 0, 1) }}
+                                @endif
                             </div>
                         </div>
                     </div>
