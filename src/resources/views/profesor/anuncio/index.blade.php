@@ -25,6 +25,7 @@
             <h2 class="text-xl font-semibold text-gray-900 mb-4">Publicar Anuncio</h2>
             <form action="{{ route('anuncios.store') }}" method="POST" class="space-y-4">
                 @csrf
+
                 <div>
                     <label for="contenido" class="block text-sm font-medium text-gray-700 mb-1">Contenido del Anuncio</label>
                     <div id="editor-container" class="bg-white">

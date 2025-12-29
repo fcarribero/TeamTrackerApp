@@ -26,7 +26,7 @@ class AnuncioController extends Controller
     {
         $data = $request->validate([
             'contenido' => 'required|string',
-            'activo' => 'boolean'
+            'activo' => 'boolean',
         ]);
 
         $data['activo'] = $request->boolean('activo');

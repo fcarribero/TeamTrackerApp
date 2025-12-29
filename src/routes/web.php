@@ -7,6 +7,7 @@ use App\Http\Controllers\EntrenamientoController;
 use App\Http\Controllers\GrupoController;
 use App\Http\Controllers\PagoController;
 use App\Http\Controllers\PlantillaController;
+use App\Http\Controllers\SettingController;
 use App\Http\Controllers\StatsController;
 use Illuminate\Support\Facades\Route;
 
@@ -85,4 +86,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard/profesor/anuncio', [AnuncioController::class, 'index'])->name('anuncios.index');
     Route::post('/dashboard/profesor/anuncio', [AnuncioController::class, 'store'])->name('anuncios.store');
     Route::post('/dashboard/profesor/anuncio/{anuncio}/toggle', [AnuncioController::class, 'toggle'])->name('anuncios.toggle');
+
+    // Rutas para Configuración
+    Route::get('/dashboard/profesor/settings', [SettingController::class, 'index'])->name('settings.index');
+    Route::post('/dashboard/profesor/settings', [SettingController::class, 'store'])->name('settings.store');
 });

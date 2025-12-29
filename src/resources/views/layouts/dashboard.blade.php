@@ -27,7 +27,12 @@
                     </div>
                     <div>
                         <h2 class="font-bold text-xl">TeamTracker</h2>
-                        <p class="text-xs text-blue-200 capitalize font-medium">{{ Auth::user()->rol }}</p>
+                        @php $teamName = \App\Models\Setting::get('team_name'); @endphp
+                        @if(Auth::user()->rol === 'alumno' && $teamName)
+                            <p class="text-xs text-blue-100 font-bold tracking-wider uppercase opacity-90">{{ $teamName }}</p>
+                        @else
+                            <p class="text-xs text-blue-200 capitalize font-medium">{{ Auth::user()->rol }}</p>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -79,6 +84,9 @@
                     </a>
                     <a href="{{ route('anuncios.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all {{ request()->routeIs('anuncios.index') ? 'bg-white text-blue-600 shadow-lg' : 'text-blue-50 hover:bg-white/10' }}">
                         <i class="fas fa-bullhorn w-5 text-center"></i> <span class="font-medium">Anuncio</span>
+                    </a>
+                    <a href="{{ route('settings.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all {{ request()->routeIs('settings.index') ? 'bg-white text-blue-600 shadow-lg' : 'text-blue-50 hover:bg-white/10' }}">
+                        <i class="fas fa-cog w-5 text-center"></i> <span class="font-medium">Configuración</span>
                     </a>
                 @else
                     <a href="/dashboard/alumno/entrenamientos" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all {{ request()->is('dashboard/alumno/entrenamientos*') ? 'bg-white text-blue-600 shadow-lg' : 'text-blue-50 hover:bg-white/10' }}">
@@ -145,6 +153,16 @@
 
             <main class="flex-1 overflow-auto p-4 lg:p-8">
                 <div class="max-w-7xl mx-auto">
+                    @if(session('success'))
+                        <div class="mb-6 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
+                            <span class="block sm:inline">{{ session('success') }}</span>
+                        </div>
+                    @endif
+                    @if(session('error'))
+                        <div class="mb-6 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+                            <span class="block sm:inline">{{ session('error') }}</span>
+                        </div>
+                    @endif
                     @yield('content')
                 </div>
             </main>
