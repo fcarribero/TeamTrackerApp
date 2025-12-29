@@ -31,6 +31,12 @@
                                 General
                             @endif
                             • {{ \Carbon\Carbon::parse($entrenamiento->fecha)->format('d/m/Y') }}
+                            @if($entrenamiento->distanciaTotal)
+                                • <span class="text-blue-600 font-semibold">{{ $entrenamiento->distanciaTotal }} km</span>
+                            @endif
+                            @if($entrenamiento->tiempoTotal)
+                                • <span class="text-blue-600 font-semibold">{{ $entrenamiento->tiempoTotal }} min</span>
+                            @endif
                         </p>
                         @if($entrenamiento->resultados_count > 0)
                             <a href="{{ route('entrenamientos.show', $entrenamiento->id) }}" class="inline-flex items-center gap-1 mt-1 text-xs font-bold text-blue-600 hover:underline">

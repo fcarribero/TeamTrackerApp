@@ -22,6 +22,8 @@ class Entrenamiento extends Model
         'ejercicios',
         'contenidoPersonalizado',
         'observaciones',
+        'distanciaTotal',
+        'tiempoTotal',
     ];
 
     protected $casts = [

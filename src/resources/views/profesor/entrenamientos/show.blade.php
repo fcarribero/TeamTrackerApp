@@ -42,6 +42,23 @@
                         </div>
                     </div>
 
+                    @if($entrenamiento->distanciaTotal || $entrenamiento->tiempoTotal)
+                    <div class="flex gap-4 border-t border-b py-3 my-2">
+                        @if($entrenamiento->distanciaTotal)
+                        <div class="text-center flex-1 border-r border-gray-100">
+                            <p class="text-[10px] text-gray-400 uppercase font-semibold">Distancia Est.</p>
+                            <p class="text-lg font-bold text-blue-600">{{ $entrenamiento->distanciaTotal }} <span class="text-xs text-gray-400">km</span></p>
+                        </div>
+                        @endif
+                        @if($entrenamiento->tiempoTotal)
+                        <div class="text-center flex-1">
+                            <p class="text-[10px] text-gray-400 uppercase font-semibold">Tiempo Est.</p>
+                            <p class="text-lg font-bold text-blue-600">{{ $entrenamiento->tiempoTotal }} <span class="text-xs text-gray-400">min</span></p>
+                        </div>
+                        @endif
+                    </div>
+                    @endif
+
                     @if($entrenamiento->observaciones)
                     <div>
                         <p class="text-xs text-gray-400 uppercase font-semibold">Observaciones enviadas</p>
