@@ -7,7 +7,7 @@
             <a href="{{ route('alumnos.index') }}" class="text-gray-500 hover:text-gray-700">
                 <i class="fas fa-arrow-left"></i>
             </a>
-            <h1 class="text-3xl font-bold text-gray-900">{{ $alumno->nombre }}</h1>
+            <h1 class="text-3xl font-bold text-gray-900">{{ $alumno->nombre }} {{ $alumno->apellido }}</h1>
         </div>
         <a href="{{ route('alumnos.edit', $alumno->id) }}" class="bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition flex items-center gap-2">
             <i class="fas fa-edit"></i>
@@ -22,10 +22,36 @@
                     <div class="w-24 h-24 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-bold text-3xl mb-4">
                         {{ substr($alumno->nombre, 0, 1) }}
                     </div>
-                    <h2 class="text-xl font-bold">{{ $alumno->nombre }}</h2>
-                    <p class="text-gray-500 capitalize">{{ $alumno->sexo }}</p>
+                    <h2 class="text-xl font-bold">{{ $alumno->nombre }} {{ $alumno->apellido }}</h2>
+                    <p class="text-gray-500 text-sm mb-1">{{ $alumno->dni ? 'DNI: ' . $alumno->dni : 'Sin DNI' }}</p>
+                    <p class="text-gray-500 capitalize text-sm">{{ $alumno->sexo }}</p>
                 </div>
                 <div class="mt-6 pt-6 border-t border-gray-100 space-y-4">
+                    <div>
+                        <p class="text-xs text-gray-400 uppercase font-semibold">Obra Social / Plan</p>
+                        <p class="text-gray-900 font-medium">{{ $alumno->obra_social ?? 'No especificado' }}</p>
+                        @if($alumno->numero_socio)
+                            <p class="text-xs text-gray-500">Socio: {{ $alumno->numero_socio }}</p>
+                        @endif
+                    </div>
+                    <div class="p-3 bg-blue-50 rounded-lg border border-blue-100">
+                        <p class="text-xs text-blue-800 uppercase font-bold mb-2 flex items-center gap-1">
+                            <i class="fas fa-file-medical"></i> Certificado Médico
+                        </p>
+                        @if($alumno->certificado_medico)
+                            <a href="{{ Storage::url($alumno->certificado_medico) }}" target="_blank" class="text-sm text-blue-600 hover:underline flex items-center gap-2 font-bold">
+                                <i class="fas fa-download"></i> Descargar / Ver
+                            </a>
+                            <p class="text-[10px] mt-2 {{ $alumno->vencimiento_certificado && $alumno->vencimiento_certificado->isPast() ? 'text-red-600 font-bold' : 'text-gray-500' }}">
+                                Vence: {{ $alumno->vencimiento_certificado ? $alumno->vencimiento_certificado->format('d/m/Y') : 'Sin fecha' }}
+                                @if($alumno->vencimiento_certificado && $alumno->vencimiento_certificado->isPast())
+                                    <span class="block text-[8px] uppercase mt-0.5">⚠️ Vencido</span>
+                                @endif
+                            </p>
+                        @else
+                            <p class="text-xs text-gray-500 italic">No cargado</p>
+                        @endif
+                    </div>
                     <div>
                         <p class="text-xs text-gray-400 uppercase font-semibold">Fecha de Nacimiento</p>
                         <p class="text-gray-900">{{ \Carbon\Carbon::parse($alumno->fechaNacimiento)->format('d M Y') }}</p>

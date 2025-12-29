@@ -6,6 +6,7 @@ use App\Services\AlumnoService;
 use App\Services\GrupoService;
 use App\Services\EntrenamientoService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class AlumnoController extends Controller
 {
@@ -35,13 +36,24 @@ class AlumnoController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
+            'dni' => 'nullable|string|max:20',
             'nombre' => 'required|string|max:255',
+            'apellido' => 'required|string|max:255',
             'fechaNacimiento' => 'required|date',
-            'sexo' => 'required|in:masculino,femenino,otro',
+            'sexo' => 'required|in:masculino,femenino',
+            'obra_social' => 'nullable|string|max:255',
+            'numero_socio' => 'nullable|string|max:255',
+            'certificado_medico' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
+            'vencimiento_certificado' => 'nullable|date',
             'notas' => 'nullable|string',
             'grupos' => 'nullable|array',
             'grupos.*' => 'exists:grupos,id'
         ]);
+
+        if ($request->hasFile('certificado_medico')) {
+            $path = $request->file('certificado_medico')->store('certificados', 'public');
+            $data['certificado_medico'] = $path;
+        }
 
         $alumno = $this->alumnoService->createAlumno($data);
         if ($request->has('grupos')) {
@@ -73,17 +85,36 @@ class AlumnoController extends Controller
 
     public function update(Request $request, $id)
     {
+        $alumno = $this->alumnoService->getAlumnoById($id);
+        if (!$alumno) {
+            return redirect()->route('alumnos.index')->with('error', 'Alumno no encontrado');
+        }
+
         $data = $request->validate([
+            'dni' => 'nullable|string|max:20',
             'nombre' => 'required|string|max:255',
+            'apellido' => 'required|string|max:255',
             'fechaNacimiento' => 'required|date',
-            'sexo' => 'required|in:masculino,femenino,otro',
+            'sexo' => 'required|in:masculino,femenino',
+            'obra_social' => 'nullable|string|max:255',
+            'numero_socio' => 'nullable|string|max:255',
+            'certificado_medico' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
+            'vencimiento_certificado' => 'nullable|date',
             'notas' => 'nullable|string',
             'grupos' => 'nullable|array',
             'grupos.*' => 'exists:grupos,id'
         ]);
 
+        if ($request->hasFile('certificado_medico')) {
+            // Eliminar certificado anterior si existe
+            if ($alumno->certificado_medico) {
+                Storage::disk('public')->delete($alumno->certificado_medico);
+            }
+            $path = $request->file('certificado_medico')->store('certificados', 'public');
+            $data['certificado_medico'] = $path;
+        }
+
         $this->alumnoService->updateAlumno($id, $data);
-        $alumno = $this->alumnoService->getAlumnoById($id);
         $alumno->grupos()->sync($request->grupos ?? []);
 
         return redirect()->route('alumnos.index')->with('success', 'Alumno actualizado correctamente');

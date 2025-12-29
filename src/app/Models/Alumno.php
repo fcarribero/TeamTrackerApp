@@ -15,15 +15,22 @@ class Alumno extends Model
 
     protected $fillable = [
         'id',
+        'dni',
         'nombre',
+        'apellido',
         'fechaNacimiento',
         'sexo',
+        'obra_social',
+        'numero_socio',
+        'certificado_medico',
+        'vencimiento_certificado',
         'notas',
         'userId',
     ];
 
     protected $casts = [
         'fechaNacimiento' => 'datetime',
+        'vencimiento_certificado' => 'date',
     ];
 
     public function user()

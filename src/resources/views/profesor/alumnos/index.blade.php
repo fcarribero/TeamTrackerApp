@@ -19,6 +19,7 @@
                 <thead class="bg-gray-50 border-b border-gray-100">
                     <tr>
                         <th class="px-6 py-4 text-sm font-semibold text-gray-900">Nombre</th>
+                        <th class="px-6 py-4 text-sm font-semibold text-gray-900">DNI</th>
                         <th class="px-6 py-4 text-sm font-semibold text-gray-900">Sexo</th>
                         <th class="px-6 py-4 text-sm font-semibold text-gray-900">Grupos</th>
                         <th class="px-6 py-4 text-sm font-semibold text-gray-900">Fecha Nacimiento</th>
@@ -33,8 +34,11 @@
                                     <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-bold">
                                         {{ substr($alumno->nombre, 0, 1) }}
                                     </div>
-                                    <span class="font-medium text-gray-900">{{ $alumno->nombre }}</span>
+                                    <span class="font-medium text-gray-900">{{ $alumno->nombre }} {{ $alumno->apellido }}</span>
                                 </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <span class="text-gray-600">{{ $alumno->dni ?? '-' }}</span>
                             </td>
                             <td class="px-6 py-4">
                                 <span class="capitalize text-gray-600">{{ $alumno->sexo }}</span>
