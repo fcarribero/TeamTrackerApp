@@ -27,8 +27,8 @@
                     </div>
 
                     <div>
-                        <label for="fecha" class="block text-sm font-medium text-gray-700 mb-1">Fecha</label>
-                        <input type="date" name="fecha" id="fecha" required
+                        <label for="fecha" class="block text-sm font-medium text-gray-700 mb-1">Fecha y Hora</label>
+                        <input type="datetime-local" name="fecha" id="fecha" required
                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition">
                     </div>
 
@@ -94,7 +94,7 @@
                                     <div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-gray-500 mt-1">
                                         <p class="flex items-center gap-1">
                                             <i class="far fa-calendar-alt"></i>
-                                            {{ $competencia->fecha->format('d/m/Y') }}
+                                            {{ $competencia->fecha->format('d/m/Y' . ($competencia->fecha->format('H:i') !== '00:00' ? ' H:i' : '')) }}
                                         </p>
                                         @if($competencia->ubicación)
                                             <p class="flex items-center gap-1">
@@ -144,6 +144,7 @@
                             @endif
                         </div>
 
+                        @if(!$competencia->resultado_obtenido)
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
                             <div class="bg-gray-50 p-4 rounded-xl border border-gray-100">
                                 <p class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Plan de Carrera</p>
@@ -158,6 +159,7 @@
                                 </p>
                             </div>
                         </div>
+                        @endif
 
                         @if($competencia->observaciones)
                             <div class="mt-4 p-4 bg-yellow-50 rounded-xl border border-yellow-100">

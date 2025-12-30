@@ -8,7 +8,7 @@
         </a>
         <div>
             <h1 class="text-3xl font-bold text-gray-900">Información de Competencia</h1>
-            <p class="text-gray-600">Alumno: {{ $competencia->alumno->nombre }} {{ $competencia->alumno->apellido }} | {{ $competencia->nombre }} ({{ $competencia->fecha->format('d/m/Y') }})</p>
+            <p class="text-gray-600">Alumno: {{ $competencia->alumno->nombre }} {{ $competencia->alumno->apellido }} | {{ $competencia->nombre }} ({{ $competencia->fecha->format('d/m/Y' . ($competencia->fecha->format('H:i') !== '00:00' ? ' H:i' : '')) }})</p>
         </div>
     </div>
 
@@ -21,29 +21,33 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <!-- Fecha -->
                     <div class="space-y-2">
-                        <label for="fecha" class="block text-sm font-bold text-gray-700">Fecha de la Competencia</label>
-                        <input type="date" name="fecha" id="fecha" value="{{ old('fecha', $competencia->fecha->format('Y-m-d')) }}" required
+                        <label for="fecha" class="block text-sm font-bold text-gray-700">Fecha y Hora de la Competencia</label>
+                        <input type="datetime-local" name="fecha" id="fecha" value="{{ old('fecha', $competencia->fecha->format('Y-m-d\TH:i')) }}" required
                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition">
                     </div>
+                </div>
 
-                    <!-- Ubicación -->
-                    <div class="space-y-2">
-                        <label for="ubicación" class="block text-sm font-bold text-gray-700">Ubicación</label>
+                <div class="bg-gray-50 p-4 rounded-xl border border-gray-200 space-y-4">
+                    <h3 class="text-sm font-bold text-gray-700 flex items-center gap-2">
+                        <i class="fas fa-map-marker-alt text-red-500"></i>
+                        Ubicación
+                    </h3>
+
+                    <div>
+                        <label for="ubicación" class="block text-xs font-bold text-gray-500 uppercase mb-1">Ciudad, País</label>
                         <input type="text" name="ubicación" id="ubicación" value="{{ old('ubicación', $competencia->ubicación) }}"
                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition"
                                placeholder="Ej: Buenos Aires, Argentina">
                     </div>
-                </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="grid grid-cols-2 gap-4">
-                        <div class="space-y-2">
-                            <label for="latitud" class="block text-sm font-bold text-gray-700">Latitud</label>
+                        <div class="space-y-1">
+                            <label for="latitud" class="block text-xs font-bold text-gray-500 uppercase">Latitud</label>
                             <input type="number" step="any" name="latitud" id="latitud" value="{{ old('latitud', $competencia->latitud) }}"
                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition text-sm">
                         </div>
-                        <div class="space-y-2">
-                            <label for="longitud" class="block text-sm font-bold text-gray-700">Longitud</label>
+                        <div class="space-y-1">
+                            <label for="longitud" class="block text-xs font-bold text-gray-500 uppercase">Longitud</label>
                             <input type="number" step="any" name="longitud" id="longitud" value="{{ old('longitud', $competencia->longitud) }}"
                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition text-sm">
                         </div>
