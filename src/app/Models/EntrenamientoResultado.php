@@ -17,10 +17,15 @@ class EntrenamientoResultado extends Model
         'id',
         'entrenamientoId',
         'alumnoId',
+        'fecha_realizado',
         'sensacion',
         'dificultad',
         'molestias',
         'comentarios',
+    ];
+
+    protected $casts = [
+        'fecha_realizado' => 'datetime',
     ];
 
     public function entrenamiento()
@@ -31,5 +36,19 @@ class EntrenamientoResultado extends Model
     public function alumno()
     {
         return $this->belongsTo(Alumno::class, 'alumnoId');
+    }
+
+    public function weather()
+    {
+        if (!$this->fecha_realizado) return null;
+
+        $user = $this->alumno->user;
+        if (!$user || !$user->latitud || !$user->longitud) return null;
+
+        $hour = $this->fecha_realizado->copy()->startOfHour();
+        return WeatherHistory::where('latitud', (float)$user->latitud)
+            ->where('longitud', (float)$user->longitud)
+            ->where('fecha_hora', $hour)
+            ->first();
     }
 }

@@ -109,6 +109,14 @@
                                     </div>
                                 </div>
                                 <div class="text-right">
+                                    @php $clima = $resultado->weather(); @endphp
+                                    @if($clima)
+                                        <div class="flex items-center gap-2 mb-2 bg-blue-50 px-2 py-1 rounded text-xs">
+                                            <span title="Temperatura"><i class="fas fa-temperature-high text-orange-400"></i> {{ $clima->temperatura }}°C</span>
+                                            <span title="Humedad"><i class="fas fa-tint text-blue-400"></i> {{ $clima->humedad }}%</span>
+                                            <span class="font-medium text-blue-600">{{ $clima->cielo }}</span>
+                                        </div>
+                                    @endif
                                     <p class="text-[10px] uppercase font-bold text-gray-400 mb-1">Dificultad</p>
                                     <div class="flex items-center gap-2">
                                         <div class="w-24 h-2 bg-gray-200 rounded-full overflow-hidden">

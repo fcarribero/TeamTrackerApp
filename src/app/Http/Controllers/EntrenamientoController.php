@@ -214,16 +214,31 @@ class EntrenamientoController extends Controller {
             'dificultad' => 'required|integer|min:1|max:10',
             'molestias' => 'nullable|string',
             'comentarios' => 'nullable|string',
+            'fecha_realizado' => 'required|date',
         ]);
 
-        $data['id'] = 'er' . bin2hex(random_bytes(10));
         $data['entrenamientoId'] = $id;
         $data['alumnoId'] = $alumno->id;
 
-        \App\Models\EntrenamientoResultado::updateOrCreate(
+        // Buscar si ya existe para mantener el ID original
+        $existente = \App\Models\EntrenamientoResultado::where('entrenamientoId', $id)
+            ->where('alumnoId', $alumno->id)
+            ->first();
+
+        if (!$existente) {
+            $data['id'] = 'er' . bin2hex(random_bytes(10));
+        }
+
+        $resultado = \App\Models\EntrenamientoResultado::updateOrCreate(
             ['entrenamientoId' => $id, 'alumnoId' => $alumno->id],
             $data
         );
+
+        // Si el usuario tiene ubicación, intentamos obtener el clima para esa fecha/hora
+        if ($user->latitud && $user->longitud) {
+            $weatherService = app(\App\Services\WeatherService::class);
+            $weatherService->getWeather((float)$user->latitud, (float)$user->longitud, \Carbon\Carbon::parse($data['fecha_realizado']));
+        }
 
         return back()->with('success', '¡Entrenamiento completado! Gracias por tu feedback.');
     }

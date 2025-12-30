@@ -75,6 +75,28 @@
                                             </span>
                                         @endif
                                     </p>
+                                    @if(\Carbon\Carbon::parse($entrenamiento->fecha)->isFuture() && isset($profesor) && $profesor->latitud)
+                                        @php $estimacion = app(\App\Services\WeatherService::class)->getWeather((float)$profesor->latitud, (float)$profesor->longitud, \Carbon\Carbon::parse($entrenamiento->fecha)); @endphp
+                                    @if($estimacion)
+                                        <div class="mb-4 bg-blue-50 border border-blue-100 rounded-lg p-2 flex items-center gap-3 text-xs">
+                                            <div class="bg-white p-1.5 rounded shadow-sm text-blue-500">
+                                                <i class="fas {{ isset($estimacion->is_historical) ? 'fa-history' : 'fa-cloud-sun' }} fa-lg"></i>
+                                            </div>
+                                            <div>
+                                                <p class="font-bold text-blue-800">
+                                                    {{ isset($estimacion->is_historical) ? 'Referencia Histórica' : 'Clima Estimado' }} ({{ $profesor->ciudad ?? 'Sede' }})
+                                                </p>
+                                                <p class="text-blue-600">
+                                                    {{ $estimacion->temperatura }}°C{{ $estimacion->cielo ? ', ' . $estimacion->cielo : '' }}
+                                                    - Humedad: {{ $estimacion->humedad }}%
+                                                    @if(isset($estimacion->is_historical))
+                                                        <span class="block text-[9px] italic">* Basado en el clima del año pasado</span>
+                                                    @endif
+                                                </p>
+                                            </div>
+                                        </div>
+                                    @endif
+                                    @endif
                                 </div>
                                 @if($resultado)
                                     <span class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1">
@@ -139,6 +161,29 @@
                                         <i class="fas fa-comment-dots text-blue-500"></i> Tu Devolución
                                     </h4>
                                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        @php $clima = $resultado->weather(); @endphp
+                                        @if($clima)
+                                        <div class="md:col-span-2 bg-blue-50/50 p-2 rounded-lg border border-blue-100 flex items-center justify-between">
+                                            <div>
+                                                <p class="text-[9px] uppercase font-black text-blue-400 mb-1">Clima registrado</p>
+                                                <div class="flex items-center gap-3 text-sm text-gray-700">
+                                                    <span class="flex items-center gap-1"><i class="fas fa-temperature-high text-orange-400"></i> <span class="font-bold">{{ $clima->temperatura }}°C</span></span>
+                                                    <span class="flex items-center gap-1"><i class="fas fa-tint text-blue-400"></i> <span class="font-bold">{{ $clima->humedad }}%</span></span>
+                                                    <span class="text-xs font-medium bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full">{{ $clima->cielo }}</span>
+                                                </div>
+                                            </div>
+                                            <div class="text-right">
+                                                <p class="text-[9px] uppercase font-black text-gray-400 mb-1">Hora realización</p>
+                                                <p class="text-xs font-bold text-gray-600">{{ $resultado->fecha_realizado->format('H:i') }} hs</p>
+                                            </div>
+                                        </div>
+                                        @elseif($resultado->fecha_realizado)
+                                        <div class="md:col-span-2">
+                                            <p class="text-[10px] uppercase font-bold text-gray-400 mb-1">Hora realización</p>
+                                            <p class="text-sm text-gray-700 font-bold">{{ $resultado->fecha_realizado->format('H:i') }} hs</p>
+                                        </div>
+                                        @endif
+
                                         <div>
                                             <p class="text-[10px] uppercase font-bold text-gray-400 mb-1">Dificultad Percibida</p>
                                             <div class="flex items-center gap-2">
@@ -182,6 +227,12 @@
                                 </h4>
                                 <form action="{{ route('alumno.entrenamientos.completar', $entrenamiento->id) }}" method="POST" class="space-y-4">
                                     @csrf
+                                    <div>
+                                        <label class="block text-sm font-semibold text-gray-700 mb-1">Cuándo lo realizaste</label>
+                                        <input type="datetime-local" name="fecha_realizado"
+                                               value="{{ $resultado ? ($resultado->fecha_realizado ? $resultado->fecha_realizado->format('Y-m-d\TH:i') : '') : now()->format('Y-m-d\TH:i') }}"
+                                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition text-sm" required>
+                                    </div>
                                     <div>
                                         <label class="block text-sm font-semibold text-gray-700 mb-1">Cómo me sentí</label>
                                         <textarea name="sensacion" rows="2" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition text-sm" placeholder="Ej. Con falta de energía durante la parte principal...">{{ $resultado->sensacion ?? '' }}</textarea>
@@ -325,6 +376,29 @@
                                             <i class="fas fa-comment-dots text-gray-400"></i> Tu Devolución
                                         </h4>
                                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            @php $clima = $resultado->weather(); @endphp
+                                            @if($clima)
+                                            <div class="md:col-span-2 bg-blue-50/50 p-2 rounded-lg border border-blue-100 flex items-center justify-between">
+                                                <div>
+                                                    <p class="text-[9px] uppercase font-black text-blue-400 mb-1">Clima registrado</p>
+                                                    <div class="flex items-center gap-3 text-sm text-gray-700">
+                                                        <span class="flex items-center gap-1"><i class="fas fa-temperature-high text-orange-400"></i> <span class="font-bold">{{ $clima->temperatura }}°C</span></span>
+                                                        <span class="flex items-center gap-1"><i class="fas fa-tint text-blue-400"></i> <span class="font-bold">{{ $clima->humedad }}%</span></span>
+                                                        <span class="text-xs font-medium bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full">{{ $clima->cielo }}</span>
+                                                    </div>
+                                                </div>
+                                                <div class="text-right">
+                                                    <p class="text-[9px] uppercase font-black text-gray-400 mb-1">Hora realización</p>
+                                                    <p class="text-xs font-bold text-gray-600">{{ $resultado->fecha_realizado->format('H:i') }} hs</p>
+                                                </div>
+                                            </div>
+                                            @elseif($resultado->fecha_realizado)
+                                            <div class="md:col-span-2">
+                                                <p class="text-[10px] uppercase font-bold text-gray-400 mb-1">Hora realización</p>
+                                                <p class="text-sm text-gray-700 font-bold">{{ $resultado->fecha_realizado->format('H:i') }} hs</p>
+                                            </div>
+                                            @endif
+
                                             <div>
                                                 <p class="text-[10px] uppercase font-bold text-gray-400 mb-1">Dificultad Percibida</p>
                                                 <div class="flex items-center gap-2">
@@ -368,6 +442,12 @@
                                     </h4>
                                     <form action="{{ route('alumno.entrenamientos.completar', $entrenamiento->id) }}" method="POST" class="space-y-4">
                                         @csrf
+                                        <div>
+                                            <label class="block text-sm font-semibold text-gray-700 mb-1">Cuándo lo realizaste</label>
+                                            <input type="datetime-local" name="fecha_realizado"
+                                                   value="{{ $resultado ? ($resultado->fecha_realizado ? $resultado->fecha_realizado->format('Y-m-d\TH:i') : '') : now()->format('Y-m-d\TH:i') }}"
+                                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition text-sm" required>
+                                        </div>
                                         <div>
                                             <label class="block text-sm font-semibold text-gray-700 mb-1">Cómo me sentí</label>
                                             <textarea name="sensacion" rows="2" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-400 outline-none transition text-sm" placeholder="Ej. Con falta de energía durante la parte principal...">{{ $resultado->sensacion ?? '' }}</textarea>
