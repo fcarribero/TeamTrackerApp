@@ -34,7 +34,8 @@ class EntrenamientoController extends Controller {
 
     public function index() {
         $entrenamientos = $this->service->getAll();
-        return view('profesor.entrenamientos.index', compact('entrenamientos'));
+        $profesor = auth()->user();
+        return view('profesor.entrenamientos.index', compact('entrenamientos', 'profesor'));
     }
 
     public function show($id) {
@@ -201,7 +202,10 @@ class EntrenamientoController extends Controller {
 
         $anuncioActivo = $this->anuncioService->getAnuncioActivo();
         $entrenamientos = $this->service->getForAlumno($alumno->id);
-        return view('alumno.entrenamientos.index', compact('entrenamientos', 'anuncioActivo'));
+
+        $profesor = \App\Models\User::where('rol', 'profesor')->first();
+
+        return view('alumno.entrenamientos.index', compact('entrenamientos', 'anuncioActivo', 'profesor'));
     }
 
     public function completarAlumno(Request $request, $id) {

@@ -24,7 +24,7 @@
                         <h3 class="font-bold text-gray-900">{{ $entrenamiento->titulo }}</h3>
                         <p class="text-sm text-gray-600">
                             @if($entrenamiento->alumnos->isNotEmpty())
-                                {{ $entrenamiento->alumnos->pluck('nombre')->implode(', ') }}
+                                {{ $entrenamiento->alumnos->map(fn($a) => $a->nombre . ' ' . $a->apellido)->implode(', ') }}
                             @elseif($entrenamiento->grupos->isNotEmpty())
                                 Grupos: {{ $entrenamiento->grupos->pluck('nombre')->implode(', ') }}
                             @else
@@ -45,6 +45,30 @@
                             </a>
                         @else
                             <p class="text-[10px] text-gray-400 mt-1 italic">Sin devoluciones aún</p>
+                        @endif
+
+                        @if(isset($profesor) && $profesor->latitud)
+                            @php
+                                $clima = app(\App\Services\WeatherService::class)->getDailyForecast((float)$profesor->latitud, (float)$profesor->longitud, \Carbon\Carbon::parse($entrenamiento->fecha));
+                            @endphp
+                            @if($clima)
+                                <div class="mt-2 flex flex-wrap gap-x-4 gap-y-1 items-center text-[10px] border-t border-gray-100 pt-2">
+                                    <span class="bg-blue-50 text-blue-700 px-2 py-0.5 rounded-md font-bold border border-blue-100" title="{{ ($clima->is_historical ?? false) ? 'Referencia histórica basada en el año pasado' : '' }}">
+                                        <i class="fas {{ ($clima->is_historical ?? false) ? 'fa-history' : 'fa-temperature-low' }} mr-1 opacity-70"></i>{{ $clima->min }}° /
+                                        <i class="fas fa-temperature-high mr-1 opacity-70"></i>{{ $clima->max }}°C
+                                        @if($clima->is_historical ?? false) * @endif
+                                    </span>
+                                    @if(!($clima->is_historical ?? false))
+                                        <div class="flex items-center gap-3 text-gray-500">
+                                            <span class="flex items-center gap-1"><i class="fas fa-sun text-yellow-500 w-3 text-center"></i> Mañana: <b class="text-gray-700">{{ $clima->mañana }}</b></span>
+                                            <span class="flex items-center gap-1"><i class="fas fa-cloud-sun text-orange-400 w-3 text-center"></i> Tarde: <b class="text-gray-700">{{ $clima->tarde }}</b></span>
+                                            <span class="flex items-center gap-1"><i class="fas fa-moon text-blue-400 w-3 text-center"></i> Noche: <b class="text-gray-700">{{ $clima->noche }}</b></span>
+                                        </div>
+                                    @else
+                                        <span class="text-gray-400 italic">Clima histórico de referencia</span>
+                                    @endif
+                                </div>
+                            @endif
                         @endif
                     </div>
                     <div class="flex items-center gap-2">

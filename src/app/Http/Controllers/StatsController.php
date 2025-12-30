@@ -41,12 +41,15 @@ class StatsController extends Controller
             ->take(5)
             ->get();
 
+        $profesor = auth()->user();
+
         return view('profesor.dashboard', compact(
             'totalAlumnos',
             'pagosPendientes',
             'ingresosMesActual',
             'proximosEntrenamientos',
-            'ultimosAlumnos'
+            'ultimosAlumnos',
+            'profesor'
         ));
     }
 
@@ -71,10 +74,13 @@ class StatsController extends Controller
             ->orderBy('fechaPago', 'desc')
             ->get();
 
+        $profesor = \App\Models\User::where('rol', 'profesor')->first();
+
         return view('alumno.dashboard', compact(
             'alumno',
             'proximosEntrenamientos',
-            'pagosMesActual'
+            'pagosMesActual',
+            'profesor'
         ));
     }
 

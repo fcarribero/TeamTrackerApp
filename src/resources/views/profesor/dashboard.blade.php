@@ -77,6 +77,22 @@
                                     General
                                 @endif
                             </p>
+                            @if(isset($profesor) && $profesor->latitud)
+                                @php
+                                    $clima = app(\App\Services\WeatherService::class)->getDailyForecast((float)$profesor->latitud, (float)$profesor->longitud, \Carbon\Carbon::parse($entrenamiento->fecha));
+                                @endphp
+                                @if($clima)
+                                    <div class="mt-1 flex items-center gap-2 text-[10px] text-blue-600 font-bold">
+                                        <i class="fas {{ ($clima->is_historical ?? false) ? 'fa-history' : 'fa-cloud-sun' }}"></i>
+                                        <span>{{ $clima->min }}°/{{ $clima->max }}°C</span>
+                                        @if(!($clima->is_historical ?? false))
+                                            <span class="text-gray-400 font-normal border-l pl-2">{{ $clima->tarde }}</span>
+                                        @else
+                                            <span class="text-gray-400 font-normal border-l pl-2 italic">Ref. Histórica</span>
+                                        @endif
+                                    </div>
+                                @endif
+                            @endif
                         </div>
                         <div class="text-right">
                             <p class="text-sm font-medium text-gray-900">{{ \Carbon\Carbon::parse($entrenamiento->fecha)->format('d M') }}</p>

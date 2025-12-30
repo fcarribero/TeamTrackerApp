@@ -31,7 +31,7 @@
                         <div class="mt-1 flex flex-wrap gap-2">
                             @foreach($entrenamiento->alumnos as $alumno)
                                 <span class="bg-blue-50 text-blue-700 px-2 py-1 rounded text-[10px] font-medium border border-blue-100">
-                                    {{ $alumno->nombre }}
+                                    {{ $alumno->nombre }} {{ $alumno->apellido }}
                                 </span>
                             @endforeach
                             @foreach($entrenamiento->grupos as $grupo)
@@ -104,8 +104,8 @@
                                         {{ substr($resultado->alumno->nombre, 0, 1) }}
                                     </div>
                                     <div>
-                                        <p class="font-bold text-gray-900">{{ $resultado->alumno->nombre }}</p>
-                                        <p class="text-[10px] text-gray-500 uppercase tracking-tighter">Completado el {{ $resultado->updated_at->format('d/m/Y H:i') }}</p>
+                                        <p class="font-bold text-gray-900">{{ $resultado->alumno->nombre }} {{ $resultado->alumno->apellido }}</p>
+                                        <p class="text-[10px] text-gray-500 uppercase tracking-tighter">Completado el {{ $resultado->fecha_realizado ? $resultado->fecha_realizado->format('d/m/Y H:i') : $resultado->updated_at->format('d/m/Y H:i') }}</p>
                                     </div>
                                 </div>
                                 <div class="text-right">
