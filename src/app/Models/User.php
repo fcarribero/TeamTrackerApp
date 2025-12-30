@@ -24,6 +24,9 @@ class User extends Authenticatable
         'rol',
         'email_verified_at',
         'image',
+        'ciudad',
+        'latitud',
+        'longitud',
     ];
 
     protected $hidden = [
