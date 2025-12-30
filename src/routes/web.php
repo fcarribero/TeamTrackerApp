@@ -114,4 +114,7 @@ Route::middleware(['auth'])->group(function () {
     // Rutas para Configuración
     Route::get('/dashboard/profesor/settings', [SettingController::class, 'index'])->name('settings.index');
     Route::post('/dashboard/profesor/settings', [SettingController::class, 'store'])->name('settings.store');
+
+    // Rutas para Perfil/Ubicación
+    Route::post('/dashboard/profile/location', [\App\Http\Controllers\ProfileController::class, 'updateLocation'])->name('profile.update-location');
 });

@@ -18,13 +18,19 @@ class SettingController extends Controller
     {
         $request->validate([
             'team_name' => 'nullable|string|max:255',
-            'name' => 'required|string|max:255'
+            'name' => 'required|string|max:255',
+            'ciudad' => 'nullable|string|max:255',
+            'latitud' => 'nullable|numeric',
+            'longitud' => 'nullable|numeric',
         ]);
 
         Setting::set('team_name', $request->team_name);
 
         $user = auth()->user();
         $user->name = $request->name;
+        $user->ciudad = $request->ciudad;
+        $user->latitud = $request->latitud;
+        $user->longitud = $request->longitud;
         $user->save();
 
         return redirect()->back()->with('success', 'Configuración actualizada correctamente');
