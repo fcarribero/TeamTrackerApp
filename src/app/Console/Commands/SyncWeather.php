@@ -18,7 +18,7 @@ class SyncWeather extends Command
      *
      * @var string
      */
-    protected $description = 'Sincroniza el clima de las ubicaciones de los usuarios';
+    protected $description = 'Sincroniza el clima de las ubicaciones de los usuarios y competencias';
 
     /**
      * Execute the console command.
@@ -27,15 +27,32 @@ class SyncWeather extends Command
     {
         $this->info('Iniciando sincronización de clima...');
 
-        $locations = \App\Models\User::whereNotNull('latitud')
+        $userLocations = \App\Models\User::whereNotNull('latitud')
             ->whereNotNull('longitud')
             ->select('latitud', 'longitud')
-            ->distinct()
             ->get();
 
+        $compLocations = \App\Models\Competencia::whereNotNull('latitud')
+            ->whereNotNull('longitud')
+            ->select('latitud', 'longitud')
+            ->get();
+
+        $locations = $userLocations->concat($compLocations)
+            ->map(function($loc) {
+                return [
+                    'latitud' => (float) $loc->latitud,
+                    'longitud' => (float) $loc->longitud
+                ];
+            })
+            ->unique(function ($item) {
+                return $item['latitud'] . '|' . $item['longitud'];
+            });
+
+        $this->info('Se encontraron ' . $locations->count() . ' ubicaciones únicas para sincronizar.');
+
         foreach ($locations as $location) {
-            $this->info("Sincronizando clima (últimos 30 días) para: {$location->latitud}, {$location->longitud}");
-            $weatherService->syncHistory((float)$location->latitud, (float)$location->longitud, 30);
+            $this->info("Sincronizando clima para: {$location['latitud']}, {$location['longitud']}");
+            $weatherService->syncHistory($location['latitud'], $location['longitud'], 365);
         }
 
         $this->info('Sincronización finalizada.');
