@@ -19,6 +19,39 @@
 
             <div class="p-6 space-y-6">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Fecha -->
+                    <div class="space-y-2">
+                        <label for="fecha" class="block text-sm font-bold text-gray-700">Fecha de la Competencia</label>
+                        <input type="date" name="fecha" id="fecha" value="{{ old('fecha', $competencia->fecha->format('Y-m-d')) }}" required
+                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition">
+                    </div>
+
+                    <!-- Ubicación -->
+                    <div class="space-y-2">
+                        <label for="ubicación" class="block text-sm font-bold text-gray-700">Ubicación</label>
+                        <input type="text" name="ubicación" id="ubicación" value="{{ old('ubicación', $competencia->ubicación) }}"
+                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition"
+                               placeholder="Ej: Buenos Aires, Argentina">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="space-y-2">
+                            <label for="latitud" class="block text-sm font-bold text-gray-700">Latitud</label>
+                            <input type="number" step="any" name="latitud" id="latitud" value="{{ old('latitud', $competencia->latitud) }}"
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition text-sm">
+                        </div>
+                        <div class="space-y-2">
+                            <label for="longitud" class="block text-sm font-bold text-gray-700">Longitud</label>
+                            <input type="number" step="any" name="longitud" id="longitud" value="{{ old('longitud', $competencia->longitud) }}"
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition text-sm">
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <!-- Tiempo Objetivo -->
                     <div class="space-y-2">
                         <label for="tiempo_objetivo" class="block text-sm font-bold text-gray-700">Tiempo Objetivo</label>

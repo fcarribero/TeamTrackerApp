@@ -32,6 +32,30 @@
                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition">
                     </div>
 
+                    <div>
+                        <label for="ubicación" class="block text-sm font-medium text-gray-700 mb-1">Ubicación (Ciudad, País)</label>
+                        <input type="text" name="ubicación" id="ubicación"
+                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition"
+                               placeholder="Ej: Buenos Aires, Argentina">
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label for="latitud" class="block text-sm font-medium text-gray-700 mb-1">Latitud</label>
+                            <input type="number" step="any" name="latitud" id="latitud"
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition text-sm">
+                        </div>
+                        <div>
+                            <label for="longitud" class="block text-sm font-medium text-gray-700 mb-1">Longitud</label>
+                            <input type="number" step="any" name="longitud" id="longitud"
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition text-sm">
+                        </div>
+                    </div>
+
+                    <button type="button" onclick="getLocation()" class="w-full text-xs text-blue-600 hover:text-blue-800 flex items-center gap-1 justify-center py-1">
+                        <i class="fas fa-location-arrow"></i> Usar mi ubicación actual
+                    </button>
+
                     <button type="submit" class="w-full bg-blue-600 text-white font-bold py-2 rounded-lg hover:bg-blue-700 transition shadow-lg shadow-blue-200">
                         Cargar Competencia
                     </button>
@@ -52,16 +76,72 @@
                                     <i class="fas fa-medal text-xl"></i>
                                 </div>
                                 <div>
-                                    <h3 class="text-xl font-bold text-gray-900">{{ $competencia->nombre }}</h3>
-                                    <p class="text-gray-500 flex items-center gap-2">
-                                        <i class="far fa-calendar-alt"></i>
-                                        {{ $competencia->fecha->format('d/m/Y') }}
+                                    <div class="flex items-center gap-2">
+                                        <h3 class="text-xl font-bold text-gray-900">{{ $competencia->nombre }}</h3>
+                                        <div class="flex items-center gap-1">
+                                            <a href="{{ route('alumno.competencias.edit', $competencia->id) }}" class="p-1.5 text-blue-600 hover:bg-blue-50 rounded-lg transition" title="Editar">
+                                                <i class="fas fa-edit text-xs"></i>
+                                            </a>
+                                            <form action="{{ route('alumno.competencias.destroy', $competencia->id) }}" method="POST" onsubmit="return confirm('¿Estás seguro de eliminar esta competencia?')">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="p-1.5 text-red-600 hover:bg-red-50 rounded-lg transition" title="Eliminar">
+                                                    <i class="fas fa-trash text-xs"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                    <div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-gray-500 mt-1">
+                                        <p class="flex items-center gap-1">
+                                            <i class="far fa-calendar-alt"></i>
+                                            {{ $competencia->fecha->format('d/m/Y') }}
+                                        </p>
+                                        @if($competencia->ubicación)
+                                            <p class="flex items-center gap-1">
+                                                <i class="fas fa-map-marker-alt text-red-400"></i>
+                                                {{ $competencia->ubicación }}
+                                            </p>
+                                        @endif
                                         <span class="text-xs font-bold px-2 py-0.5 rounded-full {{ $competencia->fecha->isPast() ? 'bg-gray-100 text-gray-600' : 'bg-green-100 text-green-700' }}">
                                             {{ $competencia->fecha->isPast() ? 'Finalizada' : 'Próxima' }}
                                         </span>
-                                    </p>
+                                    </div>
                                 </div>
                             </div>
+
+                            @if($competencia->latitud && $competencia->longitud)
+                                @php
+                                    $clima = app(\App\Services\WeatherService::class)->getDailyForecast((float)$competencia->latitud, (float)$competencia->longitud, $competencia->fecha);
+                                @endphp
+                                @if($clima)
+                                    <div class="bg-blue-50 border border-blue-100 rounded-xl px-4 py-2 flex items-center gap-4 shadow-sm relative group">
+                                        <div class="text-center {{ !($clima->is_historical ?? false) ? 'border-r border-blue-200 pr-4' : '' }}">
+                                            <p class="text-[10px] uppercase font-black text-blue-400">Temp</p>
+                                            <p class="text-sm font-bold text-blue-700">{{ $clima->min }}°/{{ $clima->max }}°C</p>
+                                        </div>
+                                        @if(!($clima->is_historical ?? false))
+                                            <div class="flex items-center gap-3">
+                                                <div class="text-center">
+                                                    <p class="text-[9px] uppercase font-bold text-gray-400">Mañana</p>
+                                                    <i class="fas fa-sun text-yellow-500 text-xs" title="{{ $clima->mañana }}"></i>
+                                                </div>
+                                                <div class="text-center">
+                                                    <p class="text-[9px] uppercase font-bold text-gray-400">Tarde</p>
+                                                    <i class="fas fa-cloud-sun text-orange-400 text-xs" title="{{ $clima->tarde }}"></i>
+                                                </div>
+                                                <div class="text-center">
+                                                    <p class="text-[9px] uppercase font-bold text-gray-400">Noche</p>
+                                                    <i class="fas fa-moon text-blue-400 text-xs" title="{{ $clima->noche }}"></i>
+                                                </div>
+                                            </div>
+                                        @else
+                                            <div class="text-[9px] text-blue-400 italic leading-tight max-w-[120px]">
+                                                <i class="fas fa-info-circle mr-1"></i> Basado en el clima del año pasado
+                                            </div>
+                                        @endif
+                                    </div>
+                                @endif
+                            @endif
                         </div>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
@@ -107,3 +187,20 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+function getLocation() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function(position) {
+            document.getElementById('latitud').value = position.coords.latitude;
+            document.getElementById('longitud').value = position.coords.longitude;
+        }, function(error) {
+            alert('Error al obtener la ubicación: ' + error.message);
+        });
+    } else {
+        alert("La geolocalización no es compatible con este navegador.");
+    }
+}
+</script>
+@endpush

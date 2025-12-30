@@ -16,6 +16,7 @@
                     <tr class="bg-gray-50 border-b border-gray-100">
                         <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Alumno</th>
                         <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Competencia</th>
+                        <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Ubicación</th>
                         <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Fecha</th>
                         <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Estado Info</th>
                         <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider text-right">Acciones</th>
@@ -36,6 +37,25 @@
                             </td>
                             <td class="px-6 py-4">
                                 <p class="font-medium text-gray-900">{{ $competencia->nombre }}</p>
+                            </td>
+                            <td class="px-6 py-4">
+                                <p class="text-sm text-gray-600">{{ $competencia->ubicación ?: '-' }}</p>
+                                @if($competencia->latitud && $competencia->longitud)
+                                    @php
+                                        $clima = app(\App\Services\WeatherService::class)->getDailyForecast((float)$competencia->latitud, (float)$competencia->longitud, $competencia->fecha);
+                                    @endphp
+                                    @if($clima)
+                                        <div class="flex items-center gap-2 mt-1">
+                                            <span class="text-[10px] bg-blue-50 text-blue-700 px-1.5 py-0.5 rounded border border-blue-100 font-bold"
+                                                  title="{{ ($clima->is_historical ?? false) ? 'Basado en clima del año pasado' : ($clima->mañana . ' / ' . $clima->tarde . ' / ' . $clima->noche) }}">
+                                                <i class="fas {{ ($clima->is_historical ?? false) ? 'fa-history' : 'fa-cloud-sun' }} mr-1"></i> {{ $clima->min }}°/{{ $clima->max }}°C
+                                                @if($clima->is_historical ?? false)
+                                                    <span class="ml-1 text-[8px] opacity-70">*</span>
+                                                @endif
+                                            </span>
+                                        </div>
+                                    @endif
+                                @endif
                             </td>
                             <td class="px-6 py-4">
                                 <p class="text-sm text-gray-600">{{ $competencia->fecha->format('d/m/Y') }}</p>

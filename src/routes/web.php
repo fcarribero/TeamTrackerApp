@@ -90,6 +90,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard/alumno/pagos', [PagoController::class, 'indexAlumno'])->name('alumno.pagos');
     Route::get('/dashboard/alumno/competencias', [CompetenciaController::class, 'indexAlumno'])->name('alumno.competencias');
     Route::post('/dashboard/alumno/competencias', [CompetenciaController::class, 'storeAlumno'])->name('alumno.competencias.store');
+    Route::get('/dashboard/alumno/competencias/{competencia}/edit', [CompetenciaController::class, 'editAlumno'])->name('alumno.competencias.edit');
+    Route::put('/dashboard/alumno/competencias/{competencia}', [CompetenciaController::class, 'updateAlumno'])->name('alumno.competencias.update');
+    Route::delete('/dashboard/alumno/competencias/{competencia}/delete', [CompetenciaController::class, 'destroyAlumno'])->name('alumno.competencias.destroy');
 
     // Rutas para Garmin
     Route::get('/auth/garmin', [GarminController::class, 'redirectToGarmin'])->name('auth.garmin');
