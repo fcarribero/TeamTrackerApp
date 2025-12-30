@@ -83,6 +83,7 @@ class CompetenciaController extends Controller
             'ubicación' => 'nullable|string|max:255',
             'latitud' => 'nullable|numeric',
             'longitud' => 'nullable|numeric',
+            'resultado_obtenido' => 'nullable|string',
         ]);
 
         $competencia->update($request->only([
@@ -91,6 +92,7 @@ class CompetenciaController extends Controller
             'ubicación',
             'latitud',
             'longitud',
+            'resultado_obtenido',
         ]));
 
         return redirect()->route('alumno.competencias')->with('success', 'Competencia actualizada correctamente');

@@ -171,6 +171,13 @@
                                 <p class="text-xs font-bold text-green-600 uppercase tracking-wider mb-1">Resultado Obtenido</p>
                                 <p class="text-gray-800 font-semibold">{{ $competencia->resultado_obtenido }}</p>
                             </div>
+                        @elseif($competencia->fecha->isPast())
+                            <div class="mt-4">
+                                <a href="{{ route('alumno.competencias.edit', $competencia->id) }}" class="flex items-center justify-center gap-2 w-full py-3 bg-green-100 text-green-700 font-bold rounded-xl border border-green-200 hover:bg-green-200 transition">
+                                    <i class="fas fa-trophy"></i>
+                                    Cargar Resultado de la Competencia
+                                </a>
+                            </div>
                         @endif
                     </div>
                 </div>
