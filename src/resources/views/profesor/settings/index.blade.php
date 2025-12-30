@@ -16,7 +16,7 @@
 
     <div class="max-w-2xl space-y-6">
         <div class="bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden">
-            <form action="{{ route('settings.store') }}" method="POST" class="p-6 space-y-6">
+            <form action="{{ route('settings.store') }}" method="POST" enctype="multipart/form-data" class="p-6 space-y-6">
                 @csrf
 
                 <div class="space-y-4">
@@ -45,17 +45,38 @@
                         Identidad del Equipo
                     </h3>
 
-                    <div class="bg-blue-50 p-4 rounded-xl border border-blue-100">
-                        <label for="team_name" class="block text-sm font-bold text-blue-900 mb-1">Nombre del Grupo / Equipo</label>
-                        <p class="text-xs text-blue-700 mb-3">Este nombre aparecerá destacado en el panel de los alumnos y en las comunicaciones oficiales.</p>
+                    <div class="bg-blue-50 p-4 rounded-xl border border-blue-100 space-y-4">
+                        <div>
+                            <label for="team_name" class="block text-sm font-bold text-blue-900 mb-1">Nombre del Grupo / Equipo</label>
+                            <p class="text-xs text-blue-700 mb-3">Este nombre aparecerá destacado en el panel de los alumnos y en las comunicaciones oficiales.</p>
 
-                        <input type="text" name="team_name" id="team_name" value="{{ old('team_name', $teamName) }}"
-                               class="w-full px-4 py-2 border border-blue-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition bg-white"
-                               placeholder="Ej: Runners Elite, Team Pro, etc.">
+                            <input type="text" name="team_name" id="team_name" value="{{ old('team_name', $teamName) }}"
+                                   class="w-full px-4 py-2 border border-blue-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition bg-white"
+                                   placeholder="Ej: Runners Elite, Team Pro, etc.">
 
-                        @error('team_name')
-                            <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                        @enderror
+                            @error('team_name')
+                                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <div class="pt-2">
+                            <label for="team_logo" class="block text-sm font-bold text-blue-900 mb-1">Logo del Equipo</label>
+                            <p class="text-xs text-blue-700 mb-3">Sube una imagen para personalizar la cabecera del panel (JPG, PNG, max 2MB).</p>
+
+                            <div class="flex items-center gap-4">
+                                @if($teamLogo)
+                                    <div class="w-16 h-16 rounded-xl border border-blue-200 bg-white p-1 shadow-sm overflow-hidden flex items-center justify-center">
+                                        <img src="{{ asset('storage/' . $teamLogo) }}" alt="Logo actual" class="max-w-full max-h-full object-contain">
+                                    </div>
+                                @endif
+                                <input type="file" name="team_logo" id="team_logo"
+                                       class="block w-full text-sm text-blue-900 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-bold file:bg-blue-600 file:text-white hover:file:bg-blue-700 transition">
+                            </div>
+
+                            @error('team_logo')
+                                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
                     </div>
                 </div>
 

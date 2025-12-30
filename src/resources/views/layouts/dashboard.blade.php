@@ -22,12 +22,21 @@
 
             <div class="p-6 border-b border-white/20">
                 <div class="flex items-center gap-3">
-                    <div class="bg-white p-2 rounded-xl shadow-lg">
-                        <i class="fas fa-dumbbell text-blue-600 text-xl"></i>
-                    </div>
+                    @php
+                        $teamLogo = \App\Models\Setting::get('team_logo');
+                        $teamName = \App\Models\Setting::get('team_name');
+                    @endphp
+                    @if($teamLogo)
+                        <div class="bg-white p-1 rounded-xl shadow-lg w-12 h-12 flex items-center justify-center overflow-hidden">
+                            <img src="{{ asset('storage/' . $teamLogo) }}" alt="Logo" class="max-w-full max-h-full object-contain">
+                        </div>
+                    @else
+                        <div class="bg-white p-2 rounded-xl shadow-lg">
+                            <i class="fas fa-dumbbell text-blue-600 text-xl"></i>
+                        </div>
+                    @endif
                     <div>
                         <h2 class="font-bold text-xl">TeamTracker</h2>
-                        @php $teamName = \App\Models\Setting::get('team_name'); @endphp
                         @if($teamName)
                             <p class="text-xs text-blue-100 font-bold tracking-wider uppercase opacity-90">{{ $teamName }}</p>
                         @else

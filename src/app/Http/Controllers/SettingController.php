@@ -10,14 +10,16 @@ class SettingController extends Controller
     public function index()
     {
         $teamName = Setting::get('team_name');
+        $teamLogo = Setting::get('team_logo');
         $user = auth()->user();
-        return view('profesor.settings.index', compact('teamName', 'user'));
+        return view('profesor.settings.index', compact('teamName', 'teamLogo', 'user'));
     }
 
     public function store(Request $request)
     {
         $request->validate([
             'team_name' => 'nullable|string|max:255',
+            'team_logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'name' => 'required|string|max:255',
             'ciudad' => 'nullable|string|max:255',
             'latitud' => 'nullable|numeric',
@@ -25,6 +27,11 @@ class SettingController extends Controller
         ]);
 
         Setting::set('team_name', $request->team_name);
+
+        if ($request->hasFile('team_logo')) {
+            $path = $request->file('team_logo')->store('logos', 'public');
+            Setting::set('team_logo', $path);
+        }
 
         $user = auth()->user();
         $user->name = $request->name;
