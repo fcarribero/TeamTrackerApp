@@ -101,6 +101,9 @@
                     <a href="{{ route('alumno.competencias') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all {{ request()->routeIs('alumno.competencias') ? 'bg-white text-blue-600 shadow-lg' : 'text-blue-50 hover:bg-white/10' }}">
                         <i class="fas fa-medal w-5 text-center"></i> <span class="font-medium">Mis Competencias</span>
                     </a>
+                    <a href="{{ route('alumno.configuracion') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all {{ request()->routeIs('alumno.configuracion') ? 'bg-white text-blue-600 shadow-lg' : 'text-blue-50 hover:bg-white/10' }}">
+                        <i class="fas fa-cog w-5 text-center"></i> <span class="font-medium">Configuración</span>
+                    </a>
                 @endif
             </nav>
 

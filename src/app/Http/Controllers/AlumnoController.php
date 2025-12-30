@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Alumno;
 use App\Services\AlumnoService;
 use App\Services\GrupoService;
 use App\Services\EntrenamientoService;
@@ -124,5 +125,16 @@ class AlumnoController extends Controller
     {
         $this->alumnoService->deleteAlumno($id);
         return redirect()->route('alumnos.index')->with('success', 'Alumno eliminado correctamente');
+    }
+
+    public function configuracion()
+    {
+        $user = auth()->user();
+        $alumno = Alumno::where('userId', $user->id)->first();
+        if (!$alumno) {
+            return redirect()->route('login');
+        }
+
+        return view('alumno.configuracion', compact('alumno'));
     }
 }

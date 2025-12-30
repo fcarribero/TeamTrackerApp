@@ -13,4 +13,10 @@ return [
         'redirect' => env('GOOGLE_REDIRECT_URI'),
     ],
 
+    'garmin' => [
+        'client_id' => env('GARMIN_CLIENT_ID'),
+        'client_secret' => env('GARMIN_CLIENT_SECRET'),
+        'redirect' => env('GARMIN_REDIRECT_URI'),
+    ],
+
 ];

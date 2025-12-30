@@ -1,5 +1,10 @@
 <?php
 
+use App\Services\GarminService;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-// Rutas de API eliminadas ya que la aplicación ahora usa Blade
+Route::post('/webhooks/garmin', function (Request $request, GarminService $garminService) {
+    $garminService->handleWebhook($request->all());
+    return response()->json(['status' => 'ok']);
+});

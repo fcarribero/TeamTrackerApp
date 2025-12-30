@@ -6,6 +6,7 @@ use App\Http\Controllers\Auth\GoogleController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CompetenciaController;
 use App\Http\Controllers\EntrenamientoController;
+use App\Http\Controllers\GarminController;
 use App\Http\Controllers\GrupoController;
 use App\Http\Controllers\PagoController;
 use App\Http\Controllers\PlantillaController;
@@ -89,6 +90,12 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard/alumno/pagos', [PagoController::class, 'indexAlumno'])->name('alumno.pagos');
     Route::get('/dashboard/alumno/competencias', [CompetenciaController::class, 'indexAlumno'])->name('alumno.competencias');
     Route::post('/dashboard/alumno/competencias', [CompetenciaController::class, 'storeAlumno'])->name('alumno.competencias.store');
+
+    // Rutas para Garmin
+    Route::get('/auth/garmin', [GarminController::class, 'redirectToGarmin'])->name('auth.garmin');
+    Route::get('/auth/garmin/callback', [GarminController::class, 'handleGarminCallback']);
+    Route::post('/auth/garmin/disconnect', [GarminController::class, 'disconnect'])->name('auth.garmin.disconnect');
+    Route::get('/dashboard/alumno/configuracion', [AlumnoController::class, 'configuracion'])->name('alumno.configuracion');
 
     // Rutas para Anuncios
     Route::get('/dashboard/profesor/anuncio', [AnuncioController::class, 'index'])->name('anuncios.index');

@@ -67,4 +67,14 @@ class Alumno extends Model
     {
         return $this->hasMany(EntrenamientoResultado::class, 'alumnoId');
     }
+
+    public function garminAccount()
+    {
+        return $this->hasOne(GarminAccount::class, 'alumno_id');
+    }
+
+    public function garminActivities()
+    {
+        return $this->hasMany(GarminActivity::class, 'alumno_id');
+    }
 }
