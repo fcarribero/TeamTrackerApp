@@ -223,6 +223,7 @@ class WeatherService
             'humedad' => $data['hourly']['relative_humidity_2m'][$index],
             'cielo' => $this->mapWeatherCode($data['hourly']['weather_code'][$index]),
             'descripcion' => $this->mapWeatherCodeDescription($data['hourly']['weather_code'][$index]),
+            'icono' => $this->mapWeatherIcon($data['hourly']['weather_code'][$index]),
         ];
 
         // Guardar en histórico si es pasado o actual
@@ -267,5 +268,19 @@ class WeatherService
         ];
 
         return $descriptions[$code] ?? 'Desconocido';
+    }
+
+    private function mapWeatherIcon(int $code): string
+    {
+        if ($code === 0) return 'sun';
+        if (in_array($code, [1, 2, 3])) return 'cloud-sun';
+        if (in_array($code, [45, 48])) return 'smog';
+        if (in_array($code, [51, 53, 55, 56, 57])) return 'cloud-rain';
+        if (in_array($code, [61, 63, 65, 66, 67])) return 'cloud-showers-heavy';
+        if (in_array($code, [71, 73, 75, 77])) return 'snowflake';
+        if (in_array($code, [80, 81, 82])) return 'cloud-sun-rain';
+        if (in_array($code, [95, 96, 99])) return 'bolt';
+
+        return 'sun';
     }
 }

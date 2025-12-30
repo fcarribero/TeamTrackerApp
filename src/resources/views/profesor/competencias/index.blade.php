@@ -42,17 +42,28 @@
                                 <p class="text-sm text-gray-600">{{ $competencia->ubicación ?: '-' }}</p>
                                 @if($competencia->latitud && $competencia->longitud)
                                     @php
-                                        $clima = app(\App\Services\WeatherService::class)->getDailyForecast((float)$competencia->latitud, (float)$competencia->longitud, $competencia->fecha);
+                                        $weatherService = app(\App\Services\WeatherService::class);
+                                        $esPasada = $competencia->fecha->isPast();
+                                        $clima = $esPasada
+                                            ? $weatherService->getWeather((float)$competencia->latitud, (float)$competencia->longitud, $competencia->fecha)
+                                            : $weatherService->getDailyForecast((float)$competencia->latitud, (float)$competencia->longitud, $competencia->fecha);
                                     @endphp
                                     @if($clima)
                                         <div class="flex items-center gap-2 mt-1">
-                                            <span class="text-[10px] bg-blue-50 text-blue-700 px-1.5 py-0.5 rounded border border-blue-100 font-bold"
-                                                  title="{{ ($clima->is_historical ?? false) ? 'Basado en clima del año pasado' : ($clima->mañana . ' / ' . $clima->tarde . ' / ' . $clima->noche) }}">
-                                                <i class="fas {{ ($clima->is_historical ?? false) ? 'fa-history' : 'fa-cloud-sun' }} mr-1"></i> {{ $clima->min }}°/{{ $clima->max }}°C
-                                                @if($clima->is_historical ?? false)
-                                                    <span class="ml-1 text-[8px] opacity-70">*</span>
-                                                @endif
-                                            </span>
+                                            @if($esPasada)
+                                                <span class="text-[10px] bg-green-50 text-green-700 px-1.5 py-0.5 rounded border border-green-100 font-bold"
+                                                      title="Clima: {{ $clima->cielo }}">
+                                                    <i class="fas fa-{{ $clima->icono ?? 'sun' }} mr-1"></i> {{ $clima->temperatura }}°C
+                                                </span>
+                                            @else
+                                                <span class="text-[10px] bg-blue-50 text-blue-700 px-1.5 py-0.5 rounded border border-blue-100 font-bold"
+                                                      title="{{ ($clima->is_historical ?? false) ? 'Basado en clima del año pasado' : ($clima->mañana . ' / ' . $clima->tarde . ' / ' . $clima->noche) }}">
+                                                    <i class="fas {{ ($clima->is_historical ?? false) ? 'fa-history' : 'fa-cloud-sun' }} mr-1"></i> {{ $clima->min }}°/{{ $clima->max }}°C
+                                                    @if($clima->is_historical ?? false)
+                                                        <span class="ml-1 text-[8px] opacity-70">*</span>
+                                                    @endif
+                                                </span>
+                                            @endif
                                         </div>
                                     @endif
                                 @endif

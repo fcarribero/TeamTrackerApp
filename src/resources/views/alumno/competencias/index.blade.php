@@ -111,33 +111,46 @@
 
                             @if($competencia->latitud && $competencia->longitud)
                                 @php
-                                    $clima = app(\App\Services\WeatherService::class)->getDailyForecast((float)$competencia->latitud, (float)$competencia->longitud, $competencia->fecha);
+                                    $weatherService = app(\App\Services\WeatherService::class);
+                                    $esPasada = $competencia->fecha->isPast();
+                                    $clima = $esPasada
+                                        ? $weatherService->getWeather((float)$competencia->latitud, (float)$competencia->longitud, $competencia->fecha)
+                                        : $weatherService->getDailyForecast((float)$competencia->latitud, (float)$competencia->longitud, $competencia->fecha);
                                 @endphp
                                 @if($clima)
                                     <div class="bg-blue-50 border border-blue-100 rounded-xl px-4 py-2 flex items-center gap-4 shadow-sm relative group">
-                                        <div class="text-center {{ !($clima->is_historical ?? false) ? 'border-r border-blue-200 pr-4' : '' }}">
-                                            <p class="text-[10px] uppercase font-black text-blue-400">Temp</p>
-                                            <p class="text-sm font-bold text-blue-700">{{ $clima->min }}°/{{ $clima->max }}°C</p>
-                                        </div>
-                                        @if(!($clima->is_historical ?? false))
-                                            <div class="flex items-center gap-3">
-                                                <div class="text-center">
-                                                    <p class="text-[9px] uppercase font-bold text-gray-400">Mañana</p>
-                                                    <i class="fas fa-sun text-yellow-500 text-xs" title="{{ $clima->mañana }}"></i>
-                                                </div>
-                                                <div class="text-center">
-                                                    <p class="text-[9px] uppercase font-bold text-gray-400">Tarde</p>
-                                                    <i class="fas fa-cloud-sun text-orange-400 text-xs" title="{{ $clima->tarde }}"></i>
-                                                </div>
-                                                <div class="text-center">
-                                                    <p class="text-[9px] uppercase font-bold text-gray-400">Noche</p>
-                                                    <i class="fas fa-moon text-blue-400 text-xs" title="{{ $clima->noche }}"></i>
-                                                </div>
+                                        @if($esPasada)
+                                            <div class="text-center border-r border-blue-200 pr-4">
+                                                <p class="text-sm font-bold text-blue-700">{{ $clima->temperatura }}°C</p>
+                                            </div>
+                                            <div class="flex items-center gap-2">
+                                                <i class="fas fa-{{ $clima->icono ?? 'sun' }} text-blue-500 text-xs"></i>
+                                                <p class="text-[10px] text-blue-600 font-medium">{{ $clima->cielo }}</p>
                                             </div>
                                         @else
-                                            <div class="text-[9px] text-blue-400 italic leading-tight max-w-[120px]">
-                                                <i class="fas fa-info-circle mr-1"></i> Basado en el clima del año pasado
+                                            <div class="text-center {{ !($clima->is_historical ?? false) ? 'border-r border-blue-200 pr-4' : '' }}">
+                                                <p class="text-sm font-bold text-blue-700">{{ $clima->min }}°/{{ $clima->max }}°C</p>
                                             </div>
+                                            @if(!($clima->is_historical ?? false))
+                                                <div class="flex items-center gap-3">
+                                                    <div class="text-center">
+                                                        <p class="text-[9px] uppercase font-bold text-gray-400">Mañana</p>
+                                                        <i class="fas fa-sun text-yellow-500 text-xs" title="{{ $clima->mañana }}"></i>
+                                                    </div>
+                                                    <div class="text-center">
+                                                        <p class="text-[9px] uppercase font-bold text-gray-400">Tarde</p>
+                                                        <i class="fas fa-cloud-sun text-orange-400 text-xs" title="{{ $clima->tarde }}"></i>
+                                                    </div>
+                                                    <div class="text-center">
+                                                        <p class="text-[9px] uppercase font-bold text-gray-400">Noche</p>
+                                                        <i class="fas fa-moon text-blue-400 text-xs" title="{{ $clima->noche }}"></i>
+                                                    </div>
+                                                </div>
+                                            @else
+                                                <div class="text-[9px] text-blue-400 italic leading-tight max-w-[120px]">
+                                                    <i class="fas fa-info-circle mr-1"></i> Basado en el clima del año pasado
+                                                </div>
+                                            @endif
                                         @endif
                                     </div>
                                 @endif
