@@ -1,5 +1,12 @@
 @extends('layouts.dashboard')
 
+@section('breadcrumbs')
+    @include('partials.breadcrumbs', ['items' => [
+        ['label' => 'Plantillas', 'url' => route('plantillas.index')],
+        ['label' => 'Nueva Plantilla']
+    ]])
+@endsection
+
 @section('content')
 <div class="max-w-4xl mx-auto">
     <div class="mb-6 flex items-center justify-between">

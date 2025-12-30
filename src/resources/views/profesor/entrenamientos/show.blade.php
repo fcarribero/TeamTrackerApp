@@ -1,5 +1,12 @@
 @extends('layouts.dashboard')
 
+@section('breadcrumbs')
+    @include('partials.breadcrumbs', ['items' => [
+        ['label' => 'Entrenamientos', 'url' => route('entrenamientos.index')],
+        ['label' => 'Detalle']
+    ]])
+@endsection
+
 @section('content')
 <div class="space-y-6">
     <div class="flex items-center justify-between">

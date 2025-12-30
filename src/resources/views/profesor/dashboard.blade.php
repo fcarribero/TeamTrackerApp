@@ -1,5 +1,9 @@
 @extends('layouts.dashboard')
 
+@section('breadcrumbs')
+    @include('partials.breadcrumbs')
+@endsection
+
 @section('content')
 <div class="space-y-8">
     <div>

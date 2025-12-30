@@ -1,5 +1,12 @@
 @extends('layouts.dashboard')
 
+@section('breadcrumbs')
+    @include('partials.breadcrumbs', ['items' => [
+        ['label' => 'Entrenamientos', 'url' => route('entrenamientos.index')],
+        ['label' => 'Nuevo Entrenamiento']
+    ]])
+@endsection
+
 @section('content')
 @php
     $oldContenido = old('contenidoPersonalizado');

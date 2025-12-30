@@ -1,5 +1,12 @@
 @extends('layouts.dashboard')
 
+@section('breadcrumbs')
+    @include('partials.breadcrumbs', ['items' => [
+        ['label' => 'Competencias', 'url' => route('competencias.index')],
+        ['label' => 'Información de Competencia']
+    ]])
+@endsection
+
 @section('content')
 <div class="space-y-6">
     <div class="flex items-center gap-4">

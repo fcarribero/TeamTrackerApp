@@ -126,10 +126,8 @@
                         <i class="fas fa-bars text-xl"></i>
                     </button>
 
-                    <div class="hidden md:flex items-center gap-2 text-sm text-gray-500">
-                        <span>Inicio</span>
-                        <i class="fas fa-chevron-right text-[10px]"></i>
-                        <span class="text-gray-900 font-medium">Dashboard</span>
+                    <div class="flex items-center">
+                        @yield('breadcrumbs')
                     </div>
 
                     <div class="flex items-center gap-4">

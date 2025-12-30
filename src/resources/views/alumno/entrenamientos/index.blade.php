@@ -1,5 +1,9 @@
 @extends('layouts.dashboard')
 
+@section('breadcrumbs')
+    @include('partials.breadcrumbs', ['items' => [['label' => 'Mis Entrenamientos']]])
+@endsection
+
 @section('content')
 @if($anuncioActivo)
     <div class="mb-6 bg-blue-600 text-white p-4 rounded-xl shadow-lg flex items-start gap-4 animate-fade-in-down">

@@ -1,5 +1,12 @@
 @extends('layouts.dashboard')
 
+@section('breadcrumbs')
+    @include('partials.breadcrumbs', ['items' => [
+        ['label' => 'Entrenamientos', 'url' => route('entrenamientos.index')],
+        ['label' => 'Nuevo (Seleccionar Plantilla)']
+    ]])
+@endsection
+
 @section('content')
 <div class="max-w-4xl mx-auto">
     <div class="mb-6">
