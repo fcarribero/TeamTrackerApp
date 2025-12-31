@@ -98,7 +98,17 @@ class WeatherService
 
     public function syncHistory(float $lat, float $lon, int $days = 30)
     {
-        $startDate = now()->subDays($days)->format('Y-m-d');
+        $lastRecord = WeatherHistory::where('latitud', $lat)
+            ->where('longitud', $lon)
+            ->orderBy('fecha_hora', 'desc')
+            ->first();
+
+        if ($lastRecord) {
+            $startDate = $lastRecord->fecha_hora->format('Y-m-d');
+        } else {
+            $startDate = now()->subDays($days)->format('Y-m-d');
+        }
+
         $endDate = now()->format('Y-m-d');
 
         try {

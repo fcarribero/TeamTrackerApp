@@ -52,13 +52,13 @@ class SyncWeatherTest extends TestCase
         // Esperamos que se llame a syncHistory para las dos ubicaciones
         // Buenos Aires
         $weatherServiceMock->shouldReceive('syncHistory')
-            ->with(-34.6037, -58.3816, 30)
+            ->with(-34.6037, -58.3816, 365)
             ->once()
             ->andReturn(true);
 
         // Londres
         $weatherServiceMock->shouldReceive('syncHistory')
-            ->with(51.5074, -0.1278, 30)
+            ->with(51.5074, -0.1278, 365)
             ->once()
             ->andReturn(true);
 
@@ -68,8 +68,8 @@ class SyncWeatherTest extends TestCase
         $this->artisan('weather:sync')
             ->expectsOutput('Iniciando sincronización de clima...')
             ->expectsOutput('Se encontraron 2 ubicaciones únicas para sincronizar.')
-            ->expectsOutput('Sincronizando clima (últimos 30 días) para: -34.6037, -58.3816')
-            ->expectsOutput('Sincronizando clima (últimos 30 días) para: 51.5074, -0.1278')
+            ->expectsOutput('Sincronizando clima para: -34.6037, -58.3816')
+            ->expectsOutput('Sincronizando clima para: 51.5074, -0.1278')
             ->expectsOutput('Sincronización finalizada.')
             ->assertExitCode(0);
     }
@@ -109,7 +109,7 @@ class SyncWeatherTest extends TestCase
 
         // Esperamos que se llame solo UNA VEZ
         $weatherServiceMock->shouldReceive('syncHistory')
-            ->with(-34.6037, -58.3816, 30)
+            ->with(-34.6037, -58.3816, 365)
             ->once()
             ->andReturn(true);
 
