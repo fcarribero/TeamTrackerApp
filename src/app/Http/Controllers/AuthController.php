@@ -74,9 +74,15 @@ class AuthController extends Controller
         $data = $request->validate([
             'email' => 'required|email|unique:users',
             'password' => 'required|min:6',
-            'nombre' => 'required',
+            'nombre' => 'required|string|max:255',
             'rol' => 'required|in:profesor,alumno',
             'invitation_token' => 'nullable|exists:invitaciones,token',
+            // Campos adicionales para alumno
+            'apellido' => 'required_if:rol,alumno|string|max:255',
+            'dni' => 'required_if:rol,alumno|string|max:20',
+            'fechaNacimiento' => 'required_if:rol,alumno|date',
+            'sexo' => 'required_if:rol,alumno|in:masculino,femenino,otro',
+            'obra_social' => 'required_if:rol,alumno|string|max:255',
         ]);
 
         $userId = 'cl' . bin2hex(random_bytes(10));
@@ -85,7 +91,7 @@ class AuthController extends Controller
             'id' => $userId,
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
-            'name' => $data['nombre'],
+            'name' => $data['rol'] === 'alumno' ? $data['nombre'] . ' ' . $data['apellido'] : $data['nombre'],
             'rol' => $data['rol'],
         ]);
 
@@ -93,14 +99,20 @@ class AuthController extends Controller
             $alumno = Alumno::create([
                 'id' => 'cl' . bin2hex(random_bytes(10)),
                 'nombre' => $data['nombre'],
-                'fechaNacimiento' => now(), // Valor por defecto
-                'sexo' => 'otro', // Valor por defecto
+                'apellido' => $data['apellido'],
+                'dni' => $data['dni'],
+                'fechaNacimiento' => $data['fechaNacimiento'],
+                'sexo' => $data['sexo'],
+                'obra_social' => $data['obra_social'],
                 'userId' => $user->id,
             ]);
 
             if (!empty($data['invitation_token'])) {
                 $invitacion = Invitacion::where('token', $data['invitation_token'])->first();
                 if ($invitacion && $invitacion->email === $user->email) {
+                    // Si viene de una invitación, marcamos el email como verificado
+                    $user->markEmailAsVerified();
+
                     if ($invitacion->grupoId) {
                         $alumno->grupos()->syncWithoutDetaching([$invitacion->grupoId]);
                     }

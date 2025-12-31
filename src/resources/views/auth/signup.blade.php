@@ -13,16 +13,57 @@
             </p>
         </div>
 
-        <form class="mt-8 space-y-6" action="/signup" method="POST">
+        <form class="mt-8 space-y-6" action="/signup" method="POST" x-data="{ rol: '{{ old('rol', (isset($invitation_token) && $invitation_token) ? 'alumno' : 'alumno') }}' }">
             @csrf
             <input type="hidden" name="invitation_token" value="{{ $invitation_token ?? '' }}">
             <div class="rounded-md shadow-sm -space-y-px">
-                <div>
-                    <label for="nombre" class="sr-only">Nombre completo</label>
-                    <input id="nombre" name="nombre" type="text" required value="{{ old('nombre') }}"
-                        class="appearance-none rounded-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
-                        placeholder="Nombre completo">
+                <div class="grid grid-cols-2 gap-0">
+                    <div>
+                        <label for="nombre" class="sr-only">Nombre</label>
+                        <input id="nombre" name="nombre" type="text" required value="{{ old('nombre') }}"
+                            class="appearance-none rounded-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-tl-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+                            placeholder="Nombre">
+                    </div>
+                    <div>
+                        <label for="apellido" class="sr-only">Apellido</label>
+                        <input id="apellido" name="apellido" type="text" :required="rol === 'alumno'" value="{{ old('apellido') }}"
+                            class="appearance-none rounded-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-tr-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+                            placeholder="Apellido">
+                    </div>
                 </div>
+
+                <div x-show="rol === 'alumno'" class="border-t-0">
+                    <div class="grid grid-cols-2 gap-0">
+                        <div>
+                            <label for="dni" class="sr-only">DNI</label>
+                            <input id="dni" name="dni" type="text" :required="rol === 'alumno'" value="{{ old('dni') }}"
+                                class="appearance-none rounded-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+                                placeholder="DNI">
+                        </div>
+                        <div>
+                            <label for="sexo" class="sr-only">Sexo</label>
+                            <select id="sexo" name="sexo" :required="rol === 'alumno'"
+                                class="appearance-none rounded-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm">
+                                <option value="">Sexo...</option>
+                                <option value="masculino" {{ old('sexo') == 'masculino' ? 'selected' : '' }}>Masculino</option>
+                                <option value="femenino" {{ old('sexo') == 'femenino' ? 'selected' : '' }}>Femenino</option>
+                                <option value="otro" {{ old('sexo') == 'otro' ? 'selected' : '' }}>Otro</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div>
+                        <label for="fechaNacimiento" class="sr-only">Fecha de Nacimiento</label>
+                        <input id="fechaNacimiento" name="fechaNacimiento" type="date" :required="rol === 'alumno'" value="{{ old('fechaNacimiento') }}"
+                            class="appearance-none rounded-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm">
+                    </div>
+                    <div>
+                        <label for="obra_social" class="sr-only">Obra Social</label>
+                        <input id="obra_social" name="obra_social" type="text" :required="rol === 'alumno'" value="{{ old('obra_social') }}"
+                            class="appearance-none rounded-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+                            placeholder="Obra Social">
+                    </div>
+                </div>
+
                 <div>
                     <label for="email" class="sr-only">Correo electrónico</label>
                     <input id="email" name="email" type="email" required value="{{ $email ?? old('email') }}"
@@ -44,7 +85,7 @@
                         </div>
                     @else
                         <label for="rol" class="sr-only">Tipo de usuario</label>
-                        <select id="rol" name="rol" required
+                        <select id="rol" name="rol" x-model="rol" required
                             class="appearance-none rounded-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm">
                             <option value="alumno">Alumno</option>
                             <option value="profesor">Profesor</option>

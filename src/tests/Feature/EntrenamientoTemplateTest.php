@@ -19,7 +19,8 @@ class EntrenamientoTemplateTest extends TestCase
             'name' => 'Profesor',
             'email' => 'profesor@test.com',
             'password' => bcrypt('password'),
-            'rol' => 'profesor'
+            'rol' => 'profesor',
+            'email_verified_at' => now(),
         ]);
         $this->actingAs($user);
 
@@ -64,7 +65,8 @@ class EntrenamientoTemplateTest extends TestCase
             'name' => 'Profesor 2',
             'email' => 'profesor2@test.com',
             'password' => bcrypt('password'),
-            'rol' => 'profesor'
+            'rol' => 'profesor',
+            'email_verified_at' => now(),
         ]);
         $this->actingAs($user);
 
