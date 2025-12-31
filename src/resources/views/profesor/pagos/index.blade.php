@@ -81,7 +81,7 @@
                 <tbody class="divide-y divide-gray-100">
                     @forelse($pagos as $pago)
                         <tr>
-                            <td class="px-6 py-4 font-medium text-gray-900">{{ $pago->alumno->nombre ?? 'N/A' }}</td>
+                            <td class="px-6 py-4 font-medium text-gray-900">{{ $pago->alumno ? $pago->alumno->nombre . ' ' . $pago->alumno->apellido : 'N/A' }}</td>
                             <td class="px-6 py-4 text-gray-600">{{ ucfirst(\Carbon\Carbon::parse($pago->mesCorrespondiente)->locale('es')->translatedFormat('F Y')) }}</td>
                             <td class="px-6 py-4 font-bold">${{ $pago->monto }}</td>
                             <td class="px-6 py-4">
