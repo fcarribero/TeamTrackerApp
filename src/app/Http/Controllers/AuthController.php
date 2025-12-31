@@ -5,12 +5,14 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\Alumno;
 use App\Models\Invitacion;
+use App\Mail\NotificarAceptacionInvitacion;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Facades\Mail;
 
 class AuthController extends Controller
 {
@@ -123,6 +125,11 @@ class AuthController extends Controller
                         'status' => 'accepted',
                         'accepted_at' => now(),
                     ]);
+
+                    // Notificar al profesor
+                    if ($invitacion->profesor) {
+                        Mail::to($invitacion->profesor->email)->send(new NotificarAceptacionInvitacion($user, $invitacion));
+                    }
                 }
             }
         }

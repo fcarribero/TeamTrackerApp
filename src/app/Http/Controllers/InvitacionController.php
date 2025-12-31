@@ -6,6 +6,7 @@ use App\Models\Invitacion;
 use App\Models\User;
 use App\Models\Alumno;
 use App\Mail\InvitacionGrupo;
+use App\Mail\NotificarAceptacionInvitacion;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
@@ -83,6 +84,11 @@ class InvitacionController extends Controller
             'status' => 'accepted',
             'accepted_at' => now(),
         ]);
+
+        // Notificar al profesor
+        if ($invitacion->profesor) {
+            Mail::to($invitacion->profesor->email)->send(new NotificarAceptacionInvitacion($user, $invitacion));
+        }
 
         return redirect('/dashboard/alumno')->with('success', 'Te has unido al grupo.');
     }
