@@ -16,6 +16,7 @@ class Pago extends Model
     protected $fillable = [
         'id',
         'alumnoId',
+        'profesorId',
         'monto',
         'fechaPago',
         'mesCorrespondiente',

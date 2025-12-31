@@ -12,5 +12,5 @@ class PagoService {
     }
     public function update(string $id, array $data) { return $this->repository->update($id, $data); }
     public function delete(string $id) { return $this->repository->delete($id); }
-    public function getForAlumno(string $alumnoId) { return $this->repository->getForAlumno($alumnoId); }
+    public function getForAlumno(string $alumnoId, string $profesorId = null) { return $this->repository->getForAlumno($alumnoId, $profesorId); }
 }

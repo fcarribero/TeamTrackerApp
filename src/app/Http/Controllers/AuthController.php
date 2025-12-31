@@ -4,17 +4,20 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\Alumno;
+use App\Models\Invitacion;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
-
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Password;
 
 class AuthController extends Controller
 {
-    public function showLogin()
+    public function showLogin(Request $request)
     {
-        return view('auth.login');
+        $email = $request->query('email');
+        return view('auth.login', compact('email'));
     }
 
     public function login(Request $request)
@@ -28,6 +31,19 @@ class AuthController extends Controller
             $request->session()->regenerate();
 
             $user = Auth::user();
+
+            if ($user->rol === 'alumno') {
+                $alumno = $user->alumno;
+                if ($alumno) {
+                    $profesorIds = $alumno->profesores()->pluck('users.id');
+                    if ($profesorIds->count() > 1) {
+                        return redirect()->route('grupos.seleccionar');
+                    } elseif ($profesorIds->count() === 1) {
+                        session(['active_profesor_id' => $profesorIds->first()]);
+                    }
+                }
+            }
+
             if ($user->rol === 'profesor') {
                 return redirect()->intended('/dashboard/profesor');
             } else {
@@ -40,9 +56,17 @@ class AuthController extends Controller
         ])->onlyInput('email');
     }
 
-    public function showSignup()
+    public function showSignup(Request $request)
     {
-        return view('auth.signup');
+        $invitation_token = $request->query('invitation_token');
+        $email = '';
+        if ($invitation_token) {
+            $invitacion = Invitacion::where('token', $invitation_token)->first();
+            if ($invitacion) {
+                $email = $invitacion->email;
+            }
+        }
+        return view('auth.signup', compact('invitation_token', 'email'));
     }
 
     public function signup(Request $request)
@@ -52,6 +76,7 @@ class AuthController extends Controller
             'password' => 'required|min:6',
             'nombre' => 'required',
             'rol' => 'required|in:profesor,alumno',
+            'invitation_token' => 'nullable|exists:invitaciones,token',
         ]);
 
         $userId = 'cl' . bin2hex(random_bytes(10));
@@ -65,22 +90,92 @@ class AuthController extends Controller
         ]);
 
         if ($data['rol'] === 'alumno') {
-            Alumno::create([
+            $alumno = Alumno::create([
                 'id' => 'cl' . bin2hex(random_bytes(10)),
                 'nombre' => $data['nombre'],
                 'fechaNacimiento' => now(), // Valor por defecto
                 'sexo' => 'otro', // Valor por defecto
                 'userId' => $user->id,
             ]);
+
+            if (!empty($data['invitation_token'])) {
+                $invitacion = Invitacion::where('token', $data['invitation_token'])->first();
+                if ($invitacion && $invitacion->email === $user->email) {
+                    if ($invitacion->grupoId) {
+                        $alumno->grupos()->syncWithoutDetaching([$invitacion->grupoId]);
+                    }
+                    // Vincular con el profesor (Equipo)
+                    $alumno->profesores()->syncWithoutDetaching([$invitacion->profesorId]);
+
+                    $invitacion->update([
+                        'status' => 'accepted',
+                        'accepted_at' => now(),
+                    ]);
+                }
+            }
         }
+
+        event(new Registered($user));
 
         Auth::login($user);
 
         if ($user->rol === 'profesor') {
+            // Crear un grupo por defecto para el profesor
+            \App\Models\Grupo::create([
+                'id' => 'cl' . bin2hex(random_bytes(10)),
+                'nombre' => 'General',
+                'descripcion' => 'Grupo principal',
+                'profesorId' => $user->id,
+            ]);
             return redirect('/dashboard/profesor');
         } else {
             return redirect('/dashboard/alumno');
         }
+    }
+
+    public function showForgotPassword()
+    {
+        return view('auth.forgot-password');
+    }
+
+    public function sendResetLink(Request $request)
+    {
+        $request->validate(['email' => 'required|email']);
+
+        $status = Password::sendResetLink($request->only('email'));
+
+        return $status === Password::RESET_LINK_SENT
+                    ? back()->with(['status' => __($status)])
+                    : back()->withErrors(['email' => __($status)]);
+    }
+
+    public function showResetPassword(Request $request, $token)
+    {
+        return view('auth.reset-password', ['token' => $token, 'email' => $request->email]);
+    }
+
+    public function resetPassword(Request $request)
+    {
+        $request->validate([
+            'token' => 'required',
+            'email' => 'required|email',
+            'password' => 'required|min:6|confirmed',
+        ]);
+
+        $status = Password::reset(
+            $request->only('email', 'password', 'password_confirmation', 'token'),
+            function ($user, $password) {
+                $user->forceFill([
+                    'password' => Hash::make($password)
+                ])->setRememberToken(Str::random(60));
+
+                $user->save();
+            }
+        );
+
+        return $status === Password::PASSWORD_RESET
+                    ? redirect()->route('login')->with('status', __($status))
+                    : back()->withErrors(['email' => [__($status)]]);
     }
 
     public function logout(Request $request)

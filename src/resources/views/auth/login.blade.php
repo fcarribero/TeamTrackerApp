@@ -13,12 +13,42 @@
             </p>
         </div>
 
+        @if(session('info'))
+            <div class="bg-blue-50 border-l-4 border-blue-400 p-4 mb-4">
+                <div class="flex">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-info-circle text-blue-400"></i>
+                    </div>
+                    <div class="ml-3">
+                        <p class="text-sm text-blue-700">
+                            {{ session('info') }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        @endif
+
+        @if(session('status'))
+            <div class="bg-green-50 border-l-4 border-green-400 p-4 mb-4">
+                <div class="flex">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-check-circle text-green-400"></i>
+                    </div>
+                    <div class="ml-3">
+                        <p class="text-sm text-green-700">
+                            {{ session('status') }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        @endif
+
         <form class="mt-8 space-y-6" action="/login" method="POST">
             @csrf
             <div class="rounded-md shadow-sm -space-y-px">
                 <div>
                     <label for="email" class="sr-only">Correo electrónico</label>
-                    <input id="email" name="email" type="email" required value="{{ old('email') }}"
+                    <input id="email" name="email" type="email" required value="{{ $email ?? old('email') }}"
                         class="appearance-none rounded-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
                         placeholder="Correo electrónico">
                 </div>

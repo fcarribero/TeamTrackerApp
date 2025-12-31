@@ -16,6 +16,7 @@ class Competencia extends Model
     protected $fillable = [
         'id',
         'alumno_id',
+        'profesorId',
         'nombre',
         'fecha',
         'ubicación',

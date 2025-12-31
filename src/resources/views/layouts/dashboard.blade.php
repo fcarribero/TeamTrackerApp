@@ -23,8 +23,18 @@
             <div class="p-6 border-b border-white/20">
                 <div class="flex items-center gap-3">
                     @php
-                        $teamLogo = \App\Models\Setting::get('team_logo');
-                        $teamName = \App\Models\Setting::get('team_name');
+                        $user = Auth::user();
+                        $settingsUserId = $user->id;
+                        if ($user->rol === 'alumno') {
+                            $settingsUserId = session('active_profesor_id');
+                            if (!$settingsUserId && $user->alumno) {
+                                // Fallback por si no hay sesión pero sí un profesor
+                                $settingsUserId = $user->alumno->grupos()->pluck('profesorId')->first();
+                            }
+                            $settingsUserId = $settingsUserId ?: $user->id;
+                        }
+                        $teamLogo = \App\Models\Setting::get('team_logo', null, $settingsUserId);
+                        $teamName = \App\Models\Setting::get('team_name', null, $settingsUserId);
                     @endphp
                     @if($teamLogo)
                         <div class="bg-white p-1 rounded-xl shadow-lg w-12 h-12 flex items-center justify-center overflow-hidden">
@@ -114,6 +124,10 @@
                         <i class="fas fa-cog w-5 text-center"></i> <span class="font-medium">Configuración</span>
                     </a>
                 @endif
+
+                <a href="{{ route('profile.show') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all {{ request()->routeIs('profile.show') ? 'bg-white text-blue-600 shadow-lg' : 'text-blue-50 hover:bg-white/10' }}">
+                    <i class="fas fa-user w-5 text-center"></i> <span class="font-medium">Mi Perfil</span>
+                </a>
             </nav>
 
             <div class="p-4 border-t border-white/20">

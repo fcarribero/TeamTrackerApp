@@ -15,6 +15,7 @@ class Entrenamiento extends Model
 
     protected $fillable = [
         'id',
+        'profesorId',
         'fecha',
         'titulo',
         'plantillaId',

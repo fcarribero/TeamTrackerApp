@@ -17,6 +17,21 @@
         </a>
     </div>
 
+    <div class="bg-white p-6 rounded-xl shadow-md border border-gray-100 mb-6">
+        <h3 class="text-lg font-bold text-gray-900 mb-4">Invitar Alumno</h3>
+        <form action="{{ route('invitaciones.store') }}" method="POST" class="flex flex-col md:flex-row gap-4">
+            @csrf
+            <div class="flex-[2]">
+                <input type="email" name="email" required placeholder="Correo electrónico del alumno"
+                    class="w-full px-4 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+            <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition flex items-center justify-center gap-2">
+                <i class="fas fa-paper-plane"></i>
+                Enviar Invitación
+            </button>
+        </form>
+    </div>
+
     <div class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100">
         <div class="overflow-x-auto">
             <table class="w-full text-left">
@@ -66,7 +81,7 @@
                                     <a href="{{ route('alumnos.edit', $alumno->id) }}" class="p-2 text-gray-400 hover:text-blue-600 transition" onclick="event.stopPropagation()">
                                         <i class="fas fa-edit"></i>
                                     </a>
-                                    <form action="{{ route('alumnos.destroy', $alumno->id) }}" method="POST" class="inline" onsubmit="return confirm('¿Estás seguro de eliminar este alumno?')">
+                                    <form action="{{ route('alumnos.destroy', $alumno->id) }}" method="POST" class="inline" onsubmit="return confirm('¿Estás seguro de remover este alumno de tus grupos?')">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="p-2 text-gray-400 hover:text-red-600 transition" onclick="event.stopPropagation()">

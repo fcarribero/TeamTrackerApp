@@ -5,15 +5,23 @@ class EntrenamientoRepository extends BaseRepository {
     public function __construct(Entrenamiento $model) { parent::__construct($model); }
     public function getAllWithRelations() { return $this->model->with(['alumnos', 'grupos', 'plantilla'])->withCount('resultados')->orderBy('fecha', 'desc')->get(); }
 
-    public function getForAlumno(string $alumnoId)
+    public function getForAlumno(string $alumnoId, string $profesorId = null)
     {
-        return $this->model->whereHas('alumnos', function($q) use ($alumnoId) {
-            $q->where('alumnoId', $alumnoId);
-        })->orWhereHas('grupos', function($q) use ($alumnoId) {
-            $q->whereHas('alumnos', function($sq) use ($alumnoId) {
-                $sq->where('alumnoId', $alumnoId);
+        $query = $this->model->where(function($query) use ($alumnoId) {
+            $query->whereHas('alumnos', function($q) use ($alumnoId) {
+                $q->where('alumnoId', $alumnoId);
+            })->orWhereHas('grupos', function($q) use ($alumnoId) {
+                $q->whereHas('alumnos', function($sq) use ($alumnoId) {
+                    $sq->where('alumnoId', $alumnoId);
+                });
             });
-        })->with(['alumnos', 'grupos', 'plantilla', 'resultados' => function($q) use ($alumnoId) {
+        });
+
+        if ($profesorId) {
+            $query->where('profesorId', $profesorId);
+        }
+
+        return $query->with(['alumnos', 'grupos', 'plantilla', 'resultados' => function($q) use ($alumnoId) {
             $q->where('alumnoId', $alumnoId);
         }])
           ->orderBy('fecha', 'desc')

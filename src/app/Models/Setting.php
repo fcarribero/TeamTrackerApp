@@ -6,16 +6,18 @@ use Illuminate\Database\Eloquent\Model;
 
 class Setting extends Model
 {
-    protected $fillable = ['key', 'value'];
+    protected $fillable = ['userId', 'key', 'value'];
 
-    public static function get(string $key, $default = null)
+    public static function get(string $key, $default = null, $userId = null)
     {
-        $setting = self::where('key', $key)->first();
+        $userId = $userId ?: auth()->id();
+        $setting = self::where('userId', $userId)->where('key', $key)->first();
         return $setting ? $setting->value : $default;
     }
 
-    public static function set(string $key, $value)
+    public static function set(string $key, $value, $userId = null)
     {
-        return self::updateOrCreate(['key' => $key], ['value' => $value]);
+        $userId = $userId ?: auth()->id();
+        return self::updateOrCreate(['userId' => $userId, 'key' => $key], ['value' => $value]);
     }
 }

@@ -52,10 +52,15 @@ class AnuncioService
     /**
      * Obtener el último anuncio activo para mostrar a los alumnos.
      *
+     * @param string|null $userId Profesor ID
      * @return Anuncio|null
      */
-    public function getAnuncioActivo()
+    public function getAnuncioActivo($userId = null)
     {
-        return Anuncio::where('activo', true)->latest()->first();
+        $query = Anuncio::where('activo', true);
+        if ($userId) {
+            $query->where('userId', $userId);
+        }
+        return $query->latest()->first();
     }
 }

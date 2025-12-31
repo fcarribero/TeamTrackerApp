@@ -77,4 +77,9 @@ class Alumno extends Model
     {
         return $this->hasMany(GarminActivity::class, 'alumno_id');
     }
+
+    public function profesores()
+    {
+        return $this->belongsToMany(User::class, 'profesor_alumno', 'alumno_id', 'profesor_id')->withTimestamps();
+    }
 }

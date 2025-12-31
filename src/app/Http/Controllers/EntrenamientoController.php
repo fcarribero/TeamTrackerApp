@@ -33,7 +33,12 @@ class EntrenamientoController extends Controller {
     }
 
     public function index() {
-        $entrenamientos = $this->service->getAll();
+        $profesorId = auth()->id();
+        $entrenamientos = \App\Models\Entrenamiento::where('profesorId', $profesorId)
+            ->with(['alumnos', 'grupos', 'plantilla'])
+            ->withCount('resultados')
+            ->orderBy('fecha', 'desc')
+            ->get();
         $profesor = auth()->user();
         return view('profesor.entrenamientos.index', compact('entrenamientos', 'profesor'));
     }
@@ -107,6 +112,7 @@ class EntrenamientoController extends Controller {
             }
         }
 
+        $data['profesorId'] = auth()->id();
         $entrenamiento = $this->service->create($data);
 
         if ($request->has('alumnos')) {
@@ -200,10 +206,28 @@ class EntrenamientoController extends Controller {
         $alumno = \App\Models\Alumno::where('userId', $user->id)->first();
         if (!$alumno) return redirect('/')->with('error', 'Perfil de alumno no encontrado');
 
-        $anuncioActivo = $this->anuncioService->getAnuncioActivo();
-        $entrenamientos = $this->service->getForAlumno($alumno->id);
+        $profesorId = session('active_profesor_id');
 
-        $profesor = \App\Models\User::where('rol', 'profesor')->first();
+        if (!$profesorId) {
+            $profesorIds = $alumno->grupos()->distinct()->pluck('profesorId');
+            if ($profesorIds->count() > 1) {
+                return redirect()->route('grupos.seleccionar');
+            } elseif ($profesorIds->count() === 1) {
+                $profesorId = $profesorIds->first();
+                session(['active_profesor_id' => $profesorId]);
+            } else {
+                return view('alumno.entrenamientos.index', [
+                    'entrenamientos' => collect(),
+                    'anuncioActivo' => null,
+                    'profesor' => null
+                ]);
+            }
+        }
+
+        $anuncioActivo = $this->anuncioService->getAnuncioActivo($profesorId);
+        $entrenamientos = $this->service->getForAlumno($alumno->id, $profesorId);
+
+        $profesor = \App\Models\User::find($profesorId);
 
         return view('alumno.entrenamientos.index', compact('entrenamientos', 'anuncioActivo', 'profesor'));
     }

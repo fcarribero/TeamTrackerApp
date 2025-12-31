@@ -20,24 +20,30 @@ class StatsController extends Controller
 
     public function profesorDashboard()
     {
-        $totalAlumnos = Alumno::count();
-        $pagosPendientes = Pago::where('estado', 'pendiente')->count();
+        $profesorId = auth()->id();
+        $totalAlumnos = Alumno::whereHas('grupos', function($q) use ($profesorId) {
+            $q->where('profesorId', $profesorId);
+        })->count();
+        $pagosPendientes = Pago::where('profesorId', $profesorId)->where('estado', 'pendiente')->count();
 
         $mesActual = Carbon::now()->format('Y-m');
-        $ingresosMesActual = Pago::where('mesCorrespondiente', $mesActual)
+        $ingresosMesActual = Pago::where('profesorId', $profesorId)->where('mesCorrespondiente', $mesActual)
             ->where('estado', 'pagado')
             ->sum('monto');
 
         $hoy = Carbon::today();
         $enSieteDias = Carbon::today()->addDays(7);
 
-        $proximosEntrenamientos = Entrenamiento::with(['alumnos', 'grupos'])
+        $proximosEntrenamientos = Entrenamiento::where('profesorId', $profesorId)
+            ->with(['alumnos', 'grupos'])
             ->whereBetween('fecha', [$hoy, $enSieteDias])
             ->orderBy('fecha', 'asc')
             ->take(5)
             ->get();
 
-        $ultimosAlumnos = Alumno::orderBy('created_at', 'desc')
+        $ultimosAlumnos = Alumno::whereHas('grupos', function($q) use ($profesorId) {
+            $q->where('profesorId', $profesorId);
+        })->orderBy('created_at', 'desc')
             ->take(5)
             ->get();
 

@@ -9,12 +9,13 @@
             </div>
             <h2 class="mt-6 text-3xl font-extrabold text-gray-900">Crear Cuenta</h2>
             <p class="mt-2 text-sm text-gray-600">
-                O <a href="/login" class="font-medium text-blue-600 hover:text-blue-500">inicia sesión si ya tienes cuenta</a>
+                O <a href="{{ route('login', ['email' => $email ?? '']) }}" class="font-medium text-blue-600 hover:text-blue-500">inicia sesión si ya tienes cuenta</a>
             </p>
         </div>
 
         <form class="mt-8 space-y-6" action="/signup" method="POST">
             @csrf
+            <input type="hidden" name="invitation_token" value="{{ $invitation_token ?? '' }}">
             <div class="rounded-md shadow-sm -space-y-px">
                 <div>
                     <label for="nombre" class="sr-only">Nombre completo</label>
@@ -24,7 +25,8 @@
                 </div>
                 <div>
                     <label for="email" class="sr-only">Correo electrónico</label>
-                    <input id="email" name="email" type="email" required value="{{ old('email') }}"
+                    <input id="email" name="email" type="email" required value="{{ $email ?? old('email') }}"
+                        {{ isset($email) && $email ? 'readonly' : '' }}
                         class="appearance-none rounded-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
                         placeholder="Correo electrónico">
                 </div>
@@ -35,12 +37,19 @@
                         placeholder="Contraseña (mín. 6 caracteres)">
                 </div>
                 <div>
-                    <label for="rol" class="sr-only">Tipo de usuario</label>
-                    <select id="rol" name="rol" required
-                        class="appearance-none rounded-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm">
-                        <option value="alumno">Alumno</option>
-                        <option value="profesor">Profesor</option>
-                    </select>
+                    @if(isset($invitation_token) && $invitation_token)
+                        <input type="hidden" name="rol" value="alumno">
+                        <div class="appearance-none rounded-none relative block w-full px-3 py-3 border border-gray-300 bg-gray-50 text-gray-600 rounded-b-md sm:text-sm">
+                            Rol: Alumno (Invitación)
+                        </div>
+                    @else
+                        <label for="rol" class="sr-only">Tipo de usuario</label>
+                        <select id="rol" name="rol" required
+                            class="appearance-none rounded-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm">
+                            <option value="alumno">Alumno</option>
+                            <option value="profesor">Profesor</option>
+                        </select>
+                    @endif
                 </div>
             </div>
 

@@ -15,7 +15,8 @@ class PagoController extends Controller {
     }
 
     public function index() {
-        $pagos = $this->service->getAll();
+        $profesorId = auth()->id();
+        $pagos = \App\Models\Pago::where('profesorId', $profesorId)->with('alumno')->get();
 
         $mesActual = Carbon::now()->format('Y-m');
 
@@ -35,7 +36,10 @@ class PagoController extends Controller {
     }
 
     public function create() {
-        $alumnos = $this->alumnoService->getAllAlumnos();
+        $profesorId = auth()->id();
+        $alumnos = Alumno::whereHas('grupos', function($q) use ($profesorId) {
+            $q->where('profesorId', $profesorId);
+        })->get();
         return view('profesor.pagos.create', compact('alumnos'));
     }
 
@@ -48,6 +52,8 @@ class PagoController extends Controller {
             'estado' => 'required|in:pendiente,pagado,vencido',
             'notas' => 'nullable|string',
         ]);
+
+        $data['profesorId'] = auth()->id();
 
         $this->service->create($data);
         return redirect()->route('pagos.index')->with('success', 'Pago registrado correctamente');
@@ -85,7 +91,8 @@ class PagoController extends Controller {
         $alumno = \App\Models\Alumno::where('userId', $user->id)->first();
         if (!$alumno) return redirect('/')->with('error', 'Perfil de alumno no encontrado');
 
-        $pagos = $this->service->getForAlumno($alumno->id);
+        $profesorId = session('active_profesor_id');
+        $pagos = $this->service->getForAlumno($alumno->id, $profesorId);
         return view('alumno.pagos.index', compact('pagos', 'alumno'));
     }
 }

@@ -19,9 +19,14 @@ class CompetenciaController extends Controller
             return redirect('/')->with('error', 'Perfil de alumno no encontrado');
         }
 
-        $competencias = Competencia::where('alumno_id', $alumno->id)
-            ->orderBy('fecha', 'asc')
-            ->get();
+        $profesorId = session('active_profesor_id');
+        $competencias = Competencia::where('alumno_id', $alumno->id);
+
+        if ($profesorId) {
+            $competencias->where('profesorId', $profesorId);
+        }
+
+        $competencias = $competencias->orderBy('fecha', 'asc')->get();
 
         return view('alumno.competencias.index', compact('competencias'));
     }
@@ -46,6 +51,7 @@ class CompetenciaController extends Controller
         Competencia::create([
             'id' => 'comp' . bin2hex(random_bytes(10)),
             'alumno_id' => $alumno->id,
+            'profesorId' => session('active_profesor_id'),
             'nombre' => $request->nombre,
             'fecha' => $request->fecha,
             'ubicación' => $request->ubicación,
@@ -115,7 +121,9 @@ class CompetenciaController extends Controller
 
     public function indexProfesor()
     {
-        $competencias = Competencia::with('alumno')
+        $profesorId = auth()->id();
+        $competencias = Competencia::where('profesorId', $profesorId)
+            ->with('alumno')
             ->orderBy('fecha', 'asc')
             ->get();
 

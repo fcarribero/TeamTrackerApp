@@ -8,11 +8,14 @@ use App\Http\Controllers\CompetenciaController;
 use App\Http\Controllers\EntrenamientoController;
 use App\Http\Controllers\GarminController;
 use App\Http\Controllers\GrupoController;
+use App\Http\Controllers\InvitacionController;
 use App\Http\Controllers\PagoController;
 use App\Http\Controllers\PlantillaController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\StatsController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
+use Illuminate\Http\Request;
 
 Route::get('/', function () {
     return redirect()->route('login');
@@ -24,15 +27,53 @@ Route::get('/signup', [AuthController::class, 'showSignup'])->name('signup');
 Route::post('/signup', [AuthController::class, 'signup']);
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
+// Rutas para recuperación de contraseña
+Route::get('/forgot-password', [AuthController::class, 'showForgotPassword'])->name('password.request');
+Route::post('/forgot-password', [AuthController::class, 'sendResetLink'])->name('password.email');
+Route::get('/reset-password/{token}', [AuthController::class, 'showResetPassword'])->name('password.reset');
+Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('password.update');
+
+// Rutas para Invitaciones
+Route::post('/invitaciones', [InvitacionController::class, 'store'])->name('invitaciones.store')->middleware('auth');
+Route::get('/invitaciones/aceptar/{token}', [InvitacionController::class, 'aceptar'])->name('invitaciones.aceptar');
+
 // Rutas de Autenticación con Google
 Route::get('/auth/google', [GoogleController::class, 'redirectToGoogle'])->name('auth.google');
 Route::get('/auth/google/callback', [GoogleController::class, 'handleGoogleCallback']);
 
-Route::middleware(['auth'])->group(function () {
+// Rutas para verificación de email
+Route::get('/email/verify', function () {
+    return view('auth.verify-email');
+})->middleware('auth')->name('verification.notice');
+
+Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
+    $request->fulfill();
+    return redirect('/dashboard');
+})->middleware(['auth', 'signed'])->name('verification.verify');
+
+Route::post('/email/verification-notification', function (Request $request) {
+    $request->user()->sendEmailVerificationNotification();
+    return back()->with('message', 'Link de verificación enviado.');
+})->middleware(['auth', 'throttle:6,1'])->name('verification.send');
+
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/dashboard', function() {
+        $user = auth()->user();
+        if ($user->rol === 'profesor') {
+            return redirect()->route('dashboard.profesor');
+        } else {
+            return redirect()->route('dashboard.alumno');
+        }
+    });
+
     Route::get('/dashboard/profesor', [StatsController::class, 'profesorDashboard'])->name('dashboard.profesor');
     Route::get('/dashboard/alumno', function() {
         return redirect()->route('alumno.entrenamientos');
     })->name('dashboard.alumno');
+
+    // Selección de grupo para alumnos
+    Route::get('/dashboard/alumno/seleccionar-grupo', [GrupoController::class, 'seleccionar'])->name('grupos.seleccionar');
+    Route::post('/dashboard/alumno/seleccionar-grupo', [GrupoController::class, 'setGrupo'])->name('grupos.set');
 
     // Rutas para Alumnos (Profesor)
     Route::resource('/dashboard/profesor/alumnos', AlumnoController::class)->names([
@@ -115,6 +156,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard/profesor/settings', [SettingController::class, 'index'])->name('settings.index');
     Route::post('/dashboard/profesor/settings', [SettingController::class, 'store'])->name('settings.store');
 
-    // Rutas para Perfil/Ubicación
+    // Rutas para Perfil
+    Route::get('/dashboard/profile', [\App\Http\Controllers\ProfileController::class, 'show'])->name('profile.show');
+    Route::put('/dashboard/profile/password', [\App\Http\Controllers\ProfileController::class, 'updatePassword'])->name('profile.password.update');
     Route::post('/dashboard/profile/location', [\App\Http\Controllers\ProfileController::class, 'updateLocation'])->name('profile.update-location');
 });

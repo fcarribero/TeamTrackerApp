@@ -24,13 +24,17 @@ class AlumnoController extends Controller
 
     public function index(Request $request)
     {
-        $alumnos = $this->alumnoService->getAllAlumnos();
+        $profesorId = auth()->id();
+        $alumnos = auth()->user()->alumnos()->with(['user', 'grupos' => function($q) use ($profesorId) {
+            $q->where('profesorId', $profesorId);
+        }])->get();
+
         return view('profesor.alumnos.index', compact('alumnos'));
     }
 
     public function create()
     {
-        $grupos = $this->grupoService->getAll();
+        $grupos = auth()->user()->gruposManaged;
         return view('profesor.alumnos.create', compact('grupos'));
     }
 
@@ -57,6 +61,10 @@ class AlumnoController extends Controller
         }
 
         $alumno = $this->alumnoService->createAlumno($data);
+
+        // Vincular con el profesor actual (Equipo)
+        $alumno->profesores()->syncWithoutDetaching([auth()->id()]);
+
         if ($request->has('grupos')) {
             $alumno->grupos()->sync($request->grupos);
         }
@@ -80,7 +88,7 @@ class AlumnoController extends Controller
         if (!$alumno) {
             return redirect()->route('alumnos.index')->with('error', 'Alumno no encontrado');
         }
-        $grupos = $this->grupoService->getAll();
+        $grupos = auth()->user()->gruposManaged;
         return view('profesor.alumnos.edit', compact('alumno', 'grupos'));
     }
 
@@ -116,15 +124,33 @@ class AlumnoController extends Controller
         }
 
         $this->alumnoService->updateAlumno($id, $data);
-        $alumno->grupos()->sync($request->grupos ?? []);
+
+        // Solo sincronizar con los grupos que el profesor maneja
+        $managedGroupIds = auth()->user()->gruposManaged()->pluck('id')->toArray();
+        $requestedGroups = $request->grupos ?? [];
+
+        // Mantener grupos que NO son del profesor y actualizar los que SÍ son
+        $otherGroupIds = $alumno->grupos()->whereNotIn('grupos.id', $managedGroupIds)->pluck('grupos.id')->toArray();
+        $newGroups = array_merge($otherGroupIds, array_intersect($requestedGroups, $managedGroupIds));
+
+        $alumno->grupos()->sync($newGroups);
 
         return redirect()->route('alumnos.index')->with('success', 'Alumno actualizado correctamente');
     }
 
     public function destroy($id)
     {
-        $this->alumnoService->deleteAlumno($id);
-        return redirect()->route('alumnos.index')->with('success', 'Alumno eliminado correctamente');
+        $alumno = Alumno::findOrFail($id);
+        $profesorId = auth()->id();
+        $managedGroupIds = auth()->user()->gruposManaged()->pluck('id');
+
+        // Desvincular de los grupos de este profesor
+        $alumno->grupos()->detach($managedGroupIds);
+
+        // Desvincular del profesor (Equipo)
+        $alumno->profesores()->detach($profesorId);
+
+        return redirect()->route('alumnos.index')->with('success', 'Alumno removido de tus grupos y equipo.');
     }
 
     public function configuracion()
