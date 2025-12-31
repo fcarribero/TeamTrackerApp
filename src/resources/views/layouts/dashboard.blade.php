@@ -1,9 +1,23 @@
+@php
+    $user = Auth::user();
+    $settingsUserId = $user->id;
+    if ($user->rol === 'alumno') {
+        $settingsUserId = session('active_profesor_id');
+        if (!$settingsUserId && $user->alumno) {
+            // Fallback por si no hay sesión pero sí un profesor
+            $settingsUserId = $user->alumno->grupos()->pluck('profesorId')->first();
+        }
+        $settingsUserId = $settingsUserId ?: $user->id;
+    }
+    $teamLogo = \App\Models\Setting::get('team_logo', null, $settingsUserId);
+    $teamName = \App\Models\Setting::get('team_name', null, $settingsUserId);
+@endphp
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ $title ?? 'Dashboard - TeamTracker' }}</title>
+    <title>{{ ($teamName ? $teamName . ' | ' : '') . ($title ?? 'TeamTracker') }}</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
@@ -22,20 +36,6 @@
 
             <div class="p-6 border-b border-white/20">
                 <div class="flex items-center gap-3">
-                    @php
-                        $user = Auth::user();
-                        $settingsUserId = $user->id;
-                        if ($user->rol === 'alumno') {
-                            $settingsUserId = session('active_profesor_id');
-                            if (!$settingsUserId && $user->alumno) {
-                                // Fallback por si no hay sesión pero sí un profesor
-                                $settingsUserId = $user->alumno->grupos()->pluck('profesorId')->first();
-                            }
-                            $settingsUserId = $settingsUserId ?: $user->id;
-                        }
-                        $teamLogo = \App\Models\Setting::get('team_logo', null, $settingsUserId);
-                        $teamName = \App\Models\Setting::get('team_name', null, $settingsUserId);
-                    @endphp
                     @if($teamLogo)
                         <div class="bg-white p-1 rounded-xl shadow-lg w-12 h-12 flex items-center justify-center overflow-hidden">
                             <img src="{{ asset('storage/' . $teamLogo) }}" alt="Logo" class="max-w-full max-h-full object-contain">
