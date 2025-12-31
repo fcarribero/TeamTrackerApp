@@ -38,6 +38,40 @@
                     <p class="text-sm font-medium text-gray-900">{{ $user->created_at->format('d/m/Y') }}</p>
                 </div>
             </div>
+
+            @if($user->rol === 'alumno' && $alumno && $alumno->profesores->count() > 0)
+                <div class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100">
+                    <div class="p-4 bg-gray-50 border-b border-gray-100">
+                        <h3 class="text-sm font-bold text-gray-900 flex items-center gap-2">
+                            <i class="fas fa-users text-blue-500"></i>
+                            Mis Equipos
+                        </h3>
+                    </div>
+                    <div class="p-4 space-y-4">
+                        @foreach($alumno->profesores as $profesor)
+                            @php
+                                $teamLogo = \App\Models\Setting::get('team_logo', null, $profesor->id);
+                                $teamName = \App\Models\Setting::get('team_name', null, $profesor->id);
+                            @endphp
+                            <div class="flex items-center gap-3">
+                                @if($teamLogo)
+                                    <div class="w-10 h-10 bg-white p-1 rounded-lg border border-gray-100 flex items-center justify-center overflow-hidden">
+                                        <img src="{{ asset('storage/' . $teamLogo) }}" alt="Logo" class="max-w-full max-h-full object-contain">
+                                    </div>
+                                @else
+                                    <div class="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center text-blue-600">
+                                        <i class="fas fa-users text-sm"></i>
+                                    </div>
+                                @endif
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-sm font-bold text-gray-900 truncate">{{ $teamName ?: $profesor->name }}</p>
+                                    <p class="text-xs text-gray-500 truncate">{{ $profesor->email }}</p>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            @endif
         </div>
 
         <!-- Información Detallada -->

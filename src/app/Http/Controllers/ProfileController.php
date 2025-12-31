@@ -13,7 +13,7 @@ class ProfileController extends Controller
     public function show()
     {
         $user = Auth::user();
-        $alumno = $user->rol === 'alumno' ? $user->alumno : null;
+        $alumno = $user->rol === 'alumno' ? $user->alumno()->with('profesores')->first() : null;
 
         return view('profile.show', compact('user', 'alumno'));
     }
