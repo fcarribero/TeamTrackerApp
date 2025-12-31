@@ -128,7 +128,10 @@ class AuthController extends Controller
 
                     // Notificar al profesor
                     if ($invitacion->profesor) {
-                        Mail::to($invitacion->profesor->email)->send(new NotificarAceptacionInvitacion($user, $invitacion));
+                        $notify = \App\Models\Setting::get('notify_invitation_accepted', '1', $invitacion->profesorId);
+                        if ($notify === '1') {
+                            Mail::to($invitacion->profesor->email)->send(new NotificarAceptacionInvitacion($user, $invitacion));
+                        }
                     }
                 }
             }

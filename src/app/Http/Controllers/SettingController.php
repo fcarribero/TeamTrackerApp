@@ -24,6 +24,7 @@ class SettingController extends Controller
             'ciudad' => 'nullable|string|max:255',
             'latitud' => 'nullable|numeric',
             'longitud' => 'nullable|numeric',
+            'notify_invitation_accepted' => 'nullable|in:0,1',
         ]);
 
         Setting::set('team_name', $request->team_name);
@@ -31,6 +32,10 @@ class SettingController extends Controller
         if ($request->hasFile('team_logo')) {
             $path = $request->file('team_logo')->store('logos', 'public');
             Setting::set('team_logo', $path);
+        }
+
+        if ($request->has('notify_invitation_accepted')) {
+            Setting::set('notify_invitation_accepted', $request->notify_invitation_accepted);
         }
 
         $user = auth()->user();

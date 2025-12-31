@@ -23,6 +23,7 @@
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
     @stack('styles')
     <style>
+        [x-cloak] { display: none !important; }
         .anuncio-contenido p:last-child { margin-bottom: 0; }
         .anuncio-contenido ul { list-style-type: disc; margin-left: 1.5rem; }
         .anuncio-contenido ol { list-style-type: decimal; margin-left: 1.5rem; }
