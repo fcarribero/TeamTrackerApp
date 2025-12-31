@@ -91,8 +91,7 @@ class PagoController extends Controller {
         $alumno = \App\Models\Alumno::where('userId', $user->id)->first();
         if (!$alumno) return redirect('/')->with('error', 'Perfil de alumno no encontrado');
 
-        $profesorId = session('active_profesor_id');
-        $pagos = $this->service->getForAlumno($alumno->id, $profesorId);
+        $pagos = $this->service->getForAlumno($alumno->id);
         return view('alumno.pagos.index', compact('pagos', 'alumno'));
     }
 }

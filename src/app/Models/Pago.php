@@ -33,4 +33,9 @@ class Pago extends Model
     {
         return $this->belongsTo(Alumno::class, 'alumnoId');
     }
+
+    public function profesor()
+    {
+        return $this->belongsTo(User::class, 'profesorId');
+    }
 }

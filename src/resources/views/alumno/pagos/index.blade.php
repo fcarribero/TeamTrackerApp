@@ -19,6 +19,7 @@
             <table class="w-full text-left">
                 <thead class="bg-gray-50 border-b border-gray-100">
                     <tr>
+                        <th class="px-6 py-4 text-sm font-semibold text-gray-900">Equipo</th>
                         <th class="px-6 py-4 text-sm font-semibold text-gray-900">Mes Correspondiente</th>
                         <th class="px-6 py-4 text-sm font-semibold text-gray-900">Monto</th>
                         <th class="px-6 py-4 text-sm font-semibold text-gray-900">Estado</th>
@@ -29,6 +30,17 @@
                 <tbody class="divide-y divide-gray-100">
                     @forelse($pagos as $pago)
                         <tr>
+                            <td class="px-6 py-4">
+                                @php
+                                    $teamName = \App\Models\Setting::get('team_name', null, $pago->profesorId);
+                                @endphp
+                                <div class="flex items-center gap-2">
+                                    <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center text-blue-600">
+                                        <i class="fas fa-users text-xs"></i>
+                                    </div>
+                                    <span class="font-semibold text-gray-900">{{ $teamName ?: $pago->profesor->name }}</span>
+                                </div>
+                            </td>
                             <td class="px-6 py-4 font-medium text-gray-900">
                                 {{ ucfirst(\Carbon\Carbon::parse($pago->mesCorrespondiente)->locale('es')->translatedFormat('F Y')) }}
                             </td>
@@ -50,7 +62,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="5" class="px-6 py-12 text-center text-gray-500">No hay registros de pagos</td>
+                            <td colspan="6" class="px-6 py-12 text-center text-gray-500">No hay registros de pagos</td>
                         </tr>
                     @endforelse
                 </tbody>

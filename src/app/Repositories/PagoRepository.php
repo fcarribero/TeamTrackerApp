@@ -9,6 +9,6 @@ class PagoRepository extends BaseRepository {
         if ($profesorId) {
             $query->where('profesorId', $profesorId);
         }
-        return $query->orderBy('mesCorrespondiente', 'desc')->get();
+        return $query->with('profesor')->orderBy('mesCorrespondiente', 'desc')->get();
     }
 }

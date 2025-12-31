@@ -77,6 +77,7 @@ class StatsController extends Controller
 
         $pagosMesActual = Pago::where('alumnoId', $alumno->id)
             ->where('mesCorrespondiente', 'LIKE', '%' . Carbon::now()->format('Y-m') . '%')
+            ->with('profesor')
             ->orderBy('fechaPago', 'desc')
             ->get();
 
