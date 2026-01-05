@@ -56,9 +56,18 @@
 
                 <div class="space-y-2">
                     <label for="fechaPago" class="text-sm font-semibold text-gray-700">Fecha de Pago</label>
-                    <input type="date" name="fechaPago" id="fechaPago" value="{{ old('fechaPago', date('Y-m-d')) }}" required
+                    <input type="date" name="fechaPago" id="fechaPago" value="{{ old('fechaPago', date('Y-m-d')) }}"
                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition">
                     @error('fechaPago')
+                        <p class="text-red-500 text-xs">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <div class="space-y-2">
+                    <label for="fechaVencimiento" class="text-sm font-semibold text-gray-700">Fecha de Vencimiento</label>
+                    <input type="date" name="fechaVencimiento" id="fechaVencimiento" value="{{ old('fechaVencimiento') }}"
+                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition">
+                    @error('fechaVencimiento')
                         <p class="text-red-500 text-xs">{{ $message }}</p>
                     @enderror
                 </div>
@@ -79,6 +88,7 @@
                         <option value="pendiente" {{ old('estado') == 'pendiente' ? 'selected' : '' }}>Pendiente</option>
                         <option value="pagado" {{ old('estado', 'pagado') == 'pagado' ? 'selected' : '' }}>Pagado</option>
                         <option value="vencido" {{ old('estado') == 'vencido' ? 'selected' : '' }}>Vencido</option>
+                        <option value="cancelado" {{ old('estado') == 'cancelado' ? 'selected' : '' }}>Cancelado</option>
                     </select>
                     @error('estado')
                         <p class="text-red-500 text-xs">{{ $message }}</p>

@@ -3,16 +3,19 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Services\PagoService;
 use App\Services\AlumnoService;
+use App\Services\GrupoService;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 
 class PagoController extends Controller {
     protected $service;
     protected $alumnoService;
+    protected $grupoService;
 
-    public function __construct(PagoService $service, AlumnoService $alumnoService) {
+    public function __construct(PagoService $service, AlumnoService $alumnoService, GrupoService $grupoService) {
         $this->service = $service;
         $this->alumnoService = $alumnoService;
+        $this->grupoService = $grupoService;
     }
 
     public function index() {
@@ -48,9 +51,10 @@ class PagoController extends Controller {
         $data = $request->validate([
             'alumnoId' => 'required|string|exists:users,id',
             'monto' => 'required|numeric|min:0',
-            'fechaPago' => 'required|date',
+            'fechaPago' => 'nullable|date',
+            'fechaVencimiento' => 'nullable|date',
             'mesCorrespondiente' => 'required|string',
-            'estado' => 'required|in:pendiente,pagado,vencido',
+            'estado' => 'required|in:pendiente,pagado,vencido,cancelado',
             'notas' => 'nullable|string',
         ]);
 
@@ -64,7 +68,10 @@ class PagoController extends Controller {
         $pago = $this->service->find($id);
         if (!$pago) return redirect()->route('pagos.index')->with('error', 'Pago no encontrado');
 
-        $alumnos = $this->alumnoService->getAllAlumnos();
+        $profesorId = auth()->id();
+        $alumnos = User::where('rol', 'alumno')->whereHas('grupos', function($q) use ($profesorId) {
+            $q->where('profesorId', $profesorId);
+        })->get();
         return view('profesor.pagos.edit', compact('pago', 'alumnos'));
     }
 
@@ -72,9 +79,10 @@ class PagoController extends Controller {
         $data = $request->validate([
             'alumnoId' => 'required|string|exists:users,id',
             'monto' => 'required|numeric|min:0',
-            'fechaPago' => 'required|date',
+            'fechaPago' => 'nullable|date',
+            'fechaVencimiento' => 'nullable|date',
             'mesCorrespondiente' => 'required|string',
-            'estado' => 'required|in:pendiente,pagado,vencido',
+            'estado' => 'required|in:pendiente,pagado,vencido,cancelado',
             'notas' => 'nullable|string',
         ]);
 
@@ -85,6 +93,55 @@ class PagoController extends Controller {
     public function destroy($id) {
         $this->service->delete($id);
         return redirect()->route('pagos.index')->with('success', 'Pago eliminado correctamente');
+    }
+
+    public function solicitarPagoForm() {
+        $profesorId = auth()->id();
+        $grupos = \App\Models\Grupo::where('profesorId', $profesorId)->get();
+        return view('profesor.pagos.solicitar', compact('grupos'));
+    }
+
+    public function solicitarPagoStore(Request $request) {
+        $data = $request->validate([
+            'grupos' => 'required|array',
+            'grupos.*' => 'required|string|exists:grupos,id',
+            'monto' => 'required|numeric|min:0',
+            'fechaVencimiento' => 'required|date',
+            'mesCorrespondiente' => 'required|string',
+            'cancelarPrevios' => 'nullable|boolean',
+        ]);
+
+        $profesorId = auth()->id();
+        $alumnos = \App\Models\User::whereHas('grupos', function($q) use ($data, $profesorId) {
+            $q->whereIn('grupoId', $data['grupos'])->where('profesorId', $profesorId);
+        })->get();
+
+        if ($alumnos->isEmpty()) {
+            return redirect()->back()->with('error', 'No se encontraron alumnos en los grupos seleccionados');
+        }
+
+        $count = 0;
+        foreach ($alumnos as $alumno) {
+            if ($request->has('cancelarPrevios') && $request->cancelarPrevios) {
+                \App\Models\Pago::where('alumnoId', $alumno->id)
+                    ->where('mesCorrespondiente', $data['mesCorrespondiente'])
+                    ->where('estado', 'pendiente')
+                    ->update(['estado' => 'cancelado']);
+            }
+
+            $this->service->create([
+                'alumnoId' => $alumno->id,
+                'profesorId' => $profesorId,
+                'monto' => $data['monto'],
+                'fechaPago' => now(), // Fecha de creación/solicitud
+                'fechaVencimiento' => $data['fechaVencimiento'],
+                'mesCorrespondiente' => $data['mesCorrespondiente'],
+                'estado' => 'pendiente',
+            ]);
+            $count++;
+        }
+
+        return redirect()->route('pagos.index')->with('success', "Se han creado $count solicitudes de pago correctamente para " . $alumnos->count() . " alumnos.");
     }
 
     public function indexAlumno() {

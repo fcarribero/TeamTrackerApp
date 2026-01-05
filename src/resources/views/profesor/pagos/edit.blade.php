@@ -58,9 +58,19 @@
                 <div class="space-y-2">
                     <label for="fechaPago" class="text-sm font-semibold text-gray-700">Fecha de Pago</label>
                     <input type="date" name="fechaPago" id="fechaPago"
-                           value="{{ old('fechaPago', \Carbon\Carbon::parse($pago->fechaPago)->format('Y-m-d')) }}" required
+                           value="{{ old('fechaPago', $pago->fechaPago ? \Carbon\Carbon::parse($pago->fechaPago)->format('Y-m-d') : '') }}"
                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition">
                     @error('fechaPago')
+                        <p class="text-red-500 text-xs">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <div class="space-y-2">
+                    <label for="fechaVencimiento" class="text-sm font-semibold text-gray-700">Fecha de Vencimiento</label>
+                    <input type="date" name="fechaVencimiento" id="fechaVencimiento"
+                           value="{{ old('fechaVencimiento', $pago->fechaVencimiento ? \Carbon\Carbon::parse($pago->fechaVencimiento)->format('Y-m-d') : '') }}"
+                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition">
+                    @error('fechaVencimiento')
                         <p class="text-red-500 text-xs">{{ $message }}</p>
                     @enderror
                 </div>
@@ -81,6 +91,7 @@
                         <option value="pendiente" {{ old('estado', $pago->estado) == 'pendiente' ? 'selected' : '' }}>Pendiente</option>
                         <option value="pagado" {{ old('estado', $pago->estado) == 'pagado' ? 'selected' : '' }}>Pagado</option>
                         <option value="vencido" {{ old('estado', $pago->estado) == 'vencido' ? 'selected' : '' }}>Vencido</option>
+                        <option value="cancelado" {{ old('estado', $pago->estado) == 'cancelado' ? 'selected' : '' }}>Cancelado</option>
                     </select>
                     @error('estado')
                         <p class="text-red-500 text-xs">{{ $message }}</p>

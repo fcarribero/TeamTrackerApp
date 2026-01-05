@@ -11,10 +11,16 @@
             <h1 class="text-3xl font-bold text-gray-900">Pagos</h1>
             <p class="text-gray-600">Control de mensualidades e ingresos</p>
         </div>
-        <a href="{{ route('pagos.create') }}" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition flex items-center gap-2">
-            <i class="fas fa-plus"></i>
-            Registrar Pago
-        </a>
+        <div class="flex gap-2">
+            <a href="{{ route('pagos.solicitar') }}" class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition flex items-center gap-2">
+                <i class="fas fa-bullhorn"></i>
+                Solicitar Pagos
+            </a>
+            <a href="{{ route('pagos.create') }}" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition flex items-center gap-2">
+                <i class="fas fa-plus"></i>
+                Registrar Pago
+            </a>
+        </div>
     </div>
 
     <!-- Dashboard de Pagos -->
@@ -74,7 +80,7 @@
                         <th class="px-6 py-4 text-sm font-semibold text-gray-900">Mes</th>
                         <th class="px-6 py-4 text-sm font-semibold text-gray-900">Monto</th>
                         <th class="px-6 py-4 text-sm font-semibold text-gray-900">Estado</th>
-                        <th class="px-6 py-4 text-sm font-semibold text-gray-900">Fecha</th>
+                        <th class="px-6 py-4 text-sm font-semibold text-gray-900">Vencimiento</th>
                         <th class="px-6 py-4 text-sm font-semibold text-gray-900 text-right">Acciones</th>
                     </tr>
                 </thead>
@@ -86,13 +92,15 @@
                             <td class="px-6 py-4 font-bold">${{ $pago->monto }}</td>
                             <td class="px-6 py-4">
                                 @php
-                                    $esVencido = $pago->estado === 'vencido' || ($pago->estado === 'pendiente' && $pago->mesCorrespondiente < now()->format('Y-m'));
+                                    $esVencido = $pago->estado === 'vencido' || ($pago->estado === 'pendiente' && ($pago->fechaVencimiento ? $pago->fechaVencimiento->isPast() : $pago->mesCorrespondiente < now()->format('Y-m')));
                                 @endphp
-                                <span class="px-2 py-1 text-xs rounded-full {{ $pago->estado === 'pagado' ? 'bg-green-100 text-green-700' : ($esVencido ? 'bg-red-100 text-red-700' : 'bg-yellow-100 text-yellow-700') }}">
+                                <span class="px-2 py-1 text-xs rounded-full {{ $pago->estado === 'pagado' ? 'bg-green-100 text-green-700' : ($pago->estado === 'cancelado' ? 'bg-gray-100 text-gray-700' : ($esVencido ? 'bg-red-100 text-red-700' : 'bg-yellow-100 text-yellow-700')) }}">
                                     {{ $esVencido && $pago->estado === 'pendiente' ? 'Vencido' : ucfirst($pago->estado) }}
                                 </span>
                             </td>
-                            <td class="px-6 py-4 text-gray-600">{{ \Carbon\Carbon::parse($pago->fechaPago)->format('d/m/Y') }}</td>
+                            <td class="px-6 py-4 text-gray-600">
+                                {{ $pago->fechaVencimiento ? \Carbon\Carbon::parse($pago->fechaVencimiento)->format('d/m/Y') : 'N/A' }}
+                            </td>
                             <td class="px-6 py-4 text-right">
                                 <div class="flex items-center justify-end gap-2">
                                     <a href="{{ route('pagos.edit', $pago->id) }}" class="p-2 text-gray-400 hover:text-blue-600 transition">

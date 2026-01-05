@@ -19,6 +19,7 @@ class Pago extends Model
         'profesorId',
         'monto',
         'fechaPago',
+        'fechaVencimiento',
         'mesCorrespondiente',
         'estado',
         'notas',
@@ -26,6 +27,7 @@ class Pago extends Model
 
     protected $casts = [
         'fechaPago' => 'datetime',
+        'fechaVencimiento' => 'datetime',
         'monto' => 'double',
     ];
 

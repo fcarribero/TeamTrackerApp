@@ -23,6 +23,7 @@
                         <th class="px-6 py-4 text-sm font-semibold text-gray-900">Mes Correspondiente</th>
                         <th class="px-6 py-4 text-sm font-semibold text-gray-900">Monto</th>
                         <th class="px-6 py-4 text-sm font-semibold text-gray-900">Estado</th>
+                        <th class="px-6 py-4 text-sm font-semibold text-gray-900">Vencimiento</th>
                         <th class="px-6 py-4 text-sm font-semibold text-gray-900">Fecha de Pago</th>
                         <th class="px-6 py-4 text-sm font-semibold text-gray-900">Notas</th>
                     </tr>
@@ -47,11 +48,14 @@
                             <td class="px-6 py-4 font-bold text-gray-900">${{ number_format($pago->monto, 2) }}</td>
                             <td class="px-6 py-4">
                                 @php
-                                    $esVencido = $pago->estado === 'vencido' || ($pago->estado === 'pendiente' && $pago->mesCorrespondiente < now()->format('Y-m'));
+                                    $esVencido = $pago->estado === 'vencido' || ($pago->estado === 'pendiente' && ($pago->fechaVencimiento ? $pago->fechaVencimiento->isPast() : $pago->mesCorrespondiente < now()->format('Y-m')));
                                 @endphp
-                                <span class="px-2 py-1 text-xs rounded-full {{ $pago->estado === 'pagado' ? 'bg-green-100 text-green-700' : ($esVencido ? 'bg-red-100 text-red-700' : 'bg-yellow-100 text-yellow-700') }}">
+                                <span class="px-2 py-1 text-xs rounded-full {{ $pago->estado === 'pagado' ? 'bg-green-100 text-green-700' : ($pago->estado === 'cancelado' ? 'bg-gray-100 text-gray-700' : ($esVencido ? 'bg-red-100 text-red-700' : 'bg-yellow-100 text-yellow-700')) }}">
                                     {{ $esVencido && $pago->estado === 'pendiente' ? 'Vencido' : ucfirst($pago->estado) }}
                                 </span>
+                            </td>
+                            <td class="px-6 py-4 text-gray-600">
+                                {{ $pago->fechaVencimiento ? $pago->fechaVencimiento->format('d/m/Y') : '---' }}
                             </td>
                             <td class="px-6 py-4 text-gray-600">
                                 {{ $pago->fechaPago ? $pago->fechaPago->format('d/m/Y') : '---' }}
