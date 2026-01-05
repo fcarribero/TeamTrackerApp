@@ -13,7 +13,7 @@
         </div>
     </div>
 
-    <div class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100">
+    <div id="tour-lista-competencias" class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100">
         <div class="overflow-x-auto">
             <table class="w-full text-left">
                 <thead>

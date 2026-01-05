@@ -17,7 +17,7 @@
         </a>
     </div>
 
-    <div class="bg-white rounded-xl shadow-md p-6 border border-gray-100">
+    <div id="tour-lista-entrenamientos" class="bg-white rounded-xl shadow-md p-6 border border-gray-100">
         <div class="space-y-4">
             @forelse($entrenamientos as $entrenamiento)
                 <div class="flex items-center gap-4 p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition">

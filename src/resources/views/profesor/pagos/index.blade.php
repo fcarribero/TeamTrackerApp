@@ -18,7 +18,7 @@
     </div>
 
     <!-- Dashboard de Pagos -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <div id="tour-pagos-stats" class="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div class="bg-white rounded-xl shadow-md p-6 border-l-4 border-green-500">
             <div class="flex items-center justify-between mb-4">
                 <div class="bg-green-100 p-3 rounded-lg text-green-600">
@@ -65,7 +65,7 @@
         </div>
     @endif
 
-    <div class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100">
+    <div id="tour-lista-pagos" class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100">
         <div class="overflow-x-auto">
             <table class="w-full text-left">
                 <thead class="bg-gray-50 border-b border-gray-100">

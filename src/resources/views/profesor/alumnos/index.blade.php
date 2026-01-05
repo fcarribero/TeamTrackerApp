@@ -13,7 +13,7 @@
         </div>
     </div>
 
-    <div class="bg-white p-6 rounded-xl shadow-md border border-gray-100 mb-6">
+    <div id="tour-invitar-alumno" class="bg-white p-6 rounded-xl shadow-md border border-gray-100 mb-6">
         <h3 class="text-lg font-bold text-gray-900 mb-4">Invitar Alumno</h3>
         <form action="{{ route('invitaciones.store') }}" method="POST" class="flex flex-col md:flex-row gap-4">
             @csrf
@@ -28,7 +28,7 @@
         </form>
     </div>
 
-    <div class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100">
+    <div id="tour-lista-alumnos" class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100">
         <div class="overflow-x-auto">
             <table class="w-full text-left">
                 <thead class="bg-gray-50 border-b border-gray-100">

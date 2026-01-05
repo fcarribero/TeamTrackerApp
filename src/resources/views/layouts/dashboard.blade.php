@@ -80,31 +80,31 @@
                 <p class="text-xs font-semibold text-blue-200 uppercase tracking-wider mb-3 px-3">Menú Principal</p>
 
                 @if(Auth::user()->rol === 'profesor')
-                    <a href="{{ route('dashboard.profesor') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all {{ request()->routeIs('dashboard.profesor') ? 'bg-white text-blue-600 shadow-lg' : 'text-blue-50 hover:bg-white/10' }}">
+                    <a id="tour-profesor-dashboard" href="{{ route('dashboard.profesor') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all {{ request()->routeIs('dashboard.profesor') ? 'bg-white text-blue-600 shadow-lg' : 'text-blue-50 hover:bg-white/10' }}">
                         <i class="fas fa-home w-5 text-center"></i> <span class="font-medium">Dashboard</span>
                     </a>
-                    <a href="/dashboard/profesor/alumnos" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all {{ request()->is('dashboard/profesor/alumnos*') ? 'bg-white text-blue-600 shadow-lg' : 'text-blue-50 hover:bg-white/10' }}">
+                    <a id="tour-profesor-alumnos" href="/dashboard/profesor/alumnos" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all {{ request()->is('dashboard/profesor/alumnos*') ? 'bg-white text-blue-600 shadow-lg' : 'text-blue-50 hover:bg-white/10' }}">
                         <i class="fas fa-users w-5 text-center"></i> <span class="font-medium">Alumnos</span>
                     </a>
-                    <a href="/dashboard/profesor/grupos" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all {{ request()->is('dashboard/profesor/grupos*') ? 'bg-white text-blue-600 shadow-lg' : 'text-blue-50 hover:bg-white/10' }}">
+                    <a id="tour-profesor-grupos" href="/dashboard/profesor/grupos" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all {{ request()->is('dashboard/profesor/grupos*') ? 'bg-white text-blue-600 shadow-lg' : 'text-blue-50 hover:bg-white/10' }}">
                         <i class="fas fa-clipboard-list w-5 text-center"></i> <span class="font-medium">Grupos</span>
                     </a>
-                    <a href="/dashboard/profesor/pagos" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all {{ request()->is('dashboard/profesor/pagos*') ? 'bg-white text-blue-600 shadow-lg' : 'text-blue-50 hover:bg-white/10' }}">
+                    <a id="tour-profesor-pagos" href="/dashboard/profesor/pagos" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all {{ request()->is('dashboard/profesor/pagos*') ? 'bg-white text-blue-600 shadow-lg' : 'text-blue-50 hover:bg-white/10' }}">
                         <i class="fas fa-credit-card w-5 text-center"></i> <span class="font-medium">Pagos</span>
                     </a>
-                    <a href="/dashboard/profesor/entrenamientos" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all {{ request()->is('dashboard/profesor/entrenamientos*') ? 'bg-white text-blue-600 shadow-lg' : 'text-blue-50 hover:bg-white/10' }}">
+                    <a id="tour-profesor-entrenamientos" href="/dashboard/profesor/entrenamientos" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all {{ request()->is('dashboard/profesor/entrenamientos*') ? 'bg-white text-blue-600 shadow-lg' : 'text-blue-50 hover:bg-white/10' }}">
                         <i class="fas fa-calendar w-5 text-center"></i> <span class="font-medium">Entrenamientos</span>
                     </a>
-                    <a href="/dashboard/profesor/plantillas" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all {{ request()->is('dashboard/profesor/plantillas*') ? 'bg-white text-blue-600 shadow-lg' : 'text-blue-50 hover:bg-white/10' }}">
+                    <a id="tour-profesor-plantillas" href="/dashboard/profesor/plantillas" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all {{ request()->is('dashboard/profesor/plantillas*') ? 'bg-white text-blue-600 shadow-lg' : 'text-blue-50 hover:bg-white/10' }}">
                         <i class="fas fa-file-alt w-5 text-center"></i> <span class="font-medium">Plantillas</span>
                     </a>
-                    <a href="{{ route('competencias.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all {{ request()->routeIs('competencias.*') ? 'bg-white text-blue-600 shadow-lg' : 'text-blue-50 hover:bg-white/10' }}">
+                    <a id="tour-profesor-competencias" href="{{ route('competencias.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all {{ request()->routeIs('competencias.*') ? 'bg-white text-blue-600 shadow-lg' : 'text-blue-50 hover:bg-white/10' }}">
                         <i class="fas fa-medal w-5 text-center"></i> <span class="font-medium">Competencias</span>
                     </a>
-                    <a href="{{ route('anuncios.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all {{ request()->routeIs('anuncios.index') ? 'bg-white text-blue-600 shadow-lg' : 'text-blue-50 hover:bg-white/10' }}">
+                    <a id="tour-profesor-anuncios" href="{{ route('anuncios.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all {{ request()->routeIs('anuncios.index') ? 'bg-white text-blue-600 shadow-lg' : 'text-blue-50 hover:bg-white/10' }}">
                         <i class="fas fa-bullhorn w-5 text-center"></i> <span class="font-medium">Anuncio</span>
                     </a>
-                    <a href="{{ route('settings.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all {{ request()->routeIs('settings.index') ? 'bg-white text-blue-600 shadow-lg' : 'text-blue-50 hover:bg-white/10' }}">
+                    <a id="tour-profesor-settings" href="{{ route('settings.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all {{ request()->routeIs('settings.index') ? 'bg-white text-blue-600 shadow-lg' : 'text-blue-50 hover:bg-white/10' }}">
                         <i class="fas fa-cog w-5 text-center"></i> <span class="font-medium">Configuración</span>
                     </a>
                 @else
@@ -128,6 +128,11 @@
 
                 @if(Auth::user()->rol === 'alumno')
                     <button onclick="startTour()" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all text-blue-50 hover:bg-white/10">
+                        <i class="fas fa-question-circle w-5 text-center"></i> <span class="font-medium">Ayuda / Tour</span>
+                    </button>
+                @endif
+                @if(Auth::user()->rol === 'profesor')
+                    <button onclick="startProfesorTour()" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all text-blue-50 hover:bg-white/10">
                         <i class="fas fa-question-circle w-5 text-center"></i> <span class="font-medium">Ayuda / Tour</span>
                     </button>
                 @endif
@@ -234,6 +239,70 @@
                 if (!localStorage.getItem('alumno_tour_completed')) {
                     driverObj.drive();
                     localStorage.setItem('alumno_tour_completed', 'true');
+                }
+            });
+        </script>
+    @endif
+
+    @if(Auth::user()->rol === 'profesor')
+        <script src="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.js.iife.js"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                const driver = window.driver.js.driver;
+
+                const driverObj = driver({
+                    showProgress: true,
+                    nextBtnText: 'Siguiente',
+                    prevBtnText: 'Anterior',
+                    doneBtnText: 'Finalizar',
+                    steps: [
+                        // Sidebar
+                        { element: '#tour-profesor-dashboard', popover: { title: 'Dashboard', description: 'Resumen general de tu equipo, alumnos y entrenamientos.', side: "right", align: 'start' }},
+                        { element: '#tour-profesor-alumnos', popover: { title: 'Gestión de Alumnos', description: 'Aquí puedes invitar nuevos alumnos y ver sus perfiles completos.', side: "right", align: 'start' }},
+                        { element: '#tour-profesor-grupos', popover: { title: 'Grupos', description: 'Organiza a tus alumnos en grupos para facilitar la asignación de entrenamientos.', side: "right", align: 'start' }},
+                        { element: '#tour-profesor-pagos', popover: { title: 'Pagos y Cobros', description: 'Lleva el control de las mensualidades e ingresos de tus alumnos.', side: "right", align: 'start' }},
+                        { element: '#tour-profesor-entrenamientos', popover: { title: 'Calendario', description: 'Programa sesiones de entrenamiento y revisa las devoluciones de tus alumnos.', side: "right", align: 'start' }},
+                        { element: '#tour-profesor-plantillas', popover: { title: 'Plantillas', description: 'Crea modelos de entrenamiento reutilizables para ahorrar tiempo.', side: "right", align: 'start' }},
+                        { element: '#tour-profesor-competencias', popover: { title: 'Competencias', description: 'Sigue los objetivos de tus alumnos y crea sus planes de carrera.', side: "right", align: 'start' }},
+                        { element: '#tour-profesor-anuncios', popover: { title: 'Anuncios', description: 'Publica avisos importantes que todos tus alumnos verán al ingresar.', side: "right", align: 'start' }},
+                        { element: '#tour-profesor-settings', popover: { title: 'Configuración de Equipo', description: 'Personaliza el nombre y logo de tu equipo, y ajusta las preferencias.', side: "right", align: 'start' }},
+
+                        // Contextuales
+                        ...(document.querySelector('#tour-stats-cards') ? [
+                            { element: '#tour-stats-cards', popover: { title: 'Estadísticas Rápidas', description: 'Vistazo rápido a los números clave de tu equipo este mes.', side: "top" }},
+                            { element: '#tour-proximos-entrenamientos', popover: { title: 'Entrenamientos Cercanos', description: 'Lo que tienes programado para los próximos días.', side: "top" }},
+                            { element: '#tour-ultimos-alumnos', popover: { title: 'Nuevas Incorporaciones', description: 'Los últimos alumnos que se han unido a tu equipo.', side: "top" }}
+                        ] : []),
+
+                        ...(document.querySelector('#tour-invitar-alumno') ? [
+                            { element: '#tour-invitar-alumno', popover: { title: 'Hacer crecer tu equipo', description: 'Envía una invitación por correo para que un alumno se registre.', side: "top" }},
+                            { element: '#tour-lista-alumnos', popover: { title: 'Tu lista de Alumnos', description: 'Accede al perfil, notas y historial de cada uno de tus alumnos.', side: "top" }}
+                        ] : []),
+
+                        ...(document.querySelector('#tour-lista-grupos') ? [
+                            { element: '#tour-lista-grupos', popover: { title: 'Tus Grupos', description: 'Visualiza y gestiona los grupos de entrenamiento que has creado.', side: "top" }}
+                        ] : []),
+
+                        ...(document.querySelector('#tour-pagos-stats') ? [
+                            { element: '#tour-pagos-stats', popover: { title: 'Resumen Financiero', description: 'Ingresos del mes y alertas sobre pagos vencidos.', side: "top" }},
+                            { element: '#tour-lista-pagos', popover: { title: 'Historial de Cobros', description: 'Registro detallado de todos los pagos realizados por tus alumnos.', side: "top" }}
+                        ] : []),
+
+                        ...(document.querySelector('#tour-lista-entrenamientos') ? [
+                            { element: '#tour-lista-entrenamientos', popover: { title: 'Historial de Sesiones', description: 'Revisa entrenamientos pasados y accede a las devoluciones de los alumnos.', side: "top" }}
+                        ] : []),
+
+                        ...(document.querySelector('#tour-lista-competencias') ? [
+                            { element: '#tour-lista-competencias', popover: { title: 'Objetivos del Equipo', description: 'Mira las próximas carreras de tus alumnos y carga sus planes de carrera específicos.', side: "top" }}
+                        ] : [])
+                    ]
+                });
+
+                window.startProfesorTour = () => driverObj.drive();
+
+                if (!localStorage.getItem('profesor_tour_completed')) {
+                    driverObj.drive();
+                    localStorage.setItem('profesor_tour_completed', 'true');
                 }
             });
         </script>

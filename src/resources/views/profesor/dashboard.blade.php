@@ -12,7 +12,7 @@
     </div>
 
     <!-- Stats Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+    <div id="tour-stats-cards" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <div class="bg-white rounded-xl shadow-md p-6 border-l-4 border-blue-500">
             <div class="flex items-center justify-between mb-4">
                 <div class="bg-blue-100 p-3 rounded-lg text-blue-600">
@@ -56,7 +56,7 @@
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <!-- Proximos Entrenamientos -->
-        <div class="bg-white rounded-xl shadow-md p-6">
+        <div id="tour-proximos-entrenamientos" class="bg-white rounded-xl shadow-md p-6">
             <div class="flex items-center justify-between mb-6">
                 <h2 class="text-xl font-bold text-gray-900 flex items-center gap-2">
                     <i class="fas fa-clock text-blue-500"></i>
@@ -110,7 +110,7 @@
         </div>
 
         <!-- Ultimos Alumnos -->
-        <div class="bg-white rounded-xl shadow-md p-6">
+        <div id="tour-ultimos-alumnos" class="bg-white rounded-xl shadow-md p-6">
             <div class="flex items-center justify-between mb-6">
                 <h2 class="text-xl font-bold text-gray-900 flex items-center gap-2">
                     <i class="fas fa-users text-blue-500"></i>
