@@ -54,7 +54,7 @@ class GoogleController extends Controller
                     'image' => $googleUser->avatar,
                     'password' => null,
                     'fechaNacimiento' => now(),
-                    'sexo' => 'otro',
+                    'sexo' => 'masculino', // Valor por defecto ya que solo permitimos hombre/mujer
                 ]);
 
                 Auth::login($user);

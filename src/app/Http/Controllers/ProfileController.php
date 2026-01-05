@@ -21,6 +21,39 @@ class ProfileController extends Controller
         return view('profile.show', compact('user', 'alumno'));
     }
 
+    public function update(Request $request)
+    {
+        $user = Auth::user();
+        $rules = [
+            'nombre' => 'required|string|max:255',
+            'apellido' => 'required|string|max:255',
+        ];
+
+        if ($user->rol === 'alumno') {
+            $rules['dni'] = 'required|string|max:20';
+            $rules['fechaNacimiento'] = 'required|date';
+            $rules['sexo'] = 'required|in:masculino,femenino';
+            $rules['obra_social'] = 'nullable|string|max:255';
+            $rules['numero_socio'] = 'nullable|string|max:255';
+            $rules['vencimiento_certificado'] = 'nullable|date';
+            $rules['certificado_medico'] = 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048';
+        }
+
+        $data = $request->validate($rules);
+
+        if ($request->hasFile('certificado_medico')) {
+            if ($user->certificado_medico) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($user->certificado_medico);
+            }
+            $path = $request->file('certificado_medico')->store('certificados', 'public');
+            $data['certificado_medico'] = $path;
+        }
+
+        $user->update($data);
+
+        return back()->with('success', 'Perfil actualizado correctamente');
+    }
+
     public function updatePassword(Request $request)
     {
         $request->validate([

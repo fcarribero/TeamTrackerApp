@@ -42,6 +42,33 @@ class AlumnoController extends Controller
         return view('profesor.alumnos.show', compact('alumno', 'entrenamientos'));
     }
 
+    public function store(Request $request)
+    {
+        $data = $request->validate([
+            'dni' => 'required|string|max:20',
+            'nombre' => 'required|string|max:255',
+            'apellido' => 'required|string|max:255',
+            'fechaNacimiento' => 'required|date',
+            'notas' => 'nullable|string',
+            'grupos' => 'nullable|array',
+            'grupos.*' => 'exists:grupos,id'
+        ]);
+
+        $alumno = $this->alumnoService->createAlumno($data);
+
+        // Vincular con el profesor actual
+        $alumno->profesores()->syncWithoutDetaching([auth()->id()]);
+
+        // Sincronizar grupos (solo los que el profesor maneja)
+        if (!empty($data['grupos'])) {
+            $managedGroupIds = auth()->user()->gruposManaged()->pluck('id')->toArray();
+            $validGroups = array_intersect($data['grupos'], $managedGroupIds);
+            $alumno->grupos()->sync($validGroups);
+        }
+
+        return redirect()->route('alumnos.index')->with('success', 'Alumno creado y vinculado correctamente');
+    }
+
     public function edit($id)
     {
         $alumno = $this->alumnoService->getAlumnoById($id);
@@ -60,30 +87,12 @@ class AlumnoController extends Controller
         }
 
         $data = $request->validate([
-            'dni' => 'nullable|string|max:20',
-            'nombre' => 'required|string|max:255',
-            'apellido' => 'required|string|max:255',
-            'fechaNacimiento' => 'required|date',
-            'sexo' => 'required|in:masculino,femenino',
-            'obra_social' => 'nullable|string|max:255',
-            'numero_socio' => 'nullable|string|max:255',
-            'certificado_medico' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
-            'vencimiento_certificado' => 'nullable|date',
             'notas' => 'nullable|string',
             'grupos' => 'nullable|array',
             'grupos.*' => 'exists:grupos,id'
         ]);
 
-        if ($request->hasFile('certificado_medico')) {
-            // Eliminar certificado anterior si existe
-            if ($alumno->certificado_medico) {
-                Storage::disk('public')->delete($alumno->certificado_medico);
-            }
-            $path = $request->file('certificado_medico')->store('certificados', 'public');
-            $data['certificado_medico'] = $path;
-        }
-
-        $this->alumnoService->updateAlumno($id, $data);
+        $this->alumnoService->updateAlumno($id, ['notas' => $data['notas'] ?? $alumno->notas]);
 
         // Solo sincronizar con los grupos que el profesor maneja
         $managedGroupIds = auth()->user()->gruposManaged()->pluck('id')->toArray();
@@ -95,7 +104,7 @@ class AlumnoController extends Controller
 
         $alumno->grupos()->sync($newGroups);
 
-        return redirect()->route('alumnos.index')->with('success', 'Alumno actualizado correctamente');
+        return redirect()->route('alumnos.index')->with('success', 'Asignación de grupos actualizada correctamente');
     }
 
     public function destroy($id)

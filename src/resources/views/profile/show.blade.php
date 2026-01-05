@@ -76,48 +76,90 @@
                         Información Personal
                     </h3>
 
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                        <div>
-                            <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Nombre Completo</p>
-                            <p class="text-sm font-medium text-gray-900">
-                                {{ $user->nombre }} {{ $user->apellido }}
-                            </p>
-                        </div>
-                        <div>
-                            <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Correo Electrónico</p>
-                            <div class="flex items-center gap-2">
-                                <p class="text-sm font-medium text-gray-900">{{ $user->email }}</p>
+                    <form action="{{ route('profile.update') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
+                        @csrf
+                        @method('PUT')
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                            <div class="space-y-1">
+                                <label class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Nombre</label>
+                                <input type="text" name="nombre" value="{{ old('nombre', $user->nombre) }}" required
+                                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 text-sm">
                             </div>
-                        </div>
+                            <div class="space-y-1">
+                                <label class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Apellido</label>
+                                <input type="text" name="apellido" value="{{ old('apellido', $user->apellido) }}" required
+                                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 text-sm">
+                            </div>
+                            <div class="sm:col-span-2 space-y-1">
+                                <label class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Correo Electrónico (No modificable)</label>
+                                <input type="email" value="{{ $user->email }}" readonly
+                                       class="w-full px-4 py-2 border border-gray-200 bg-gray-50 rounded-lg text-gray-500 text-sm cursor-not-allowed">
+                            </div>
 
-                        @if($user->rol === 'alumno')
-                            <div>
-                                <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">DNI</p>
-                                <p class="text-sm font-medium text-gray-900">{{ $user->dni ?? '-' }}</p>
-                            </div>
-                            <div>
-                                <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Fecha de Nacimiento</p>
-                                <p class="text-sm font-medium text-gray-900">
-                                    {{ $user->fechaNacimiento ? $user->fechaNacimiento->format('d/m/Y') : '-' }}
-                                </p>
-                            </div>
-                            <div>
-                                <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Sexo</p>
-                                <p class="text-sm font-medium text-gray-900 capitalize">{{ $user->sexo }}</p>
-                            </div>
-                            <div>
-                                <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Obra Social</p>
-                                <p class="text-sm font-medium text-gray-900">{{ $user->obra_social ?? '-' }}</p>
-                            </div>
-                        @endif
+                            @if($user->rol === 'alumno')
+                                <div class="space-y-1">
+                                    <label class="text-xs font-semibold text-gray-400 uppercase tracking-wider">DNI</label>
+                                    <input type="text" name="dni" value="{{ old('dni', $user->dni) }}" required
+                                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 text-sm">
+                                </div>
+                                <div class="space-y-1">
+                                    <label class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Fecha de Nacimiento</label>
+                                    <input type="date" name="fechaNacimiento" value="{{ old('fechaNacimiento', $user->fechaNacimiento ? $user->fechaNacimiento->format('Y-m-d') : '') }}" required
+                                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 text-sm">
+                                </div>
+                                <div class="space-y-1">
+                                    <label class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Sexo</label>
+                                    <select name="sexo" required
+                                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 text-sm">
+                                        <option value="masculino" {{ old('sexo', $user->sexo) == 'masculino' ? 'selected' : '' }}>Masculino</option>
+                                        <option value="femenino" {{ old('sexo', $user->sexo) == 'femenino' ? 'selected' : '' }}>Femenino</option>
+                                    </select>
+                                </div>
+                                <div class="sm:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-6 bg-gray-50 p-4 rounded-xl border border-gray-100">
+                                    <div class="space-y-1">
+                                        <label class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Obra Social</label>
+                                        <input type="text" name="obra_social" value="{{ old('obra_social', $user->obra_social) }}"
+                                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 text-sm">
+                                    </div>
+                                    <div class="space-y-1">
+                                        <label class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Número de Socio</label>
+                                        <input type="text" name="numero_socio" value="{{ old('numero_socio', $user->numero_socio) }}"
+                                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 text-sm">
+                                    </div>
+                                </div>
 
-                        @if($user->ciudad)
-                            <div class="sm:col-span-2">
-                                <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Ubicación</p>
-                                <p class="text-sm font-medium text-gray-900">{{ $user->ciudad }}</p>
-                            </div>
-                        @endif
-                    </div>
+                                <div class="sm:col-span-2 border-t border-gray-100 pt-4 mt-2">
+                                    <h4 class="text-sm font-bold text-gray-900 mb-4 flex items-center gap-2">
+                                        <i class="fas fa-file-medical text-blue-500"></i>
+                                        Certificado Médico
+                                    </h4>
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                                        <div class="space-y-1">
+                                            <label class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Archivo de Certificado</label>
+                                            <input type="file" name="certificado_medico" accept=".pdf,.jpg,.jpeg,.png"
+                                                   class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+                                            @if($user->certificado_medico)
+                                                <div class="flex items-center gap-2 mt-2 text-xs text-blue-600">
+                                                    <i class="fas fa-check-circle"></i>
+                                                    <a href="{{ \Illuminate\Support\Facades\Storage::url($user->certificado_medico) }}" target="_blank" class="hover:underline font-bold">Ver actual</a>
+                                                </div>
+                                            @endif
+                                        </div>
+                                        <div class="space-y-1">
+                                            <label class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Vencimiento</label>
+                                            <input type="date" name="vencimiento_certificado" value="{{ old('vencimiento_certificado', $user->vencimiento_certificado ? $user->vencimiento_certificado->format('Y-m-d') : '') }}"
+                                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 text-sm">
+                                        </div>
+                                    </div>
+                                </div>
+                            @endif
+                        </div>
+                        <div class="flex justify-end">
+                            <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg transition-all text-sm">
+                                Guardar Cambios
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
 

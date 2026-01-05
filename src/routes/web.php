@@ -158,6 +158,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Rutas para Perfil
     Route::get('/dashboard/profile', [\App\Http\Controllers\ProfileController::class, 'show'])->name('profile.show');
+    Route::put('/dashboard/profile', [\App\Http\Controllers\ProfileController::class, 'update'])->name('profile.update');
     Route::put('/dashboard/profile/password', [\App\Http\Controllers\ProfileController::class, 'updatePassword'])->name('profile.password.update');
     Route::post('/dashboard/profile/location', [\App\Http\Controllers\ProfileController::class, 'updateLocation'])->name('profile.update-location');
 });

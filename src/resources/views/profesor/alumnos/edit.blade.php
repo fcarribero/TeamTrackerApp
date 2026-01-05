@@ -25,104 +25,85 @@
             @csrf
             @method('PUT')
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 opacity-60">
                 <div class="space-y-2">
-                    <label for="dni" class="text-sm font-semibold text-gray-700">DNI / ID</label>
-                    <input type="text" name="dni" id="dni" value="{{ old('dni', $alumno->dni) }}"
-                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
-                           placeholder="Número de identificación">
-                    @error('dni')
-                        <p class="text-red-500 text-xs">{{ $message }}</p>
-                    @enderror
+                    <label class="text-sm font-semibold text-gray-700">DNI / ID</label>
+                    <div class="w-full px-4 py-2 border border-gray-200 bg-gray-50 rounded-lg text-gray-600 cursor-not-allowed">
+                        {{ $alumno->dni }}
+                    </div>
                 </div>
 
                 <div class="hidden md:block"></div>
 
                 <div class="space-y-2">
-                    <label for="nombre" class="text-sm font-semibold text-gray-700">Nombre</label>
-                    <input type="text" name="nombre" id="nombre" value="{{ old('nombre', $alumno->nombre) }}" required
-                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
-                           placeholder="Nombre">
-                    @error('nombre')
-                        <p class="text-red-500 text-xs">{{ $message }}</p>
-                    @enderror
+                    <label class="text-sm font-semibold text-gray-700">Nombre</label>
+                    <div class="w-full px-4 py-2 border border-gray-200 bg-gray-50 rounded-lg text-gray-600 cursor-not-allowed">
+                        {{ $alumno->nombre }}
+                    </div>
                 </div>
 
                 <div class="space-y-2">
-                    <label for="apellido" class="text-sm font-semibold text-gray-700">Apellido</label>
-                    <input type="text" name="apellido" id="apellido" value="{{ old('apellido', $alumno->apellido) }}" required
-                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
-                           placeholder="Apellido">
-                    @error('apellido')
-                        <p class="text-red-500 text-xs">{{ $message }}</p>
-                    @enderror
+                    <label class="text-sm font-semibold text-gray-700">Apellido</label>
+                    <div class="w-full px-4 py-2 border border-gray-200 bg-gray-50 rounded-lg text-gray-600 cursor-not-allowed">
+                        {{ $alumno->apellido }}
+                    </div>
                 </div>
 
                 <div class="space-y-2">
-                    <label for="fechaNacimiento" class="text-sm font-semibold text-gray-700">Fecha de Nacimiento</label>
-                    <input type="date" name="fechaNacimiento" id="fechaNacimiento"
-                           value="{{ old('fechaNacimiento', \Carbon\Carbon::parse($alumno->fechaNacimiento)->format('Y-m-d')) }}" required
-                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition">
-                    @error('fechaNacimiento')
-                        <p class="text-red-500 text-xs">{{ $message }}</p>
-                    @enderror
+                    <label class="text-sm font-semibold text-gray-700">Fecha de Nacimiento</label>
+                    <div class="w-full px-4 py-2 border border-gray-200 bg-gray-50 rounded-lg text-gray-600 cursor-not-allowed">
+                        {{ \Carbon\Carbon::parse($alumno->fechaNacimiento)->format('d/m/Y') }}
+                    </div>
                 </div>
 
                 <div class="space-y-2">
-                    <label for="sexo" class="text-sm font-semibold text-gray-700">Sexo</label>
-                    <select name="sexo" id="sexo" required
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition">
-                        <option value="masculino" {{ old('sexo', $alumno->sexo) == 'masculino' ? 'selected' : '' }}>Masculino</option>
-                        <option value="femenino" {{ old('sexo', $alumno->sexo) == 'femenino' ? 'selected' : '' }}>Femenino</option>
-                    </select>
-                    @error('sexo')
-                        <p class="text-red-500 text-xs">{{ $message }}</p>
-                    @enderror
+                    <label class="text-sm font-semibold text-gray-700">Sexo</label>
+                    <div class="w-full px-4 py-2 border border-gray-200 bg-gray-50 rounded-lg text-gray-600 cursor-not-allowed">
+                        {{ ucfirst($alumno->sexo ?? '-') }}
+                    </div>
                 </div>
             </div>
 
-            <div class="bg-blue-50/50 p-6 rounded-xl border border-blue-100 space-y-6">
+            <div class="bg-blue-50/50 p-6 rounded-xl border border-blue-100 space-y-6 opacity-60">
                 <h3 class="text-blue-900 font-bold flex items-center gap-2 border-b border-blue-100 pb-2">
                     <i class="fas fa-id-card"></i>
-                    Información Médica y Social
+                    Información Médica y Social (Solo lectura)
                 </h3>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="space-y-2">
-                        <label for="obra_social" class="text-sm font-semibold text-gray-700">Obra Social / Plan</label>
-                        <input type="text" name="obra_social" id="obra_social" value="{{ old('obra_social', $alumno->obra_social) }}"
-                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition"
-                               placeholder="Ej. OSDE 210">
-                    </div>
-
-                    <div class="space-y-2">
-                        <label for="numero_socio" class="text-sm font-semibold text-gray-700">Número de Socio</label>
-                        <input type="text" name="numero_socio" id="numero_socio" value="{{ old('numero_socio', $alumno->numero_socio) }}"
-                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition"
-                               placeholder="Número de afiliado">
-                    </div>
-
-                    <div class="space-y-2">
-                        <label for="certificado_medico" class="text-sm font-semibold text-gray-700">Certificado Médico (PDF/Imagen)</label>
-                        <input type="file" name="certificado_medico" id="certificado_medico"
-                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition bg-white">
-                        <p class="text-[10px] text-gray-500 italic">Dejar vacío para mantener el actual.</p>
-                        @if($alumno->certificado_medico)
-                            <div class="mt-2 flex items-center gap-2 text-xs text-blue-600">
-                                <i class="fas fa-file-alt"></i>
-                                <a href="{{ Storage::url($alumno->certificado_medico) }}" target="_blank" class="hover:underline font-bold">Ver Certificado Actual</a>
+                    <div class="col-span-full grid grid-cols-1 md:grid-cols-2 gap-6 bg-white/50 p-4 rounded-lg border border-blue-100/50">
+                        <div class="space-y-2">
+                            <label class="text-sm font-semibold text-gray-700">Obra Social / Plan</label>
+                            <div class="w-full px-4 py-2 border border-gray-200 bg-gray-50 rounded-lg text-gray-600">
+                                {{ $alumno->obra_social ?: '-' }}
                             </div>
-                        @endif
-                        @error('certificado_medico')
-                            <p class="text-red-500 text-xs">{{ $message }}</p>
-                        @enderror
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="text-sm font-semibold text-gray-700">Número de Socio</label>
+                            <div class="w-full px-4 py-2 border border-gray-200 bg-gray-50 rounded-lg text-gray-600">
+                                {{ $alumno->numero_socio ?: '-' }}
+                            </div>
+                        </div>
                     </div>
 
                     <div class="space-y-2">
-                        <label for="vencimiento_certificado" class="text-sm font-semibold text-gray-700">Vencimiento del Certificado</label>
-                        <input type="date" name="vencimiento_certificado" id="vencimiento_certificado"
-                               value="{{ old('vencimiento_certificado', $alumno->vencimiento_certificado ? \Carbon\Carbon::parse($alumno->vencimiento_certificado)->format('Y-m-d') : '') }}"
-                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition">
+                        <label class="text-sm font-semibold text-gray-700">Certificado Médico</label>
+                        @if($alumno->certificado_medico)
+                            <div class="flex items-center gap-2 text-sm text-blue-600 py-2">
+                                <i class="fas fa-file-alt"></i>
+                                <a href="{{ Storage::url($alumno->certificado_medico) }}" target="_blank" class="hover:underline font-bold">Ver Certificado</a>
+                            </div>
+                        @else
+                            <div class="text-sm text-gray-500 py-2 italic">No cargado</div>
+                        @endif
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="text-sm font-semibold text-gray-700">Vencimiento del Certificado</label>
+                        <div class="w-full px-4 py-2 border border-gray-200 bg-gray-50 rounded-lg text-gray-600">
+                            {{ $alumno->vencimiento_certificado ? \Carbon\Carbon::parse($alumno->vencimiento_certificado)->format('d/m/Y') : '-' }}
+                        </div>
                     </div>
                 </div>
             </div>

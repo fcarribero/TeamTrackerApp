@@ -33,34 +33,18 @@
                 </div>
 
                 <div x-show="rol === 'alumno'" class="border-t-0">
-                    <div class="grid grid-cols-2 gap-0">
+                    <div class="grid grid-cols-1 gap-0">
                         <div>
                             <label for="dni" class="sr-only">DNI</label>
                             <input id="dni" name="dni" type="text" :required="rol === 'alumno'" value="{{ old('dni') }}"
                                 class="appearance-none rounded-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
                                 placeholder="DNI">
                         </div>
-                        <div>
-                            <label for="sexo" class="sr-only">Sexo</label>
-                            <select id="sexo" name="sexo" :required="rol === 'alumno'"
-                                class="appearance-none rounded-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm">
-                                <option value="">Sexo...</option>
-                                <option value="masculino" {{ old('sexo') == 'masculino' ? 'selected' : '' }}>Masculino</option>
-                                <option value="femenino" {{ old('sexo') == 'femenino' ? 'selected' : '' }}>Femenino</option>
-                                <option value="otro" {{ old('sexo') == 'otro' ? 'selected' : '' }}>Otro</option>
-                            </select>
-                        </div>
                     </div>
                     <div>
                         <label for="fechaNacimiento" class="sr-only">Fecha de Nacimiento</label>
                         <input id="fechaNacimiento" name="fechaNacimiento" type="date" :required="rol === 'alumno'" value="{{ old('fechaNacimiento') }}"
                             class="appearance-none rounded-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm">
-                    </div>
-                    <div>
-                        <label for="obra_social" class="sr-only">Obra Social</label>
-                        <input id="obra_social" name="obra_social" type="text" :required="rol === 'alumno'" value="{{ old('obra_social') }}"
-                            class="appearance-none rounded-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
-                            placeholder="Obra Social">
                     </div>
                 </div>
 

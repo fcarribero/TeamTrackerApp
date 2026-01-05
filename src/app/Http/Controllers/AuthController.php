@@ -79,8 +79,6 @@ class AuthController extends Controller
             'apellido' => 'required_if:rol,alumno|string|max:255',
             'dni' => 'required_if:rol,alumno|string|max:20',
             'fechaNacimiento' => 'required_if:rol,alumno|date',
-            'sexo' => 'required_if:rol,alumno|in:masculino,femenino,otro',
-            'obra_social' => 'required_if:rol,alumno|string|max:255',
         ]);
 
         $userId = 'cl' . bin2hex(random_bytes(10));
@@ -93,8 +91,6 @@ class AuthController extends Controller
             'apellido' => $data['apellido'] ?? null,
             'dni' => $data['rol'] === 'alumno' ? $data['dni'] : null,
             'fechaNacimiento' => $data['rol'] === 'alumno' ? $data['fechaNacimiento'] : null,
-            'sexo' => $data['rol'] === 'alumno' ? $data['sexo'] : null,
-            'obra_social' => $data['rol'] === 'alumno' ? $data['obra_social'] : null,
             'rol' => $data['rol'],
         ]);
 
