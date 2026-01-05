@@ -1,5 +1,6 @@
 <?php
 namespace App\Http\Controllers;
+use App\Models\User;
 use App\Services\PagoService;
 use App\Services\AlumnoService;
 use Illuminate\Http\Request;
@@ -37,7 +38,7 @@ class PagoController extends Controller {
 
     public function create() {
         $profesorId = auth()->id();
-        $alumnos = Alumno::whereHas('grupos', function($q) use ($profesorId) {
+        $alumnos = User::where('rol', 'alumno')->whereHas('grupos', function($q) use ($profesorId) {
             $q->where('profesorId', $profesorId);
         })->get();
         return view('profesor.pagos.create', compact('alumnos'));
@@ -45,7 +46,7 @@ class PagoController extends Controller {
 
     public function store(Request $request) {
         $data = $request->validate([
-            'alumnoId' => 'required|string|exists:alumnos,id',
+            'alumnoId' => 'required|string|exists:users,id',
             'monto' => 'required|numeric|min:0',
             'fechaPago' => 'required|date',
             'mesCorrespondiente' => 'required|string',
@@ -69,7 +70,7 @@ class PagoController extends Controller {
 
     public function update(Request $request, $id) {
         $data = $request->validate([
-            'alumnoId' => 'required|string|exists:alumnos,id',
+            'alumnoId' => 'required|string|exists:users,id',
             'monto' => 'required|numeric|min:0',
             'fechaPago' => 'required|date',
             'mesCorrespondiente' => 'required|string',
@@ -87,9 +88,8 @@ class PagoController extends Controller {
     }
 
     public function indexAlumno() {
-        $user = auth()->user();
-        $alumno = \App\Models\Alumno::where('userId', $user->id)->first();
-        if (!$alumno) return redirect('/')->with('error', 'Perfil de alumno no encontrado');
+        $alumno = auth()->user();
+        if (!$alumno->isAlumno()) return redirect('/')->with('error', 'Perfil de alumno no encontrado');
 
         $pagos = $this->service->getForAlumno($alumno->id);
         return view('alumno.pagos.index', compact('pagos', 'alumno'));

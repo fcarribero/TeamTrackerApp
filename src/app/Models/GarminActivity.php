@@ -37,6 +37,6 @@ class GarminActivity extends Model
 
     public function alumno()
     {
-        return $this->belongsTo(Alumno::class, 'alumno_id');
+        return $this->belongsTo(User::class, 'alumno_id');
     }
 }

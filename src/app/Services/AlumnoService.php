@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Repositories\AlumnoRepository;
+use Illuminate\Support\Str;
 
 class AlumnoService
 {
@@ -32,6 +33,13 @@ class AlumnoService
     {
         if (!isset($data['id'])) {
             $data['id'] = 'cl' . bin2hex(random_bytes(10)); // Simple CUID-like ID
+        }
+        $data['rol'] = 'alumno';
+        if (!isset($data['email'])) {
+            $data['email'] = 'alumno_' . $data['id'] . '@teamtracker.com';
+        }
+        if (!isset($data['password'])) {
+            $data['password'] = bcrypt(Str::random(16));
         }
         return $this->alumnoRepository->create($data);
     }

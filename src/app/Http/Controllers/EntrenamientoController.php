@@ -75,7 +75,7 @@ class EntrenamientoController extends Controller {
             'titulo' => 'required|string|max:255',
             'fecha' => 'required|date',
             'alumnos' => 'nullable|array',
-            'alumnos.*' => 'exists:alumnos,id',
+            'alumnos.*' => 'exists:users,id',
             'grupos' => 'nullable|array',
             'grupos.*' => 'exists:grupos,id',
             'plantillaId' => 'nullable|string|exists:plantillas_entrenamiento,id',
@@ -144,7 +144,7 @@ class EntrenamientoController extends Controller {
             'titulo' => 'required|string|max:255',
             'fecha' => 'required|date',
             'alumnos' => 'nullable|array',
-            'alumnos.*' => 'exists:alumnos,id',
+            'alumnos.*' => 'exists:users,id',
             'grupos' => 'nullable|array',
             'grupos.*' => 'exists:grupos,id',
             'plantillaId' => 'nullable|string|exists:plantillas_entrenamiento,id',
@@ -202,9 +202,8 @@ class EntrenamientoController extends Controller {
     }
 
     public function indexAlumno() {
-        $user = auth()->user();
-        $alumno = \App\Models\Alumno::where('userId', $user->id)->first();
-        if (!$alumno) return redirect('/')->with('error', 'Perfil de alumno no encontrado');
+        $alumno = auth()->user();
+        if (!$alumno->isAlumno()) return redirect('/')->with('error', 'Perfil de alumno no encontrado');
 
         $profesorId = session('active_profesor_id');
 
@@ -233,9 +232,8 @@ class EntrenamientoController extends Controller {
     }
 
     public function completarAlumno(Request $request, $id) {
-        $user = auth()->user();
-        $alumno = \App\Models\Alumno::where('userId', $user->id)->first();
-        if (!$alumno) return back()->with('error', 'Perfil de alumno no encontrado');
+        $alumno = auth()->user();
+        if (!$alumno->isAlumno()) return back()->with('error', 'Perfil de alumno no encontrado');
 
         $data = $request->validate([
             'sensacion' => 'nullable|string',
@@ -263,9 +261,9 @@ class EntrenamientoController extends Controller {
         );
 
         // Si el usuario tiene ubicación, intentamos obtener el clima para esa fecha/hora
-        if ($user->latitud && $user->longitud) {
+        if ($alumno->latitud && $alumno->longitud) {
             $weatherService = app(\App\Services\WeatherService::class);
-            $weatherService->getWeather((float)$user->latitud, (float)$user->longitud, \Carbon\Carbon::parse($data['fecha_realizado']));
+            $weatherService->getWeather((float)$alumno->latitud, (float)$alumno->longitud, \Carbon\Carbon::parse($data['fecha_realizado']));
         }
 
         return back()->with('success', '¡Entrenamiento completado! Gracias por tu feedback.');

@@ -31,7 +31,7 @@ class Pago extends Model
 
     public function alumno()
     {
-        return $this->belongsTo(Alumno::class, 'alumnoId');
+        return $this->belongsTo(User::class, 'alumnoId');
     }
 
     public function profesor()

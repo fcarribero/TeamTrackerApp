@@ -20,7 +20,8 @@ class SettingController extends Controller
         $request->validate([
             'team_name' => 'nullable|string|max:255',
             'team_logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'name' => 'required|string|max:255',
+            'nombre' => 'required|string|max:255',
+            'apellido' => 'nullable|string|max:255',
             'ciudad' => 'nullable|string|max:255',
             'latitud' => 'nullable|numeric',
             'longitud' => 'nullable|numeric',
@@ -39,7 +40,8 @@ class SettingController extends Controller
         }
 
         $user = auth()->user();
-        $user->name = $request->name;
+        $user->nombre = $request->nombre;
+        $user->apellido = $request->apellido;
         $user->ciudad = $request->ciudad;
         $user->latitud = $request->latitud;
         $user->longitud = $request->longitud;

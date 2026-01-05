@@ -28,7 +28,7 @@ class Grupo extends Model
 
     public function alumnos()
     {
-        return $this->belongsToMany(Alumno::class, 'grupos_alumnos', 'grupoId', 'alumnoId');
+        return $this->belongsToMany(User::class, 'grupos_alumnos', 'grupoId', 'alumnoId');
     }
 
     public function entrenamientos()

@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Models\Alumno;
+use App\Models\User;
 use App\Models\GarminAccount;
 use App\Models\GarminActivity;
 use Illuminate\Support\Facades\Http;
@@ -14,7 +14,7 @@ class GarminService
     /**
      * Importar actividades de un alumno específico.
      */
-    public function importActivities(Alumno $alumno)
+    public function importActivities(User $alumno)
     {
         $account = $alumno->garminAccount;
         if (!$account) {

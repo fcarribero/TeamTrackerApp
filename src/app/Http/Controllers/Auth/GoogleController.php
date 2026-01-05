@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Models\Alumno;
 use App\Models\User;
 use Exception;
 use Illuminate\Support\Facades\Auth;
@@ -41,23 +40,21 @@ class GoogleController extends Controller
                 // Si el usuario no existe, lo creamos con rol 'alumno' por defecto
                 $userId = 'cl' . bin2hex(random_bytes(10));
 
+                $parts = explode(' ', $googleUser->name, 2);
+                $nombre = $parts[0];
+                $apellido = $parts[1] ?? '';
+
                 $user = User::create([
                     'id' => $userId,
-                    'name' => $googleUser->name,
+                    'nombre' => $nombre,
+                    'apellido' => $apellido,
                     'email' => $googleUser->email,
                     'google_id' => $googleUser->id,
                     'rol' => 'alumno', // Rol por defecto
                     'image' => $googleUser->avatar,
                     'password' => null,
-                ]);
-
-                // Crear el registro de alumno asociado
-                Alumno::create([
-                    'id' => 'cl' . bin2hex(random_bytes(10)),
-                    'nombre' => $googleUser->name,
                     'fechaNacimiento' => now(),
                     'sexo' => 'otro',
-                    'userId' => $user->id,
                 ]);
 
                 Auth::login($user);

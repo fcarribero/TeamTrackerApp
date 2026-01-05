@@ -1,4 +1,4 @@
-<h3>Has sido invitado por {{ $invitacion->profesor->name }}</h3>
+<h3>Has sido invitado por {{ $invitacion->profesor->nombre }} {{ $invitacion->profesor->apellido }}</h3>
 @if($existeUsuario)
     <p>Has sido invitado a unirte a su grupo. Puedes aceptar la invitación haciendo clic en el siguiente enlace:</p>
     <a href="{{ route('invitaciones.aceptar', ['token' => $invitacion->token]) }}">Aceptar invitación</a>

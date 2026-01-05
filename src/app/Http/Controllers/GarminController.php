@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Alumno;
+use App\Models\User;
 use App\Models\GarminAccount;
 use Exception;
 use Illuminate\Http\Request;
@@ -46,13 +46,8 @@ class GarminController extends Controller
                 return redirect('/dashboard')->with('error', 'Solo los alumnos pueden conectar su cuenta de Garmin.');
             }
 
-            $alumno = Alumno::where('userId', $user->id)->first();
-            if (!$alumno) {
-                return redirect('/dashboard')->with('error', 'No se encontró el perfil de alumno.');
-            }
-
             GarminAccount::updateOrCreate(
-                ['alumno_id' => $alumno->id],
+                ['alumno_id' => $user->id],
                 [
                     'id' => 'ga' . bin2hex(random_bytes(10)),
                     'garmin_user_id' => $garminUser->id,
@@ -75,10 +70,9 @@ class GarminController extends Controller
     public function disconnect()
     {
         $user = Auth::user();
-        $alumno = Alumno::where('userId', $user->id)->first();
 
-        if ($alumno && $alumno->garminAccount) {
-            $alumno->garminAccount->delete();
+        if ($user && $user->garminAccount) {
+            $user->garminAccount->delete();
             return back()->with('success', 'Cuenta de Garmin desconectada.');
         }
 

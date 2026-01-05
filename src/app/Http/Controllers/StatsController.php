@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Alumno;
+use App\Models\User;
 use App\Models\Entrenamiento;
 use App\Models\Pago;
 use App\Services\EntrenamientoService;
@@ -21,7 +21,7 @@ class StatsController extends Controller
     public function profesorDashboard()
     {
         $profesorId = auth()->id();
-        $totalAlumnos = Alumno::whereHas('grupos', function($q) use ($profesorId) {
+        $totalAlumnos = User::where('rol', 'alumno')->whereHas('grupos', function($q) use ($profesorId) {
             $q->where('profesorId', $profesorId);
         })->count();
         $pagosPendientes = Pago::where('profesorId', $profesorId)->where('estado', 'pendiente')->count();
@@ -41,7 +41,7 @@ class StatsController extends Controller
             ->take(5)
             ->get();
 
-        $ultimosAlumnos = Alumno::whereHas('grupos', function($q) use ($profesorId) {
+        $ultimosAlumnos = User::where('rol', 'alumno')->whereHas('grupos', function($q) use ($profesorId) {
             $q->where('profesorId', $profesorId);
         })->orderBy('created_at', 'desc')
             ->take(5)
@@ -61,10 +61,9 @@ class StatsController extends Controller
 
     public function alumnoDashboard()
     {
-        $user = auth()->user();
-        $alumno = Alumno::where('userId', $user->id)->first();
+        $alumno = auth()->user();
 
-        if (!$alumno) {
+        if (!$alumno->isAlumno()) {
             return redirect('/')->with('error', 'Perfil de alumno no encontrado');
         }
 

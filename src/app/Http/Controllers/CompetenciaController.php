@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Alumno;
+use App\Models\User;
 use App\Models\Competencia;
 use Illuminate\Http\Request;
 
@@ -12,10 +12,9 @@ class CompetenciaController extends Controller
 
     public function indexAlumno()
     {
-        $user = auth()->user();
-        $alumno = Alumno::where('userId', $user->id)->first();
+        $alumno = auth()->user();
 
-        if (!$alumno) {
+        if (!$alumno->isAlumno()) {
             return redirect('/')->with('error', 'Perfil de alumno no encontrado');
         }
 
@@ -33,10 +32,9 @@ class CompetenciaController extends Controller
 
     public function storeAlumno(Request $request)
     {
-        $user = auth()->user();
-        $alumno = Alumno::where('userId', $user->id)->first();
+        $alumno = auth()->user();
 
-        if (!$alumno) {
+        if (!$alumno->isAlumno()) {
             return redirect()->back()->with('error', 'No se pudo encontrar tu perfil de alumno');
         }
 
@@ -64,10 +62,9 @@ class CompetenciaController extends Controller
 
     public function editAlumno(Competencia $competencia)
     {
-        $user = auth()->user();
-        $alumno = Alumno::where('userId', $user->id)->first();
+        $alumno = auth()->user();
 
-        if (!$alumno || $competencia->alumno_id !== $alumno->id) {
+        if (!$alumno->isAlumno() || $competencia->alumno_id !== $alumno->id) {
             return redirect()->route('alumno.competencias')->with('error', 'No tienes permiso para editar esta competencia');
         }
 
@@ -76,10 +73,9 @@ class CompetenciaController extends Controller
 
     public function updateAlumno(Request $request, Competencia $competencia)
     {
-        $user = auth()->user();
-        $alumno = Alumno::where('userId', $user->id)->first();
+        $alumno = auth()->user();
 
-        if (!$alumno || $competencia->alumno_id !== $alumno->id) {
+        if (!$alumno->isAlumno() || $competencia->alumno_id !== $alumno->id) {
             return redirect()->route('alumno.competencias')->with('error', 'No tienes permiso para editar esta competencia');
         }
 
@@ -106,10 +102,9 @@ class CompetenciaController extends Controller
 
     public function destroyAlumno(Competencia $competencia)
     {
-        $user = auth()->user();
-        $alumno = Alumno::where('userId', $user->id)->first();
+        $alumno = auth()->user();
 
-        if (!$alumno || $competencia->alumno_id !== $alumno->id) {
+        if (!$alumno->isAlumno() || $competencia->alumno_id !== $alumno->id) {
             return redirect()->route('alumno.competencias')->with('error', 'No tienes permiso para eliminar esta competencia');
         }
 

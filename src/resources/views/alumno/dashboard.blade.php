@@ -91,7 +91,7 @@
                             @php
                                 $teamName = \App\Models\Setting::get('team_name', null, $pago->profesorId);
                             @endphp
-                            <p class="text-xs text-blue-600 font-semibold">{{ $teamName ?: $pago->profesor->name }}</p>
+                            <p class="text-xs text-blue-600 font-semibold">{{ $teamName ?: $pago->profesor->nombre . ' ' . $pago->profesor->apellido }}</p>
                             <p class="text-sm text-gray-600">{{ ucfirst(\Carbon\Carbon::parse($pago->mesCorrespondiente)->locale('es')->translatedFormat('F Y')) }}</p>
                         </div>
                         <div class="text-right">

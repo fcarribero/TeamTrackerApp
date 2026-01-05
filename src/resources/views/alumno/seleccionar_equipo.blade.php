@@ -13,7 +13,7 @@
         <div class="mt-8 space-y-4">
             @foreach($profesores as $profesor)
                 @php
-                    $teamName = \App\Models\Setting::get('team_name', $profesor->name, $profesor->id);
+                    $teamName = \App\Models\Setting::get('team_name', $profesor->nombre . ' ' . $profesor->apellido, $profesor->id);
                     $teamLogo = \App\Models\Setting::get('team_logo', null, $profesor->id);
                 @endphp
                 <form action="{{ route('grupos.set') }}" method="POST">
@@ -32,7 +32,7 @@
                             @endif
                             <div class="text-left">
                                 <span class="block text-lg font-semibold text-gray-700 group-hover:text-blue-700">{{ $teamName }}</span>
-                                <span class="block text-xs text-gray-500">{{ $profesor->name }}</span>
+                                <span class="block text-xs text-gray-500">{{ $profesor->nombre }} {{ $profesor->apellido }}</span>
                             </div>
                         </div>
                         <i class="fas fa-chevron-right text-gray-400 group-hover:text-blue-500"></i>

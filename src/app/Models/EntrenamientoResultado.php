@@ -35,14 +35,14 @@ class EntrenamientoResultado extends Model
 
     public function alumno()
     {
-        return $this->belongsTo(Alumno::class, 'alumnoId');
+        return $this->belongsTo(User::class, 'alumnoId');
     }
 
     public function weather()
     {
         if (!$this->fecha_realizado) return null;
 
-        $user = $this->alumno->user;
+        $user = $this->alumno;
         if (!$user || !$user->latitud || !$user->longitud) return null;
 
         $hour = $this->fecha_realizado->copy()->startOfHour();

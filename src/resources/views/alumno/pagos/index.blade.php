@@ -38,7 +38,7 @@
                                     <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center text-blue-600">
                                         <i class="fas fa-users text-xs"></i>
                                     </div>
-                                    <span class="font-semibold text-gray-900">{{ $teamName ?: $pago->profesor->name }}</span>
+                                    <span class="font-semibold text-gray-900">{{ $teamName ?: $pago->profesor->nombre . ' ' . $pago->profesor->apellido }}</span>
                                 </div>
                             </td>
                             <td class="px-6 py-4 font-medium text-gray-900">

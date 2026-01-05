@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Alumno;
+use App\Models\User;
 use App\Services\AlumnoService;
 use App\Services\GrupoService;
 use App\Services\EntrenamientoService;
@@ -25,7 +25,7 @@ class AlumnoController extends Controller
     public function index(Request $request)
     {
         $profesorId = auth()->id();
-        $alumnos = auth()->user()->alumnos()->with(['user', 'grupos' => function($q) use ($profesorId) {
+        $alumnos = auth()->user()->alumnos()->with(['grupos' => function($q) use ($profesorId) {
             $q->where('profesorId', $profesorId);
         }])->get();
 
@@ -140,7 +140,7 @@ class AlumnoController extends Controller
 
     public function destroy($id)
     {
-        $alumno = Alumno::findOrFail($id);
+        $alumno = User::where('rol', 'alumno')->findOrFail($id);
         $profesorId = auth()->id();
         $managedGroupIds = auth()->user()->gruposManaged()->pluck('id');
 
@@ -155,9 +155,8 @@ class AlumnoController extends Controller
 
     public function configuracion()
     {
-        $user = auth()->user();
-        $alumno = Alumno::where('userId', $user->id)->first();
-        if (!$alumno) {
+        $alumno = auth()->user();
+        if (!$alumno->isAlumno()) {
             return redirect()->route('login');
         }
 

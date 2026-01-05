@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use App\Models\Alumno;
 use App\Models\Invitacion;
 use App\Mail\NotificarAceptacionInvitacion;
 use Illuminate\Http\Request;
@@ -35,14 +34,11 @@ class AuthController extends Controller
             $user = Auth::user();
 
             if ($user->rol === 'alumno') {
-                $alumno = $user->alumno;
-                if ($alumno) {
-                    $profesorIds = $alumno->profesores()->pluck('users.id');
-                    if ($profesorIds->count() > 1) {
-                        return redirect()->route('grupos.seleccionar');
-                    } elseif ($profesorIds->count() === 1) {
-                        session(['active_profesor_id' => $profesorIds->first()]);
-                    }
+                $profesorIds = $user->profesores()->pluck('users.id');
+                if ($profesorIds->count() > 1) {
+                    return redirect()->route('grupos.seleccionar');
+                } elseif ($profesorIds->count() === 1) {
+                    session(['active_profesor_id' => $profesorIds->first()]);
                 }
             }
 
@@ -93,22 +89,16 @@ class AuthController extends Controller
             'id' => $userId,
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
-            'name' => $data['rol'] === 'alumno' ? $data['nombre'] . ' ' . $data['apellido'] : $data['nombre'],
+            'nombre' => $data['nombre'],
+            'apellido' => $data['apellido'] ?? null,
+            'dni' => $data['rol'] === 'alumno' ? $data['dni'] : null,
+            'fechaNacimiento' => $data['rol'] === 'alumno' ? $data['fechaNacimiento'] : null,
+            'sexo' => $data['rol'] === 'alumno' ? $data['sexo'] : null,
+            'obra_social' => $data['rol'] === 'alumno' ? $data['obra_social'] : null,
             'rol' => $data['rol'],
         ]);
 
         if ($data['rol'] === 'alumno') {
-            $alumno = Alumno::create([
-                'id' => 'cl' . bin2hex(random_bytes(10)),
-                'nombre' => $data['nombre'],
-                'apellido' => $data['apellido'],
-                'dni' => $data['dni'],
-                'fechaNacimiento' => $data['fechaNacimiento'],
-                'sexo' => $data['sexo'],
-                'obra_social' => $data['obra_social'],
-                'userId' => $user->id,
-            ]);
-
             if (!empty($data['invitation_token'])) {
                 $invitacion = Invitacion::where('token', $data['invitation_token'])->first();
                 if ($invitacion && $invitacion->email === $user->email) {
@@ -116,10 +106,10 @@ class AuthController extends Controller
                     $user->markEmailAsVerified();
 
                     if ($invitacion->grupoId) {
-                        $alumno->grupos()->syncWithoutDetaching([$invitacion->grupoId]);
+                        $user->grupos()->syncWithoutDetaching([$invitacion->grupoId]);
                     }
                     // Vincular con el profesor (Equipo)
-                    $alumno->profesores()->syncWithoutDetaching([$invitacion->profesorId]);
+                    $user->profesores()->syncWithoutDetaching([$invitacion->profesorId]);
 
                     $invitacion->update([
                         'status' => 'accepted',

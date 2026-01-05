@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Invitacion;
 use App\Models\User;
-use App\Models\Alumno;
 use App\Mail\InvitacionGrupo;
 use App\Mail\NotificarAceptacionInvitacion;
 use Illuminate\Http\Request;
@@ -62,23 +61,16 @@ class InvitacionController extends Controller
         }
 
         // Enlazar alumno con profesor/grupo
-        $alumno = $user->alumno;
-        if (!$alumno) {
-            $alumno = Alumno::create([
-                'id' => 'cl' . bin2hex(random_bytes(10)),
-                'nombre' => $user->name,
-                'userId' => $user->id,
-                'fechaNacimiento' => now(),
-                'sexo' => 'otro',
-            ]);
+        if ($user->rol !== 'alumno') {
+            $user->update(['rol' => 'alumno']);
         }
 
         if ($invitacion->grupoId) {
-            $alumno->grupos()->syncWithoutDetaching([$invitacion->grupoId]);
+            $user->grupos()->syncWithoutDetaching([$invitacion->grupoId]);
         }
 
         // Vincular con el profesor (Equipo)
-        $alumno->profesores()->syncWithoutDetaching([$invitacion->profesorId]);
+        $user->profesores()->syncWithoutDetaching([$invitacion->profesorId]);
 
         $invitacion->update([
             'status' => 'accepted',

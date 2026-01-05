@@ -19,18 +19,10 @@
         <div class="space-y-6">
             <div class="bg-white rounded-xl shadow-md p-6 border border-gray-100 text-center">
                 <div class="w-24 h-24 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-bold text-3xl mx-auto mb-4 border-4 border-white shadow-md">
-                    @if($user->rol === 'alumno' && $alumno)
-                        {{ substr($alumno->nombre, 0, 1) }}
-                    @else
-                        {{ substr($user->name, 0, 1) }}
-                    @endif
+                    {{ substr($user->nombre, 0, 1) }}
                 </div>
                 <h2 class="text-xl font-bold text-gray-900">
-                    @if($user->rol === 'alumno' && $alumno)
-                        {{ $alumno->nombre }} {{ $alumno->apellido }}
-                    @else
-                        {{ $user->name }}
-                    @endif
+                    {{ $user->nombre }} {{ $user->apellido }}
                 </h2>
                 <p class="text-sm text-blue-600 font-medium uppercase tracking-wider">{{ $user->rol }}</p>
                 <div class="mt-4 pt-4 border-t border-gray-100">
@@ -39,7 +31,7 @@
                 </div>
             </div>
 
-            @if($user->rol === 'alumno' && $alumno && $alumno->profesores->count() > 0)
+            @if($user->rol === 'alumno' && $user->profesores->count() > 0)
                 <div class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100">
                     <div class="p-4 bg-gray-50 border-b border-gray-100">
                         <h3 class="text-sm font-bold text-gray-900 flex items-center gap-2">
@@ -48,7 +40,7 @@
                         </h3>
                     </div>
                     <div class="p-4 space-y-4">
-                        @foreach($alumno->profesores as $profesor)
+                        @foreach($user->profesores as $profesor)
                             @php
                                 $teamLogo = \App\Models\Setting::get('team_logo', null, $profesor->id);
                                 $teamName = \App\Models\Setting::get('team_name', null, $profesor->id);
@@ -64,7 +56,7 @@
                                     </div>
                                 @endif
                                 <div class="flex-1 min-w-0">
-                                    <p class="text-sm font-bold text-gray-900 truncate">{{ $teamName ?: $profesor->name }}</p>
+                                    <p class="text-sm font-bold text-gray-900 truncate">{{ $teamName ?: $profesor->nombre . ' ' . $profesor->apellido }}</p>
                                     <p class="text-xs text-gray-500 truncate">{{ $profesor->email }}</p>
                                 </div>
                             </div>
@@ -88,11 +80,7 @@
                         <div>
                             <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Nombre Completo</p>
                             <p class="text-sm font-medium text-gray-900">
-                                @if($user->rol === 'alumno' && $alumno)
-                                    {{ $alumno->nombre }} {{ $alumno->apellido }}
-                                @else
-                                    {{ $user->name }}
-                                @endif
+                                {{ $user->nombre }} {{ $user->apellido }}
                             </p>
                         </div>
                         <div>
@@ -102,24 +90,24 @@
                             </div>
                         </div>
 
-                        @if($user->rol === 'alumno' && $alumno)
+                        @if($user->rol === 'alumno')
                             <div>
                                 <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">DNI</p>
-                                <p class="text-sm font-medium text-gray-900">{{ $alumno->dni ?? '-' }}</p>
+                                <p class="text-sm font-medium text-gray-900">{{ $user->dni ?? '-' }}</p>
                             </div>
                             <div>
                                 <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Fecha de Nacimiento</p>
                                 <p class="text-sm font-medium text-gray-900">
-                                    {{ $alumno->fechaNacimiento ? $alumno->fechaNacimiento->format('d/m/Y') : '-' }}
+                                    {{ $user->fechaNacimiento ? $user->fechaNacimiento->format('d/m/Y') : '-' }}
                                 </p>
                             </div>
                             <div>
                                 <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Sexo</p>
-                                <p class="text-sm font-medium text-gray-900 capitalize">{{ $alumno->sexo }}</p>
+                                <p class="text-sm font-medium text-gray-900 capitalize">{{ $user->sexo }}</p>
                             </div>
                             <div>
                                 <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Obra Social</p>
-                                <p class="text-sm font-medium text-gray-900">{{ $alumno->obra_social ?? '-' }}</p>
+                                <p class="text-sm font-medium text-gray-900">{{ $user->obra_social ?? '-' }}</p>
                             </div>
                         @endif
 

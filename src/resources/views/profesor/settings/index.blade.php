@@ -45,17 +45,25 @@
                                 Perfil del Profesor
                             </h3>
 
-                            <div class="bg-gray-50 p-4 rounded-xl border border-gray-100">
-                                <label for="name" class="block text-sm font-bold text-gray-700 mb-1">Tu Nombre</label>
-                                <p class="text-xs text-gray-500 mb-3">Este es el nombre que se mostrará en tu perfil y en la cabecera del panel.</p>
-
-                                <input type="text" name="name" id="name" value="{{ old('name', $user->name) }}"
-                                       class="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition bg-white"
-                                       placeholder="Tu nombre completo" required>
-
-                                @error('name')
-                                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                                @enderror
+                            <div class="bg-gray-50 p-4 rounded-xl border border-gray-100 grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label for="nombre" class="block text-sm font-bold text-gray-700 mb-1">Nombre</label>
+                                    <input type="text" name="nombre" id="nombre" value="{{ old('nombre', $user->nombre) }}"
+                                           class="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition bg-white"
+                                           placeholder="Tu nombre" required>
+                                    @error('nombre')
+                                        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                                    @enderror
+                                </div>
+                                <div>
+                                    <label for="apellido" class="block text-sm font-bold text-gray-700 mb-1">Apellido</label>
+                                    <input type="text" name="apellido" id="apellido" value="{{ old('apellido', $user->apellido) }}"
+                                           class="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition bg-white"
+                                           placeholder="Tu apellido">
+                                    @error('apellido')
+                                        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                                    @enderror
+                                </div>
                             </div>
                         </div>
 

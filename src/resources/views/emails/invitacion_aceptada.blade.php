@@ -1,5 +1,5 @@
-<h3>¡Hola, {{ $invitacion->profesor->name }}!</h3>
-<p>El alumno <strong>{{ $alumno->name }}</strong> ({{ $alumno->email }}) ha aceptado tu invitación y ya forma parte de tu equipo.</p>
+<h3>¡Hola, {{ $invitacion->profesor->nombre }}!</h3>
+<p>El alumno <strong>{{ $alumno->nombre }} {{ $alumno->apellido }}</strong> ({{ $alumno->email }}) ha aceptado tu invitación y ya forma parte de tu equipo.</p>
 @if($invitacion->grupo)
     <p>Se ha unido automáticamente al grupo: <strong>{{ $invitacion->grupo->nombre }}</strong>.</p>
 @endif

@@ -35,7 +35,7 @@ class Entrenamiento extends Model
 
     public function alumnos()
     {
-        return $this->belongsToMany(Alumno::class, 'entrenamientos_alumnos', 'entrenamientoId', 'alumnoId');
+        return $this->belongsToMany(User::class, 'entrenamientos_alumnos', 'entrenamientoId', 'alumnoId');
     }
 
     public function plantilla()
