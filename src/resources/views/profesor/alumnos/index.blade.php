@@ -11,10 +11,6 @@
             <h1 class="text-3xl font-bold text-gray-900">Alumnos</h1>
             <p class="text-gray-600">Gestiona tus alumnos y sus perfiles</p>
         </div>
-        <a href="{{ route('alumnos.create') }}" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition flex items-center gap-2">
-            <i class="fas fa-plus"></i>
-            Nuevo Alumno
-        </a>
     </div>
 
     <div class="bg-white p-6 rounded-xl shadow-md border border-gray-100 mb-6">

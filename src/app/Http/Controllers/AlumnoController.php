@@ -32,46 +32,6 @@ class AlumnoController extends Controller
         return view('profesor.alumnos.index', compact('alumnos'));
     }
 
-    public function create()
-    {
-        $grupos = auth()->user()->gruposManaged;
-        return view('profesor.alumnos.create', compact('grupos'));
-    }
-
-    public function store(Request $request)
-    {
-        $data = $request->validate([
-            'dni' => 'nullable|string|max:20',
-            'nombre' => 'required|string|max:255',
-            'apellido' => 'required|string|max:255',
-            'fechaNacimiento' => 'required|date',
-            'sexo' => 'required|in:masculino,femenino',
-            'obra_social' => 'nullable|string|max:255',
-            'numero_socio' => 'nullable|string|max:255',
-            'certificado_medico' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
-            'vencimiento_certificado' => 'nullable|date',
-            'notas' => 'nullable|string',
-            'grupos' => 'nullable|array',
-            'grupos.*' => 'exists:grupos,id'
-        ]);
-
-        if ($request->hasFile('certificado_medico')) {
-            $path = $request->file('certificado_medico')->store('certificados', 'public');
-            $data['certificado_medico'] = $path;
-        }
-
-        $alumno = $this->alumnoService->createAlumno($data);
-
-        // Vincular con el profesor actual (Equipo)
-        $alumno->profesores()->syncWithoutDetaching([auth()->id()]);
-
-        if ($request->has('grupos')) {
-            $alumno->grupos()->sync($request->grupos);
-        }
-
-        return redirect()->route('alumnos.index')->with('success', 'Alumno creado correctamente');
-    }
-
     public function show(Request $request, $id)
     {
         $alumno = $this->alumnoService->getAlumnoWithDetails($id);
