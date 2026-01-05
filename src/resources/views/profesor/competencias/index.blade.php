@@ -86,9 +86,15 @@
                                         <i class="fas fa-check-circle"></i> Completo
                                     </span>
                                 @else
-                                    <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
-                                        <i class="fas fa-exclamation-circle"></i> Pendiente Info
-                                    </span>
+                                    @if($competencia->fecha->lessThan(now()))
+                                        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                                            <i class="fas fa-exclamation-circle"></i> Incompleto (Pasada)
+                                        </span>
+                                    @else
+                                        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                                            <i class="fas fa-exclamation-circle"></i> Pendiente Info
+                                        </span>
+                                    @endif
                                 @endif
                             </td>
                             <td class="px-6 py-4 text-right">
