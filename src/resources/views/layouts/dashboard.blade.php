@@ -126,16 +126,6 @@
                     <i class="fas fa-user w-5 text-center"></i> <span class="font-medium">Mi Perfil</span>
                 </a>
 
-                @if(Auth::user()->rol === 'alumno')
-                    <button onclick="startTour()" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all text-blue-50 hover:bg-white/10">
-                        <i class="fas fa-question-circle w-5 text-center"></i> <span class="font-medium">Ayuda / Tour</span>
-                    </button>
-                @endif
-                @if(Auth::user()->rol === 'profesor')
-                    <button onclick="startProfesorTour()" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all text-blue-50 hover:bg-white/10">
-                        <i class="fas fa-question-circle w-5 text-center"></i> <span class="font-medium">Ayuda / Tour</span>
-                    </button>
-                @endif
             </nav>
 
             <div class="p-4 border-t border-white/20">
