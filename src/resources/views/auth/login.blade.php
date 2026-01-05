@@ -43,20 +43,20 @@
             </div>
         @endif
 
-        <form class="mt-8 space-y-6" action="/login" method="POST">
+        <form class="mt-8 space-y-4" action="/login" method="POST">
             @csrf
-            <div class="rounded-md shadow-sm -space-y-px">
+            <div class="space-y-4">
                 <div>
-                    <label for="email" class="sr-only">Correo electrónico</label>
+                    <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Correo electrónico</label>
                     <input id="email" name="email" type="email" required value="{{ $email ?? old('email') }}"
-                        class="appearance-none rounded-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
-                        placeholder="Correo electrónico">
+                        class="appearance-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-400 text-gray-900 rounded-lg focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+                        placeholder="ejemplo@correo.com">
                 </div>
                 <div>
-                    <label for="password" class="sr-only">Contraseña</label>
+                    <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Contraseña</label>
                     <input id="password" name="password" type="password" required
-                        class="appearance-none rounded-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
-                        placeholder="Contraseña">
+                        class="appearance-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-400 text-gray-900 rounded-lg focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+                        placeholder="••••••">
                 </div>
             </div>
 

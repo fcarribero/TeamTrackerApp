@@ -13,64 +13,65 @@
             </p>
         </div>
 
-        <form class="mt-8 space-y-6" action="/signup" method="POST" x-data="{ rol: '{{ old('rol', (isset($invitation_token) && $invitation_token) ? 'alumno' : 'alumno') }}' }">
+        <form class="mt-8 space-y-4" action="/signup" method="POST" x-data="{ rol: '{{ old('rol', (isset($invitation_token) && $invitation_token) ? 'alumno' : 'alumno') }}' }">
             @csrf
             <input type="hidden" name="invitation_token" value="{{ $invitation_token ?? '' }}">
-            <div class="rounded-md shadow-sm -space-y-px">
-                <div class="grid grid-cols-2 gap-0">
+            <div class="space-y-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                        <label for="nombre" class="sr-only">Nombre</label>
+                        <label for="nombre" class="block text-sm font-medium text-gray-700 mb-1">Nombre</label>
                         <input id="nombre" name="nombre" type="text" required value="{{ old('nombre') }}"
-                            class="appearance-none rounded-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-tl-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
-                            placeholder="Nombre">
+                            class="appearance-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-400 text-gray-900 rounded-lg focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+                            placeholder="Tu nombre">
                     </div>
                     <div>
-                        <label for="apellido" class="sr-only">Apellido</label>
+                        <label for="apellido" class="block text-sm font-medium text-gray-700 mb-1">Apellido</label>
                         <input id="apellido" name="apellido" type="text" :required="rol === 'alumno'" value="{{ old('apellido') }}"
-                            class="appearance-none rounded-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-tr-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
-                            placeholder="Apellido">
+                            class="appearance-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-400 text-gray-900 rounded-lg focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+                            placeholder="Tu apellido">
                     </div>
                 </div>
 
-                <div x-show="rol === 'alumno'" class="border-t-0">
-                    <div class="grid grid-cols-1 gap-0">
+                <div x-show="rol === 'alumno'" class="space-y-4" x-cloak>
+                    <div class="grid grid-cols-1 gap-4">
                         <div>
-                            <label for="dni" class="sr-only">DNI</label>
+                            <label for="dni" class="block text-sm font-medium text-gray-700 mb-1">DNI</label>
                             <input id="dni" name="dni" type="text" :required="rol === 'alumno'" value="{{ old('dni') }}"
-                                class="appearance-none rounded-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
-                                placeholder="DNI">
+                                class="appearance-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-400 text-gray-900 rounded-lg focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+                                placeholder="Número de DNI">
                         </div>
                     </div>
                     <div>
-                        <label for="fechaNacimiento" class="sr-only">Fecha de Nacimiento</label>
+                        <label for="fechaNacimiento" class="block text-sm font-medium text-gray-700 mb-1">Fecha de Nacimiento</label>
                         <input id="fechaNacimiento" name="fechaNacimiento" type="date" :required="rol === 'alumno'" value="{{ old('fechaNacimiento') }}"
-                            class="appearance-none rounded-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm">
+                            class="appearance-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-400 text-gray-900 rounded-lg focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm">
                     </div>
                 </div>
 
                 <div>
-                    <label for="email" class="sr-only">Correo electrónico</label>
+                    <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Correo electrónico</label>
                     <input id="email" name="email" type="email" required value="{{ $email ?? old('email') }}"
                         {{ isset($email) && $email ? 'readonly' : '' }}
-                        class="appearance-none rounded-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
-                        placeholder="Correo electrónico">
+                        class="appearance-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-400 text-gray-900 rounded-lg focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm {{ isset($email) && $email ? 'bg-gray-50' : '' }}"
+                        placeholder="ejemplo@correo.com">
                 </div>
                 <div>
-                    <label for="password" class="sr-only">Contraseña (mín. 6 caracteres)</label>
+                    <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Contraseña (mín. 6 caracteres)</label>
                     <input id="password" name="password" type="password" required
-                        class="appearance-none rounded-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
-                        placeholder="Contraseña (mín. 6 caracteres)">
+                        class="appearance-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-400 text-gray-900 rounded-lg focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+                        placeholder="••••••">
                 </div>
                 <div>
                     @if(isset($invitation_token) && $invitation_token)
                         <input type="hidden" name="rol" value="alumno">
-                        <div class="appearance-none rounded-none relative block w-full px-3 py-3 border border-gray-300 bg-gray-50 text-gray-600 rounded-b-md sm:text-sm">
-                            Rol: Alumno (Invitación)
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Rol</label>
+                        <div class="appearance-none relative block w-full px-3 py-3 border border-gray-300 bg-gray-50 text-gray-600 rounded-lg sm:text-sm">
+                            Alumno (Invitación)
                         </div>
                     @else
-                        <label for="rol" class="sr-only">Tipo de usuario</label>
+                        <label for="rol" class="block text-sm font-medium text-gray-700 mb-1">Tipo de usuario</label>
                         <select id="rol" name="rol" x-model="rol" required
-                            class="appearance-none rounded-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm">
+                            class="appearance-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-400 text-gray-900 rounded-lg focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm">
                             <option value="alumno">Alumno</option>
                             <option value="profesor">Profesor</option>
                         </select>
