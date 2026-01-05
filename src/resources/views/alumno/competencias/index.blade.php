@@ -15,7 +15,7 @@
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <!-- Formulario de Carga -->
-        <div class="lg:col-span-1">
+        <div id="tour-nueva-competencia" class="lg:col-span-1">
             <div class="bg-white rounded-xl shadow-md p-6 border border-gray-100 sticky top-24">
                 <h2 class="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
                     <i class="fas fa-plus-circle text-blue-500"></i>
@@ -68,7 +68,7 @@
         </div>
 
         <!-- Lista de Competencias -->
-        <div class="lg:col-span-2 space-y-4">
+        <div id="tour-lista-competencias" class="lg:col-span-2 space-y-4">
             <h2 class="text-xl font-bold text-gray-900 px-1">Mis Inscripciones</h2>
 
             @forelse($competencias as $competencia)

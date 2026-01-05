@@ -20,6 +20,7 @@
     <title>{{ ($teamName ? $teamName . ' | ' : '') . ($title ?? 'TeamTracker') }}</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.css"/>
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
     @stack('styles')
     <style>
@@ -107,23 +108,29 @@
                         <i class="fas fa-cog w-5 text-center"></i> <span class="font-medium">Configuración</span>
                     </a>
                 @else
-                    <a href="/dashboard/alumno/entrenamientos" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all {{ request()->is('dashboard/alumno/entrenamientos*') ? 'bg-white text-blue-600 shadow-lg' : 'text-blue-50 hover:bg-white/10' }}">
+                    <a id="tour-entrenamientos" href="/dashboard/alumno/entrenamientos" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all {{ request()->is('dashboard/alumno/entrenamientos*') ? 'bg-white text-blue-600 shadow-lg' : 'text-blue-50 hover:bg-white/10' }}">
                         <i class="fas fa-calendar w-5 text-center"></i> <span class="font-medium">Mis Entrenamientos</span>
                     </a>
-                    <a href="/dashboard/alumno/pagos" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all {{ request()->is('dashboard/alumno/pagos*') ? 'bg-white text-blue-600 shadow-lg' : 'text-blue-50 hover:bg-white/10' }}">
+                    <a id="tour-pagos" href="/dashboard/alumno/pagos" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all {{ request()->is('dashboard/alumno/pagos*') ? 'bg-white text-blue-600 shadow-lg' : 'text-blue-50 hover:bg-white/10' }}">
                         <i class="fas fa-credit-card w-5 text-center"></i> <span class="font-medium">Mis Pagos</span>
                     </a>
-                    <a href="{{ route('alumno.competencias') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all {{ request()->routeIs('alumno.competencias') ? 'bg-white text-blue-600 shadow-lg' : 'text-blue-50 hover:bg-white/10' }}">
+                    <a id="tour-competencias" href="{{ route('alumno.competencias') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all {{ request()->routeIs('alumno.competencias') ? 'bg-white text-blue-600 shadow-lg' : 'text-blue-50 hover:bg-white/10' }}">
                         <i class="fas fa-medal w-5 text-center"></i> <span class="font-medium">Mis Competencias</span>
                     </a>
-                    <a href="{{ route('alumno.configuracion') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all {{ request()->routeIs('alumno.configuracion') ? 'bg-white text-blue-600 shadow-lg' : 'text-blue-50 hover:bg-white/10' }}">
+                    <a id="tour-configuracion" href="{{ route('alumno.configuracion') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all {{ request()->routeIs('alumno.configuracion') ? 'bg-white text-blue-600 shadow-lg' : 'text-blue-50 hover:bg-white/10' }}">
                         <i class="fas fa-cog w-5 text-center"></i> <span class="font-medium">Configuración</span>
                     </a>
                 @endif
 
-                <a href="{{ route('profile.show') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all {{ request()->routeIs('profile.show') ? 'bg-white text-blue-600 shadow-lg' : 'text-blue-50 hover:bg-white/10' }}">
+                <a id="tour-perfil" href="{{ route('profile.show') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all {{ request()->routeIs('profile.show') ? 'bg-white text-blue-600 shadow-lg' : 'text-blue-50 hover:bg-white/10' }}">
                     <i class="fas fa-user w-5 text-center"></i> <span class="font-medium">Mi Perfil</span>
                 </a>
+
+                @if(Auth::user()->rol === 'alumno')
+                    <button onclick="startTour()" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all text-blue-50 hover:bg-white/10">
+                        <i class="fas fa-question-circle w-5 text-center"></i> <span class="font-medium">Ayuda / Tour</span>
+                    </button>
+                @endif
             </nav>
 
             <div class="p-4 border-t border-white/20">
@@ -186,5 +193,50 @@
         </div>
     </div>
     @stack('scripts')
+    @if(Auth::user()->rol === 'alumno')
+        <script src="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.js.iife.js"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                const driver = window.driver.js.driver;
+
+                const driverObj = driver({
+                    showProgress: true,
+                    nextBtnText: 'Siguiente',
+                    prevBtnText: 'Anterior',
+                    doneBtnText: 'Finalizar',
+                    steps: [
+                        // Pasos del Sidebar (Siempre presentes)
+                        { element: '#tour-entrenamientos', popover: { title: 'Tus Entrenamientos', description: 'Aquí podrás ver tu plan de entrenamiento diario y completar tus devoluciones.', side: "right", align: 'start' }},
+                        { element: '#tour-pagos', popover: { title: 'Tus Pagos', description: 'Consulta el estado de tus cuotas y el historial de pagos realizados.', side: "right", align: 'start' }},
+                        { element: '#tour-competencias', popover: { title: 'Tus Competencias', description: 'Registra tus próximas carreras y carga tus planes de carrera.', side: "right", align: 'start' }},
+                        { element: '#tour-configuracion', popover: { title: 'Configuración', description: 'Conecta tu cuenta de Garmin y ajusta tu ubicación para el clima.', side: "right", align: 'start' }},
+                        { element: '#tour-perfil', popover: { title: 'Mi Perfil', description: 'Gestiona tus datos personales, obra social y certificado médico.', side: "right", align: 'start' }},
+
+                        // Pasos condicionales según la página actual
+                        ...(document.querySelector('#tour-proximos-entrenamientos') ? [
+                            { element: '#tour-proximos-entrenamientos', popover: { title: 'Próximas Sesiones', description: 'Aquí verás lo que tienes programado para hoy y los próximos días.', side: "top" }},
+                            { element: '#tour-historial-entrenamientos', popover: { title: 'Tu Historial', description: 'Puedes revisar tus entrenamientos pasados y ver tus devoluciones.', side: "top" }}
+                        ] : []),
+
+                        ...(document.querySelector('#tour-tabla-pagos') ? [
+                            { element: '#tour-tabla-pagos', popover: { title: 'Historial de Pagos', description: 'Detalle de cada mensualidad, monto y estado (Pagado/Pendiente/Vencido).', side: "top" }}
+                        ] : []),
+
+                        ...(document.querySelector('#tour-nueva-competencia') ? [
+                            { element: '#tour-nueva-competencia', popover: { title: 'Anota tu Carrera', description: 'Informa al profesor sobre tus próximos objetivos para que pueda planificar tu entrenamiento.', side: "right" }},
+                            { element: '#tour-lista-competencias', popover: { title: 'Tus Inscripciones', description: 'Aquí aparecerán todas tus competencias y los planes de carrera que el profesor te asigne.', side: "left" }}
+                        ] : [])
+                    ]
+                });
+
+                window.startTour = () => driverObj.drive();
+
+                if (!localStorage.getItem('alumno_tour_completed')) {
+                    driverObj.drive();
+                    localStorage.setItem('alumno_tour_completed', 'true');
+                }
+            });
+        </script>
+    @endif
 </body>
 </html>

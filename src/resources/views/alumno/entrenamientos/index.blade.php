@@ -34,7 +34,7 @@
         $pasados = $entrenamientos->filter(fn($e) => \Carbon\Carbon::parse($e->fecha)->startOfDay() < $hoy)->sortByDesc('fecha');
     @endphp
 
-    <div class="bg-white rounded-xl shadow-md p-6 border border-gray-100">
+    <div id="tour-proximos-entrenamientos" class="bg-white rounded-xl shadow-md p-6 border border-gray-100">
         <h2 class="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
             <i class="fas fa-clock text-blue-500"></i>
             Próximos Entrenamientos ({{ count($proximos) }})
@@ -286,7 +286,7 @@
     </div>
 
     @if(count($pasados) > 0)
-        <div class="bg-white rounded-xl shadow-md p-6 border border-gray-100">
+        <div id="tour-historial-entrenamientos" class="bg-white rounded-xl shadow-md p-6 border border-gray-100">
             <h2 class="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
                 <i class="fas fa-history text-gray-400"></i>
                 Entrenamientos Anteriores ({{ count($pasados) }})

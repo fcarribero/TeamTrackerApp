@@ -14,7 +14,7 @@
         <p class="text-gray-600 mt-1">Historial de mensualidades y estado de cuenta</p>
     </div>
 
-    <div class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100">
+    <div id="tour-tabla-pagos" class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100">
         <div class="overflow-x-auto">
             <table class="w-full text-left">
                 <thead class="bg-gray-50 border-b border-gray-100">
