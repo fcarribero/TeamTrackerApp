@@ -71,58 +71,89 @@
         </div>
     @endif
 
-    <div id="tour-lista-pagos" class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100">
-        <div class="overflow-x-auto">
-            <table class="w-full text-left">
-                <thead class="bg-gray-50 border-b border-gray-100">
-                    <tr>
-                        <th class="px-6 py-4 text-sm font-semibold text-gray-900">Alumno</th>
-                        <th class="px-6 py-4 text-sm font-semibold text-gray-900">Mes</th>
-                        <th class="px-6 py-4 text-sm font-semibold text-gray-900">Monto</th>
-                        <th class="px-6 py-4 text-sm font-semibold text-gray-900">Estado</th>
-                        <th class="px-6 py-4 text-sm font-semibold text-gray-900">Vencimiento</th>
-                        <th class="px-6 py-4 text-sm font-semibold text-gray-900 text-right">Acciones</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-gray-100">
-                    @forelse($pagos as $pago)
+    <div x-data="{ activeTab: 'pendientes' }" class="space-y-4">
+        <!-- Pestañas -->
+        <div class="flex border-b border-gray-200">
+            <button @click="activeTab = 'pendientes'"
+                    :class="activeTab === 'pendientes' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
+                    class="py-4 px-6 border-b-2 font-medium text-sm transition-colors">
+                Pendientes
+                <span class="ml-2 py-0.5 px-2.5 rounded-full text-xs font-semibold {{ $stats['pendientes_mes'] + $stats['vencidos'] > 0 ? 'bg-yellow-100 text-yellow-800' : 'bg-gray-100 text-gray-600' }}">
+                    {{ $pagos->whereIn('estado', ['pendiente', 'vencido'])->count() }}
+                </span>
+            </button>
+            <button @click="activeTab = 'realizados'"
+                    :class="activeTab === 'realizados' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
+                    class="py-4 px-6 border-b-2 font-medium text-sm transition-colors">
+                Realizados
+                <span class="ml-2 py-0.5 px-2.5 rounded-full text-xs font-semibold bg-green-100 text-green-800">
+                    {{ $pagos->where('estado', 'pagado')->count() }}
+                </span>
+            </button>
+            <button @click="activeTab = 'todos'"
+                    :class="activeTab === 'todos' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
+                    class="py-4 px-6 border-b-2 font-medium text-sm transition-colors">
+                Todos
+            </button>
+        </div>
+
+        <div id="tour-lista-pagos" class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left">
+                    <thead class="bg-gray-50 border-b border-gray-100">
                         <tr>
-                            <td class="px-6 py-4 font-medium text-gray-900">{{ $pago->alumno ? $pago->alumno->nombre . ' ' . $pago->alumno->apellido : 'N/A' }}</td>
-                            <td class="px-6 py-4 text-gray-600">{{ ucfirst(\Carbon\Carbon::parse($pago->mesCorrespondiente)->locale('es')->translatedFormat('F Y')) }}</td>
-                            <td class="px-6 py-4 font-bold">${{ $pago->monto }}</td>
-                            <td class="px-6 py-4">
-                                @php
-                                    $esVencido = $pago->estado === 'vencido' || ($pago->estado === 'pendiente' && ($pago->fechaVencimiento ? $pago->fechaVencimiento->isPast() : $pago->mesCorrespondiente < now()->format('Y-m')));
-                                @endphp
-                                <span class="px-2 py-1 text-xs rounded-full {{ $pago->estado === 'pagado' ? 'bg-green-100 text-green-700' : ($pago->estado === 'cancelado' ? 'bg-gray-100 text-gray-700' : ($esVencido ? 'bg-red-100 text-red-700' : 'bg-yellow-100 text-yellow-700')) }}">
-                                    {{ $esVencido && $pago->estado === 'pendiente' ? 'Vencido' : ucfirst($pago->estado) }}
-                                </span>
-                            </td>
-                            <td class="px-6 py-4 text-gray-600">
-                                {{ $pago->fechaVencimiento ? \Carbon\Carbon::parse($pago->fechaVencimiento)->format('d/m/Y') : 'N/A' }}
-                            </td>
-                            <td class="px-6 py-4 text-right">
-                                <div class="flex items-center justify-end gap-2">
-                                    <a href="{{ route('pagos.edit', $pago->id) }}" class="p-2 text-gray-400 hover:text-blue-600 transition">
-                                        <i class="fas fa-edit"></i>
-                                    </a>
-                                    <form action="{{ route('pagos.destroy', $pago->id) }}" method="POST" class="inline" onsubmit="return confirm('¿Estás seguro de eliminar este pago?')">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="p-2 text-gray-400 hover:text-red-600 transition">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </form>
-                                </div>
-                            </td>
+                            <th class="px-6 py-4 text-sm font-semibold text-gray-900">Alumno</th>
+                            <th class="px-6 py-4 text-sm font-semibold text-gray-900">Mes</th>
+                            <th class="px-6 py-4 text-sm font-semibold text-gray-900">Monto</th>
+                            <th class="px-6 py-4 text-sm font-semibold text-gray-900">Estado</th>
+                            <th class="px-6 py-4 text-sm font-semibold text-gray-900">Vencimiento</th>
+                            <th class="px-6 py-4 text-sm font-semibold text-gray-900 text-right">Acciones</th>
                         </tr>
-                    @empty
-                        <tr>
-                            <td colspan="6" class="px-6 py-12 text-center text-gray-500">No hay pagos registrados</td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody class="divide-y divide-gray-100">
+                        @php
+                            $pagosPendientes = $pagos->filter(fn($p) => in_array($p->estado, ['pendiente', 'vencido']));
+                            $pagosRealizados = $pagos->where('estado', 'pagado');
+                        @endphp
+
+                        {{-- Pestaña Pendientes --}}
+                        @foreach($pagosPendientes as $pago)
+                            <tr x-show="activeTab === 'pendientes'" x-cloak>
+                                @include('profesor.pagos._row', ['pago' => $pago])
+                            </tr>
+                        @endforeach
+                        @if($pagosPendientes->isEmpty())
+                            <tr x-show="activeTab === 'pendientes'" x-cloak>
+                                <td colspan="6" class="px-6 py-12 text-center text-gray-500">No hay pagos pendientes</td>
+                            </tr>
+                        @endif
+
+                        {{-- Pestaña Realizados --}}
+                        @foreach($pagosRealizados as $pago)
+                            <tr x-show="activeTab === 'realizados'" x-cloak>
+                                @include('profesor.pagos._row', ['pago' => $pago])
+                            </tr>
+                        @endforeach
+                        @if($pagosRealizados->isEmpty())
+                            <tr x-show="activeTab === 'realizados'" x-cloak>
+                                <td colspan="6" class="px-6 py-12 text-center text-gray-500">No hay pagos realizados</td>
+                            </tr>
+                        @endif
+
+                        {{-- Pestaña Todos --}}
+                        @foreach($pagos as $pago)
+                            <tr x-show="activeTab === 'todos'" x-cloak>
+                                @include('profesor.pagos._row', ['pago' => $pago])
+                            </tr>
+                        @endforeach
+                        @if($pagos->isEmpty())
+                            <tr x-show="activeTab === 'todos'" x-cloak>
+                                <td colspan="6" class="px-6 py-12 text-center text-gray-500">No hay pagos registrados</td>
+                            </tr>
+                        @endif
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>
