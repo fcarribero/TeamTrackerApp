@@ -18,6 +18,16 @@
     $calentamientoInitial = is_array($calentamientoRaw) ? implode("\n", $calentamientoRaw) : $calentamientoRaw;
     $trabajoInitial = is_array($trabajoRaw) ? implode("\n", $trabajoRaw) : $trabajoRaw;
     $enfriamientoInitial = is_array($enfriamientoRaw) ? implode("\n", $enfriamientoRaw) : $enfriamientoRaw;
+
+    $initialAlumnosData = [];
+    if ($preSelectedAlumno) {
+        $initialAlumnosData[] = [
+            'id' => $preSelectedAlumno->id,
+            'nombre_completo' => $preSelectedAlumno->nombre . ' ' . $preSelectedAlumno->apellido,
+            'image' => $preSelectedAlumno->image ? asset('storage/' . $preSelectedAlumno->image) : null,
+            'inicial' => substr($preSelectedAlumno->nombre, 0, 1)
+        ];
+    }
 @endphp
 <div class="max-w-4xl mx-auto">
     <div class="mb-6 flex items-center justify-between">
@@ -56,69 +66,188 @@
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 gap-6" x-data="{
-                selectedAlumnos: {{ json_encode((array)old('alumnos', request('alumnoId') ? [request('alumnoId')] : [])) }},
+            <div class="grid grid-cols-1 gap-6" x-data="alumnoSelector({
+                selectedAlumnos: {{ json_encode($preSelectedAlumno ? [$preSelectedAlumno->id] : []) }},
+                selectedAlumnosData: {{ json_encode($initialAlumnosData) }},
                 selectedGrupos: {{ json_encode((array)old('grupos', [])) }},
-                toggleAlumno(id) {
-                    const index = this.selectedAlumnos.indexOf(id);
-                    if (index === -1) {
-                        this.selectedAlumnos.push(id);
-                    } else {
-                        this.selectedAlumnos.splice(index, 1);
-                    }
-                },
-                toggleGrupo(id) {
-                    const index = this.selectedGrupos.indexOf(id);
-                    if (index === -1) {
-                        this.selectedGrupos.push(id);
-                    } else {
-                        this.selectedGrupos.splice(index, 1);
-                    }
-                }
-            }">
+                generalGroupId: '{{ $generalGroupId }}'
+            })">
                 <div class="md:col-span-1 space-y-4">
                     <label class="text-sm font-semibold text-gray-700 flex items-center gap-2">
                         <i class="fas fa-users text-blue-600"></i>
                         Asignar a Grupos
                     </label>
-                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-                        @foreach($grupos as $grupo)
-                            <div @click="toggleGrupo('{{ $grupo->id }}')"
-                                 :class="selectedGrupos.includes('{{ $grupo->id }}') ? 'ring-2 ring-offset-1 ring-blue-500 shadow-md' : 'opacity-80 hover:opacity-100'"
-                                 class="relative cursor-pointer rounded-lg p-3 transition-all duration-200 border border-gray-100 flex items-center gap-3"
-                                 style="background-color: {{ $grupo->color ?? '#f3f4f6' }}20; border-left: 4px solid {{ $grupo->color ?? '#9ca3af' }}">
-                                <input type="checkbox" name="grupos[]" value="{{ $grupo->id }}"
+
+                    @php
+                        $generalGroup = $grupos->where('nombre', 'General')->first();
+                        $otherGrupos = $grupos->where('nombre', '!=', 'General');
+                    @endphp
+
+                    <div class="space-y-4">
+                        @if($generalGroup)
+                            <div @click="toggleGrupo('{{ $generalGroup->id }}')"
+                                 :class="selectedGrupos.includes('{{ $generalGroup->id }}') ? 'ring-2 ring-offset-2 ring-blue-500 shadow-lg border-blue-200' : 'opacity-80 hover:opacity-100 border-gray-100'"
+                                 class="relative cursor-pointer rounded-xl p-4 transition-all duration-300 border-2 flex items-center justify-between bg-blue-50/30">
+                                <div class="flex items-center gap-4">
+                                    <div class="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center text-white">
+                                        <i class="fas fa-globe"></i>
+                                    </div>
+                                    <div>
+                                        <span class="text-base font-bold text-gray-900">{{ $generalGroup->nombre }}</span>
+                                        <p class="text-xs text-gray-500">Asignar a todos los alumnos del equipo</p>
+                                    </div>
+                                </div>
+                                <input type="checkbox" name="grupos[]" value="{{ $generalGroup->id }}"
                                        x-model="selectedGrupos"
-                                       class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 pointer-events-none">
-                                <span class="text-sm font-bold text-gray-800 truncate">{{ $grupo->nombre }}</span>
+                                       class="w-5 h-5 text-blue-600 border-gray-300 rounded-full focus:ring-blue-500 pointer-events-none">
                             </div>
-                        @endforeach
+                        @endif
+
+                        <div x-show="!isGeneralSelected()" x-transition class="space-y-3 pt-2">
+                            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">O elegir grupos específicos</p>
+                            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+                                @foreach($otherGrupos as $grupo)
+                                    <div @click="toggleGrupo('{{ $grupo->id }}')"
+                                         :class="selectedGrupos.includes('{{ $grupo->id }}') ? 'ring-2 ring-offset-1 ring-blue-500 shadow-md' : 'opacity-80 hover:opacity-100'"
+                                         class="relative cursor-pointer rounded-lg p-3 transition-all duration-200 border border-gray-100 flex items-center gap-3"
+                                         style="background-color: {{ $grupo->color ?? '#f3f4f6' }}20; border-left: 4px solid {{ $grupo->color ?? '#9ca3af' }}">
+                                        <input type="checkbox" name="grupos[]" value="{{ $grupo->id }}"
+                                               x-model="selectedGrupos"
+                                               class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 pointer-events-none">
+                                        <span class="text-sm font-bold text-gray-800 truncate">{{ $grupo->nombre }}</span>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
                     </div>
+
                     @error('grupos')
                         <p class="text-red-500 text-xs">{{ $message }}</p>
                     @enderror
                 </div>
 
-                <div class="md:col-span-1 space-y-3">
-                    <label class="text-sm font-semibold text-gray-700 flex items-center gap-2">
-                        <i class="fas fa-user text-gray-500 text-xs"></i>
-                        Asignar a Alumnos Individuales
-                    </label>
-                    <div class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-2">
-                        @foreach($alumnos as $alumno)
-                            <div @click="toggleAlumno('{{ $alumno->id }}')"
-                                 :class="selectedAlumnos.includes('{{ $alumno->id }}') ? 'bg-blue-50 border-blue-400 ring-1 ring-blue-400' : 'bg-gray-50 border-gray-200 hover:bg-white hover:border-gray-300'"
-                                 class="cursor-pointer rounded-md px-2 py-1.5 border transition-all flex items-center gap-2">
-                                <input type="checkbox" name="alumnos[]" value="{{ $alumno->id }}"
-                                       x-model="selectedAlumnos"
-                                       class="w-3 h-3 text-blue-600 border-gray-300 rounded-sm focus:ring-blue-500 pointer-events-none">
-                                <span class="text-xs text-gray-700 truncate">{{ $alumno->nombre }}</span>
-                            </div>
-                        @endforeach
+                <div class="md:col-span-1 space-y-3" x-show="!isGeneralSelected()" x-transition>
+                    <div class="flex items-center justify-between">
+                        <label class="text-sm font-semibold text-gray-700 flex items-center gap-2">
+                            <i class="fas fa-user text-blue-600"></i>
+                            Asignar a Alumnos Individuales
+                        </label>
+                        <button type="button" @click="openModal()" class="text-xs bg-blue-600 text-white px-3 py-1.5 rounded-lg hover:bg-blue-700 transition flex items-center gap-1.5 shadow-sm">
+                            <i class="fas fa-plus"></i> Agregar Alumno
+                        </button>
                     </div>
+
+                    <div class="flex flex-wrap gap-2 p-4 bg-gray-50 rounded-xl border border-dashed border-gray-300 min-h-[60px]">
+                        <template x-for="alumno in selectedAlumnosData" :key="alumno.id">
+                            <div class="bg-white border border-gray-200 rounded-full pl-1 pr-3 py-1 flex items-center gap-2 shadow-sm animate-fade-in">
+                                <div class="w-7 h-7 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-bold text-[10px] overflow-hidden">
+                                    <img x-show="alumno.image" :src="alumno.image" class="w-full h-full object-cover">
+                                    <span x-show="!alumno.image" x-text="alumno.inicial"></span>
+                                </div>
+                                <span class="text-xs font-medium text-gray-700" x-text="alumno.nombre_completo"></span>
+                                <button type="button" @click="removeAlumno(alumno.id)" class="text-gray-400 hover:text-red-500 transition">
+                                    <i class="fas fa-times-circle"></i>
+                                </button>
+                                <input type="hidden" name="alumnos[]" :value="alumno.id">
+                            </div>
+                        </template>
+                        <p x-show="selectedAlumnosData.length === 0" class="text-xs text-gray-400 italic w-full text-center py-2">No hay alumnos seleccionados individualmente</p>
+                    </div>
+
                     @error('alumnos')
                         <p class="text-red-500 text-xs">{{ $message }}</p>
                     @enderror
+                </div>
+
+                <!-- Modal de Búsqueda -->
+                <div x-show="isModalOpen"
+                     class="fixed inset-0 z-[100] overflow-y-auto"
+                     x-cloak
+                     x-transition:enter="transition ease-out duration-300"
+                     x-transition:enter-start="opacity-0"
+                     x-transition:enter-end="opacity-100"
+                     x-transition:leave="transition ease-in duration-200"
+                     x-transition:leave-start="opacity-100"
+                     x-transition:leave-end="opacity-0">
+                    <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+                        <div class="fixed inset-0 transition-opacity" aria-hidden="true" @click="closeModal()">
+                            <div class="absolute inset-0 bg-gray-900 opacity-75 backdrop-blur-sm"></div>
+                        </div>
+
+                        <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+
+                        <div class="inline-block align-bottom bg-white rounded-2xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full border border-gray-100">
+                            <div class="bg-white px-6 pt-6 pb-4">
+                                <div class="flex items-center justify-between mb-4">
+                                    <h3 class="text-xl font-bold text-gray-900 flex items-center gap-2">
+                                        <i class="fas fa-search text-blue-600"></i>
+                                        Buscar Alumno
+                                    </h3>
+                                    <button type="button" @click="closeModal()" class="text-gray-400 hover:text-gray-600 transition">
+                                        <i class="fas fa-times text-lg"></i>
+                                    </button>
+                                </div>
+
+                                <div class="relative mb-4">
+                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <i class="fas fa-user text-gray-400"></i>
+                                    </div>
+                                    <input type="text"
+                                           x-model="searchQuery"
+                                           @input.debounce.300ms="search()"
+                                           placeholder="Nombre o apellido del alumno..."
+                                           class="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
+                                           x-ref="searchInput">
+                                </div>
+
+                                <div class="max-h-64 overflow-y-auto custom-scrollbar pr-1">
+                                    <div x-show="loading" class="flex flex-col items-center py-8">
+                                        <i class="fas fa-spinner fa-spin text-blue-500 text-2xl mb-2"></i>
+                                        <p class="text-sm text-gray-500">Buscando alumnos...</p>
+                                    </div>
+
+                                    <div x-show="!loading && results.length > 0" class="space-y-2">
+                                        <template x-for="alumno in results" :key="alumno.id">
+                                            <div @click="addAlumno(alumno)"
+                                                 class="flex items-center justify-between p-3 rounded-xl border border-gray-100 hover:bg-blue-50 hover:border-blue-200 cursor-pointer transition group">
+                                                <div class="flex items-center gap-3">
+                                                    <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-bold overflow-hidden border border-gray-200 shadow-sm">
+                                                        <img x-show="alumno.image" :src="alumno.image" class="w-full h-full object-cover">
+                                                        <span x-show="!alumno.image" x-text="alumno.inicial"></span>
+                                                    </div>
+                                                    <div>
+                                                        <p class="font-bold text-gray-900 group-hover:text-blue-700" x-text="alumno.nombre_completo"></p>
+                                                        <p class="text-[10px] text-gray-500 uppercase tracking-wider" x-text="selectedAlumnos.includes(alumno.id) ? 'Ya seleccionado' : 'Hacer clic para agregar'"></p>
+                                                    </div>
+                                                </div>
+                                                <div x-show="!selectedAlumnos.includes(alumno.id)" class="text-blue-500 opacity-0 group-hover:opacity-100 transition">
+                                                    <i class="fas fa-plus-circle text-xl"></i>
+                                                </div>
+                                                <div x-show="selectedAlumnos.includes(alumno.id)" class="text-green-500">
+                                                    <i class="fas fa-check-circle text-xl"></i>
+                                                </div>
+                                            </div>
+                                        </template>
+                                    </div>
+
+                                    <div x-show="!loading && results.length === 0 && searchQuery.length > 2" class="text-center py-8">
+                                        <i class="fas fa-user-slash text-gray-300 text-3xl mb-2"></i>
+                                        <p class="text-gray-500 italic">No se encontraron alumnos</p>
+                                    </div>
+
+                                    <div x-show="!loading && searchQuery.length <= 2" class="text-center py-8">
+                                        <i class="fas fa-keyboard text-gray-200 text-3xl mb-2"></i>
+                                        <p class="text-gray-400 text-xs">Escribe al menos 3 letras para buscar</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bg-gray-50 px-6 py-4 flex justify-end">
+                                <button type="button" @click="closeModal()" class="px-6 py-2 bg-gray-800 text-white font-bold rounded-xl hover:bg-gray-900 transition shadow-lg">
+                                    Cerrar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="space-y-2">
@@ -200,3 +329,88 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+    <script>
+        document.addEventListener('alpine:init', () => {
+            Alpine.data('alumnoSelector', (config) => ({
+                selectedAlumnos: config.selectedAlumnos,
+                selectedAlumnosData: config.selectedAlumnosData,
+                selectedGrupos: config.selectedGrupos,
+                generalGroupId: config.generalGroupId,
+                isModalOpen: false,
+                searchQuery: '',
+                results: [],
+                loading: false,
+
+                openModal() {
+                    if (this.isGeneralSelected()) return;
+                    this.isModalOpen = true;
+                    this.$nextTick(() => {
+                        this.$refs.searchInput.focus();
+                    });
+                },
+
+                closeModal() {
+                    this.isModalOpen = false;
+                    this.searchQuery = '';
+                    this.results = [];
+                },
+
+                isGeneralSelected() {
+                    return this.selectedGrupos.includes(this.generalGroupId);
+                },
+
+                async search() {
+                    if (this.searchQuery.length <= 2) {
+                        this.results = [];
+                        return;
+                    }
+
+                    this.loading = true;
+                    try {
+                        const response = await fetch(`{{ route('alumnos.search') }}?q=${encodeURIComponent(this.searchQuery)}`);
+                        this.results = await response.json();
+                    } catch (error) {
+                        console.error('Error al buscar alumnos:', error);
+                    } finally {
+                        this.loading = false;
+                    }
+                },
+
+                addAlumno(alumno) {
+                    if (this.isGeneralSelected()) return;
+                    if (!this.selectedAlumnos.includes(alumno.id)) {
+                        this.selectedAlumnos.push(alumno.id);
+                        this.selectedAlumnosData.push(alumno);
+                    }
+                },
+
+                removeAlumno(id) {
+                    this.selectedAlumnos = this.selectedAlumnos.filter(aId => aId !== id);
+                    this.selectedAlumnosData = this.selectedAlumnosData.filter(a => a.id !== id);
+                },
+
+                toggleGrupo(id) {
+                    const index = this.selectedGrupos.indexOf(id);
+                    if (index === -1) {
+                        if (id === this.generalGroupId) {
+                            // Si seleccionamos general, vaciamos todo lo demás
+                            this.selectedGrupos = [id];
+                            this.selectedAlumnos = [];
+                            this.selectedAlumnosData = [];
+                        } else {
+                            // Si seleccionamos otro, quitamos general si estaba
+                            if (this.isGeneralSelected()) {
+                                this.selectedGrupos = this.selectedGrupos.filter(gId => gId !== this.generalGroupId);
+                            }
+                            this.selectedGrupos.push(id);
+                        }
+                    } else {
+                        this.selectedGrupos.splice(index, 1);
+                    }
+                }
+            }));
+        });
+    </script>
+@endpush

@@ -49,13 +49,19 @@ class EntrenamientoController extends Controller {
     }
 
     public function create(Request $request) {
-        $alumnos = $this->alumnoService->getAllAlumnos();
-        $grupos = $this->grupoService->getAll();
+        $alumnos = []; // Se cargan vía AJAX o se seleccionan
+        $grupos = auth()->user()->gruposManaged;
+        $generalGroupId = $grupos->where('nombre', 'General')->first()?->id;
         $plantillas = $this->plantillaService->getAll();
         $selectedPlantilla = null;
 
+        $preSelectedAlumno = null;
+        if ($request->has('alumnoId')) {
+            $preSelectedAlumno = \App\Models\User::find($request->alumnoId);
+        }
+
         if ($plantillas->isEmpty()) {
-            return view('profesor.entrenamientos.create', compact('alumnos', 'grupos', 'plantillas', 'selectedPlantilla'));
+            return view('profesor.entrenamientos.create', compact('alumnos', 'grupos', 'plantillas', 'selectedPlantilla', 'preSelectedAlumno', 'generalGroupId'));
         }
 
         if (!$request->has('plantilla_id') && !$request->has('skip_plantilla')) {
@@ -66,7 +72,7 @@ class EntrenamientoController extends Controller {
             $selectedPlantilla = $this->plantillaService->find($request->plantilla_id);
         }
 
-        return view('profesor.entrenamientos.create', compact('alumnos', 'grupos', 'plantillas', 'selectedPlantilla'));
+        return view('profesor.entrenamientos.create', compact('alumnos', 'grupos', 'plantillas', 'selectedPlantilla', 'preSelectedAlumno', 'generalGroupId'));
     }
 
     public function store(Request $request) {
@@ -126,13 +132,14 @@ class EntrenamientoController extends Controller {
     }
 
     public function edit($id) {
-        $entrenamiento = $this->service->find($id);
+        $entrenamiento = \App\Models\Entrenamiento::with('alumnos')->find($id);
         if (!$entrenamiento) return redirect()->route('entrenamientos.index')->with('error', 'Entrenamiento no encontrado');
 
-        $alumnos = $this->alumnoService->getAllAlumnos();
-        $grupos = $this->grupoService->getAll();
+        $alumnos = []; // Se cargan vía AJAX o se seleccionan
+        $grupos = auth()->user()->gruposManaged;
+        $generalGroupId = $grupos->where('nombre', 'General')->first()?->id;
         $plantillas = $this->plantillaService->getAll();
-        return view('profesor.entrenamientos.edit', compact('entrenamiento', 'alumnos', 'grupos', 'plantillas'));
+        return view('profesor.entrenamientos.edit', compact('entrenamiento', 'alumnos', 'grupos', 'plantillas', 'generalGroupId'));
     }
 
     public function update(Request $request, $id) {
