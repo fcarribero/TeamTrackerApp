@@ -16,7 +16,7 @@
             </a>
             <div>
                 <h1 class="text-3xl font-bold text-gray-900">Resultados: {{ $entrenamiento->titulo }}</h1>
-                <p class="text-gray-600">{{ \Carbon\Carbon::parse($entrenamiento->fecha)->format('d/m/Y') }}</p>
+                <p class="text-gray-600">{{ \Carbon\Carbon::parse($entrenamiento->fecha)->isoFormat('D [de] MMMM') }}</p>
             </div>
         </div>
         <div class="flex items-center gap-2">
@@ -117,7 +117,7 @@
                                             <p class="font-bold text-gray-900">{{ $resultado->alumno->nombre }} {{ $resultado->alumno->apellido }}</p>
                                             <x-new-user-badge :user="$resultado->alumno" />
                                         </div>
-                                        <p class="text-[10px] text-gray-500 uppercase tracking-tighter">Completado el {{ $resultado->fecha_realizado ? $resultado->fecha_realizado->format('d/m/Y H:i') : $resultado->updated_at->format('d/m/Y H:i') }}</p>
+                                        <p class="text-[10px] text-gray-500 uppercase tracking-tighter">Completado el {{ $resultado->fecha_realizado ? $resultado->fecha_realizado->isoFormat('D [de] MMMM H:i') : $resultado->updated_at->isoFormat('D [de] MMMM H:i') }}</p>
                                     </div>
                                 </div>
                                 <div class="text-right">

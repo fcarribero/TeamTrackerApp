@@ -67,7 +67,7 @@
                                 <div>
                                     <h3 class="text-xl font-bold text-gray-900 mb-2">{{ $entrenamiento->titulo }}</h3>
                                     <p class="text-gray-700 mb-3 capitalize">
-                                        {{ \Carbon\Carbon::parse($entrenamiento->fecha)->isoFormat('dddd, D [de] MMMM') }}
+                                        {{ \Carbon\Carbon::parse($entrenamiento->fecha)->isoFormat('D [de] MMMM') }}
                                         @if($entrenamiento->distanciaTotal || $entrenamiento->tiempoTotal)
                                             <span class="block mt-1 text-blue-600 font-bold text-sm">
                                                 @if($entrenamiento->distanciaTotal)
@@ -304,7 +304,7 @@
                                     <div>
                                         <h3 class="text-xl font-bold text-gray-900 mb-2">{{ $entrenamiento->titulo }}</h3>
                                         <p class="text-gray-600 mb-3 capitalize">
-                                            {{ \Carbon\Carbon::parse($entrenamiento->fecha)->isoFormat('dddd, D [de] MMMM') }}
+                                            {{ \Carbon\Carbon::parse($entrenamiento->fecha)->isoFormat('D [de] MMMM') }}
                                             @if($entrenamiento->distanciaTotal || $entrenamiento->tiempoTotal)
                                                 <span class="block mt-1 text-gray-500 font-bold text-sm">
                                                     @if($entrenamiento->distanciaTotal)

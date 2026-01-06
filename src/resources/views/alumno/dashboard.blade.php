@@ -64,7 +64,7 @@
                             @endif
                         </div>
                         <div class="text-right">
-                            <p class="text-sm font-medium text-gray-900">{{ \Carbon\Carbon::parse($entrenamiento->fecha)->format('d M') }}</p>
+                            <p class="text-sm font-medium text-gray-900">{{ \Carbon\Carbon::parse($entrenamiento->fecha)->isoFormat('D [de] MMMM') }}</p>
                             <p class="text-xs text-gray-500">{{ \Carbon\Carbon::parse($entrenamiento->fecha)->format('H:i') }}</p>
                         </div>
                     </div>
@@ -95,7 +95,7 @@
                                 $teamName = \App\Models\Setting::get('team_name', null, $pago->profesorId);
                             @endphp
                             <p class="text-xs text-blue-600 font-semibold">{{ $teamName ?: $pago->profesor->nombre . ' ' . $pago->profesor->apellido }}</p>
-                            <p class="text-sm text-gray-600">{{ ucfirst(\Carbon\Carbon::parse($pago->mesCorrespondiente)->locale('es')->translatedFormat('F Y')) }}</p>
+                            <p class="text-sm text-gray-600">{{ ucfirst(\Carbon\Carbon::parse($pago->mesCorrespondiente)->translatedFormat('F Y')) }}</p>
                         </div>
                         <div class="text-right">
                             <span class="text-xs px-2 py-1 rounded-full {{ $pago->estado === 'pagado' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700' }}">

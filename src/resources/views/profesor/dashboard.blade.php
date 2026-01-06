@@ -122,7 +122,7 @@
                             @endif
                         </div>
                         <div class="text-right">
-                            <p class="text-sm font-medium text-gray-900">{{ \Carbon\Carbon::parse($entrenamiento->fecha)->format('d M') }}</p>
+                            <p class="text-sm font-medium text-gray-900">{{ \Carbon\Carbon::parse($entrenamiento->fecha)->isoFormat('D [de] MMMM') }}</p>
                             <p class="text-xs text-gray-500">{{ \Carbon\Carbon::parse($entrenamiento->fecha)->format('H:i') }}</p>
                         </div>
                     </div>
@@ -161,9 +161,6 @@
                                     <x-group-tag :grupo="$grupo" />
                                 @endforeach
                             </div>
-                        </div>
-                        <div class="text-right">
-                            <p class="text-xs text-gray-500">{{ \Carbon\Carbon::parse($alumno->created_at)->format('d M Y') }}</p>
                         </div>
                     </div>
                 @empty

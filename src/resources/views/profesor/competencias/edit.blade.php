@@ -15,7 +15,7 @@
         </a>
         <div>
             <h1 class="text-3xl font-bold text-gray-900">Información de Competencia</h1>
-            <p class="text-gray-600">Alumno: {{ $competencia->alumno->nombre }} {{ $competencia->alumno->apellido }} | {{ $competencia->nombre }} ({{ $competencia->fecha->format('d/m/Y' . ($competencia->fecha->format('H:i') !== '00:00' ? ' H:i' : '')) }})</p>
+            <p class="text-gray-600">Alumno: {{ $competencia->alumno->nombre }} {{ $competencia->alumno->apellido }} | {{ $competencia->nombre }} ({{ $competencia->fecha->isoFormat('D [de] MMMM [de] YYYY' . ($competencia->fecha->format('H:i') !== '00:00' ? ' H:i' : '')) }})</p>
         </div>
     </div>
 

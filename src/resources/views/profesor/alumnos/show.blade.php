@@ -68,11 +68,11 @@
                     </div>
                     <div>
                         <p class="text-xs text-gray-400 uppercase font-semibold">Fecha de Nacimiento</p>
-                        <p class="text-gray-900">{{ \Carbon\Carbon::parse($alumno->fechaNacimiento)->format('d M Y') }}</p>
+                        <p class="text-gray-900">{{ \Carbon\Carbon::parse($alumno->fechaNacimiento)->isoFormat('D MMM YYYY') }}</p>
                     </div>
                     <div>
                         <p class="text-xs text-gray-400 uppercase font-semibold">Miembro desde</p>
-                        <p class="text-gray-900">{{ \Carbon\Carbon::parse($alumno->created_at)->format('d M Y') }}</p>
+                        <p class="text-gray-900">{{ \Carbon\Carbon::parse($alumno->created_at)->isoFormat('D MMM YYYY') }}</p>
                     </div>
                     <div>
                         <p class="text-xs text-gray-400 uppercase font-semibold mb-2">Grupos</p>
@@ -109,7 +109,7 @@
                              onclick="window.location='{{ route('pagos.edit', $pago->id) }}'">
                             <div>
                                 <p class="font-semibold text-gray-900">${{ number_format($pago->monto, 2) }}</p>
-                                <p class="text-xs text-gray-500">{{ ucfirst(\Carbon\Carbon::parse($pago->mesCorrespondiente)->locale('es')->translatedFormat('F Y')) }}</p>
+                                <p class="text-xs text-gray-500">{{ ucfirst(\Carbon\Carbon::parse($pago->mesCorrespondiente)->translatedFormat('F Y')) }}</p>
                             </div>
                             <div class="text-right">
                                 <span class="px-2 py-1 text-[10px] rounded-full {{ $pago->estado === 'pagado' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700' }}">
@@ -158,7 +158,7 @@
                                 </div>
                             </div>
                             <div class="text-right">
-                                <p class="text-xs font-medium text-gray-900">{{ $entrenamiento->fecha->format('d M Y') }}</p>
+                                <p class="text-xs font-medium text-gray-900">{{ $entrenamiento->fecha->isoFormat('D [de] MMMM') }}</p>
                                 <p class="text-[10px] text-gray-500">{{ $entrenamiento->fecha->format('H:i') }}</p>
                             </div>
                         </div>
@@ -186,7 +186,7 @@
                                 <p class="text-[10px] text-gray-500">{{ $competencia->plan_carrera ? 'Plan cargado' : 'Pendiente de plan' }}</p>
                             </div>
                             <div class="text-right">
-                                <p class="text-xs font-medium text-gray-900">{{ $competencia->fecha->format('d M Y') }}</p>
+                                <p class="text-xs font-medium text-gray-900">{{ $competencia->fecha->isoFormat('D [de] MMMM [de] YYYY') }}</p>
                                 <span class="text-[8px] font-bold px-1.5 py-0.5 rounded-full {{ $competencia->fecha->isPast() ? 'bg-gray-100 text-gray-600' : 'bg-green-100 text-green-700' }}">
                                     {{ $competencia->fecha->isPast() ? 'Fin' : 'Prox' }}
                                 </span>

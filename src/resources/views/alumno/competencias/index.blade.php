@@ -98,7 +98,7 @@
                                     <div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-gray-500 mt-1">
                                         <p class="flex items-center gap-1">
                                             <i class="far fa-calendar-alt"></i>
-                                            {{ $competencia->fecha->format('d/m/Y' . ($competencia->fecha->format('H:i') !== '00:00' ? ' H:i' : '')) }}
+                                            {{ $competencia->fecha->isoFormat('D [de] MMMM [de] YYYY' . ($competencia->fecha->format('H:i') !== '00:00' ? ' H:i' : '')) }}
                                         </p>
                                         @if($competencia->ubicación)
                                             <p class="flex items-center gap-1">

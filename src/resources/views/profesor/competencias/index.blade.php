@@ -96,7 +96,7 @@
                             </td>
                             <td class="px-6 py-4">
                                 <p class="text-sm text-gray-600">
-                                    {{ $competencia->fecha->format('d/m/Y') }}
+                                    {{ $competencia->fecha->isoFormat('D [de] MMMM [de] YYYY') }}
                                     @if($competencia->fecha->format('H:i') !== '00:00')
                                         <span class="text-xs font-bold text-blue-600 block">{{ $competencia->fecha->format('H:i') }}</span>
                                     @endif

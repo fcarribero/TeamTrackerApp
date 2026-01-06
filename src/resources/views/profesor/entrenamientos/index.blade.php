@@ -51,7 +51,7 @@
                                 </div>
                             @endif
                             <p class="text-sm text-gray-600">
-                                {{ \Carbon\Carbon::parse($entrenamiento->fecha)->format('d/m/Y') }}
+                                {{ \Carbon\Carbon::parse($entrenamiento->fecha)->isoFormat('D [de] MMMM') }}
                                 @if($entrenamiento->distanciaTotal)
                                     • <span class="text-blue-600 font-semibold">{{ $entrenamiento->distanciaTotal }} km</span>
                                 @endif
