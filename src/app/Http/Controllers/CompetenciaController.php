@@ -114,13 +114,26 @@ class CompetenciaController extends Controller
 
     // --- Profesor Methods ---
 
-    public function indexProfesor()
+    public function indexProfesor(Request $request)
     {
         $profesorId = auth()->id();
-        $competencias = Competencia::where('profesorId', $profesorId)
+        $search = $request->input('search');
+
+        $query = Competencia::where('profesorId', $profesorId)
             ->with('alumno')
-            ->orderBy('fecha', 'asc')
-            ->get();
+            ->orderBy('fecha', 'asc');
+
+        if ($search) {
+            $query->whereHas('alumno', function($q) use ($search) {
+                $q->where(function($q) use ($search) {
+                    $q->where('nombre', 'like', "%{$search}%")
+                      ->orWhere('apellido', 'like', "%{$search}%")
+                      ->orWhere(\Illuminate\Support\Facades\DB::raw("CONCAT(nombre, ' ', apellido)"), 'like', "%{$search}%");
+                });
+            });
+        }
+
+        $competencias = $query->get();
 
         return view('profesor.competencias.index', compact('competencias'));
     }
