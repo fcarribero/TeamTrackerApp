@@ -53,43 +53,6 @@ class PagoController extends Controller {
         return view('profesor.pagos.index', compact('pagos', 'stats', 'alumnosVencidos'));
     }
 
-    public function create() {
-        $profesorId = auth()->id();
-        $alumnos = User::where('rol', 'alumno')->whereHas('grupos', function($q) use ($profesorId) {
-            $q->where('profesorId', $profesorId);
-        })->get();
-        return view('profesor.pagos.create', compact('alumnos'));
-    }
-
-    public function store(Request $request) {
-        $data = $request->validate([
-            'alumnos' => 'required|array|min:1',
-            'alumnos.*' => 'required|string|exists:users,id',
-            'monto' => 'required|numeric|min:0',
-            'fechaPago' => 'nullable|date',
-            'fechaVencimiento' => 'nullable|date',
-            'mesCorrespondiente' => 'required|string',
-            'estado' => 'required|in:pendiente,pagado,vencido,cancelado',
-            'notas' => 'nullable|string',
-        ]);
-
-        $profesorId = auth()->id();
-        $count = 0;
-
-        foreach ($data['alumnos'] as $alumnoId) {
-            $pagoData = $data;
-            unset($pagoData['alumnos']);
-            $pagoData['alumnoId'] = $alumnoId;
-            $pagoData['profesorId'] = $profesorId;
-
-            $this->service->create($pagoData);
-            $count++;
-        }
-
-        $message = $count > 1 ? "Se han registrado $count pagos correctamente." : "Pago registrado correctamente.";
-        return redirect()->route('pagos.index')->with('success', $message);
-    }
-
     public function edit($id) {
         $pago = $this->service->find($id);
         if (!$pago) return redirect()->route('pagos.index')->with('error', 'Pago no encontrado');
@@ -124,39 +87,61 @@ class PagoController extends Controller {
     public function solicitarPagoForm() {
         $profesorId = auth()->id();
         $grupos = \App\Models\Grupo::where('profesorId', $profesorId)->get();
-        return view('profesor.pagos.solicitar', compact('grupos'));
+        $generalGroupId = \App\Models\Grupo::where('profesorId', $profesorId)->where('nombre', 'General')->first()?->id;
+        $alumnos = \App\Models\User::where('rol', 'alumno')->whereHas('grupos', function($q) use ($profesorId) {
+            $q->where('profesorId', $profesorId);
+        })->orderBy('nombre')->get();
+        return view('profesor.pagos.solicitar', compact('grupos', 'alumnos', 'generalGroupId'));
     }
 
     public function solicitarPagoStore(Request $request) {
         $data = $request->validate([
-            'grupos' => 'required|array',
+            'grupos' => 'nullable|array',
             'grupos.*' => 'required|string|exists:grupos,id',
+            'alumnos' => 'nullable|array',
+            'alumnos.*' => 'required|string|exists:users,id',
             'monto' => 'required|numeric|min:0',
             'fechaVencimiento' => 'required|date',
             'mesCorrespondiente' => 'required|string',
             'cancelarPrevios' => 'nullable|boolean',
         ]);
 
-        $profesorId = auth()->id();
-        $alumnos = \App\Models\User::whereHas('grupos', function($q) use ($data, $profesorId) {
-            $q->whereIn('grupoId', $data['grupos'])->where('profesorId', $profesorId);
-        })->get();
+        if (empty($data['grupos']) && empty($data['alumnos'])) {
+            return redirect()->back()->with('error', 'Debe seleccionar al menos un grupo o un alumno')->withInput();
+        }
 
-        if ($alumnos->isEmpty()) {
-            return redirect()->back()->with('error', 'No se encontraron alumnos en los grupos seleccionados');
+        $profesorId = auth()->id();
+
+        $alumnosIds = collect();
+
+        if (!empty($data['grupos'])) {
+            $alumnosDeGrupos = \App\Models\User::whereHas('grupos', function($q) use ($data, $profesorId) {
+                $q->whereIn('grupoId', $data['grupos'])->where('profesorId', $profesorId);
+            })->pluck('id');
+            $alumnosIds = $alumnosIds->merge($alumnosDeGrupos);
+        }
+
+        if (!empty($data['alumnos'])) {
+            $alumnosIds = $alumnosIds->merge($data['alumnos']);
+        }
+
+        $alumnosIds = $alumnosIds->unique();
+
+        if ($alumnosIds->isEmpty()) {
+            return redirect()->back()->with('error', 'No se encontraron alumnos para los criterios seleccionados')->withInput();
         }
 
         $count = 0;
-        foreach ($alumnos as $alumno) {
+        foreach ($alumnosIds as $alumnoId) {
             if ($request->has('cancelarPrevios') && $request->cancelarPrevios) {
-                \App\Models\Pago::where('alumnoId', $alumno->id)
+                \App\Models\Pago::where('alumnoId', $alumnoId)
                     ->where('mesCorrespondiente', $data['mesCorrespondiente'])
                     ->where('estado', 'pendiente')
                     ->update(['estado' => 'cancelado']);
             }
 
             $this->service->create([
-                'alumnoId' => $alumno->id,
+                'alumnoId' => $alumnoId,
                 'profesorId' => $profesorId,
                 'monto' => $data['monto'],
                 'fechaPago' => now(), // Fecha de creación/solicitud
@@ -167,7 +152,7 @@ class PagoController extends Controller {
             $count++;
         }
 
-        return redirect()->route('pagos.index')->with('success', "Se han creado $count solicitudes de pago correctamente para " . $alumnos->count() . " alumnos.");
+        return redirect()->route('pagos.index')->with('success', "Se han creado $count solicitudes de pago correctamente.");
     }
 
     public function indexAlumno() {

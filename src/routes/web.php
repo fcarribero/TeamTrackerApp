@@ -100,10 +100,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Rutas para Pagos
     Route::get('/dashboard/profesor/pagos/solicitar', [PagoController::class, 'solicitarPagoForm'])->name('pagos.solicitar');
     Route::post('/dashboard/profesor/pagos/solicitar', [PagoController::class, 'solicitarPagoStore'])->name('pagos.solicitar.store');
-    Route::resource('/dashboard/profesor/pagos', PagoController::class)->names([
+    Route::resource('/dashboard/profesor/pagos', PagoController::class)->except(['create', 'store'])->names([
         'index' => 'pagos.index',
-        'create' => 'pagos.create',
-        'store' => 'pagos.store',
         'edit' => 'pagos.edit',
         'update' => 'pagos.update',
         'destroy' => 'pagos.destroy',

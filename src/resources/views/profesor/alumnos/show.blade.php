@@ -99,9 +99,6 @@
             <div class="bg-white rounded-xl shadow-md p-6 border border-gray-100">
                 <div class="flex items-center justify-between mb-4">
                     <h3 class="text-lg font-bold">Últimos Pagos</h3>
-                    <a href="{{ route('pagos.create') }}?alumnoId={{ $alumno->id }}" class="text-xs bg-blue-600 text-white px-2 py-1 rounded hover:bg-blue-700 transition">
-                        Registrar Pago
-                    </a>
                 </div>
                 <div class="space-y-3">
                     @forelse($alumno->pagos->take(5) as $pago)

@@ -16,10 +16,6 @@
                 <i class="fas fa-bullhorn"></i>
                 Solicitar Pagos
             </a>
-            <a href="{{ route('pagos.create') }}" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition flex items-center gap-2">
-                <i class="fas fa-plus"></i>
-                Registrar Pago
-            </a>
         </div>
     </div>
 

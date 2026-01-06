@@ -47,6 +47,7 @@ class AlumnoController extends Controller
     public function search(Request $request)
     {
         $search = $request->input('q');
+        $ids = $request->input('ids');
         $profesorId = auth()->id();
 
         $query = auth()->user()->alumnos();
@@ -57,6 +58,11 @@ class AlumnoController extends Controller
                   ->orWhere('apellido', 'like', "%{$search}%")
                   ->orWhere(\Illuminate\Support\Facades\DB::raw("CONCAT(nombre, ' ', apellido)"), 'like', "%{$search}%");
             });
+        }
+
+        if ($ids) {
+            $idArray = explode(',', $ids);
+            $query->whereIn('users.id', $idArray);
         }
 
         $alumnos = $query->limit(10)->get()->map(function($alumno) {
