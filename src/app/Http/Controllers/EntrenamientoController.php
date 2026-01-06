@@ -35,7 +35,7 @@ class EntrenamientoController extends Controller {
     public function index() {
         $profesorId = auth()->id();
         $entrenamientos = \App\Models\Entrenamiento::where('profesorId', $profesorId)
-            ->with(['alumnos', 'grupos', 'plantilla'])
+            ->with(['alumnos', 'grupos.alumnos', 'plantilla'])
             ->withCount('resultados')
             ->orderBy('fecha', 'desc')
             ->get();
@@ -44,8 +44,7 @@ class EntrenamientoController extends Controller {
     }
 
     public function show($id) {
-        $entrenamiento = $this->service->getWithResultados($id);
-        if (!$entrenamiento) return redirect()->route('entrenamientos.index')->with('error', 'Entrenamiento no encontrado');
+        $entrenamiento = \App\Models\Entrenamiento::with(['resultados.alumno', 'alumnos', 'grupos'])->findOrFail($id);
         return view('profesor.entrenamientos.show', compact('entrenamiento'));
     }
 

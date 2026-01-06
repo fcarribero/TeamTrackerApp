@@ -26,22 +26,42 @@
                     </div>
                     <div class="flex-1">
                         <h3 class="font-bold text-gray-900">{{ $entrenamiento->titulo }}</h3>
-                        <p class="text-sm text-gray-600">
-                            @if($entrenamiento->alumnos->isNotEmpty())
-                                {{ $entrenamiento->alumnos->map(fn($a) => $a->nombre . ' ' . $a->apellido)->implode(', ') }}
-                            @elseif($entrenamiento->grupos->isNotEmpty())
-                                Grupos: {{ $entrenamiento->grupos->pluck('nombre')->implode(', ') }}
-                            @else
-                                General
+                        <div class="flex items-center gap-4">
+                            <div class="flex -space-x-2 overflow-hidden">
+                                @foreach($entrenamiento->all_alumnos->take(5) as $alumno)
+                                    <div class="inline-block h-8 w-8 rounded-full ring-2 ring-white bg-blue-100 flex items-center justify-center text-blue-600 font-bold text-xs overflow-hidden shrink-0" title="{{ $alumno->nombre }} {{ $alumno->apellido }}">
+                                        @if($alumno->image)
+                                            <img src="{{ asset('storage/' . $alumno->image) }}" alt="{{ $alumno->nombre }}" class="w-full h-full object-cover">
+                                        @else
+                                            {{ substr($alumno->nombre, 0, 1) }}
+                                        @endif
+                                    </div>
+                                @endforeach
+                                @if($entrenamiento->all_alumnos->count() > 5)
+                                    <div class="inline-block h-8 w-8 rounded-full ring-2 ring-white bg-gray-200 flex items-center justify-center text-gray-600 font-bold text-xs">
+                                        +{{ $entrenamiento->all_alumnos->count() - 5 }}
+                                    </div>
+                                @endif
+                            </div>
+                            @if($entrenamiento->grupos->count() > 0)
+                                <div class="flex flex-wrap gap-1">
+                                    @foreach($entrenamiento->grupos as $grupo)
+                                        <span class="px-2 py-0.5 rounded text-[10px] font-bold text-white shadow-sm" style="background-color: {{ $grupo->color ?? '#3B82F6' }}">
+                                            {{ $grupo->nombre }}
+                                        </span>
+                                    @endforeach
+                                </div>
                             @endif
-                            • {{ \Carbon\Carbon::parse($entrenamiento->fecha)->format('d/m/Y') }}
-                            @if($entrenamiento->distanciaTotal)
-                                • <span class="text-blue-600 font-semibold">{{ $entrenamiento->distanciaTotal }} km</span>
-                            @endif
-                            @if($entrenamiento->tiempoTotal)
-                                • <span class="text-blue-600 font-semibold">{{ $entrenamiento->tiempoTotal }} min</span>
-                            @endif
-                        </p>
+                            <p class="text-sm text-gray-600">
+                                {{ \Carbon\Carbon::parse($entrenamiento->fecha)->format('d/m/Y') }}
+                                @if($entrenamiento->distanciaTotal)
+                                    • <span class="text-blue-600 font-semibold">{{ $entrenamiento->distanciaTotal }} km</span>
+                                @endif
+                                @if($entrenamiento->tiempoTotal)
+                                    • <span class="text-blue-600 font-semibold">{{ $entrenamiento->tiempoTotal }} min</span>
+                                @endif
+                            </p>
+                        </div>
                         @if($entrenamiento->resultados_count > 0)
                             <a href="{{ route('entrenamientos.show', $entrenamiento->id) }}" class="inline-flex items-center gap-1 mt-1 text-xs font-bold text-blue-600 hover:underline">
                                 <i class="fas fa-comment-dots"></i>

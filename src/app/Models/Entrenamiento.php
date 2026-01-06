@@ -52,4 +52,16 @@ class Entrenamiento extends Model
     {
         return $this->hasMany(EntrenamientoResultado::class, 'entrenamientoId');
     }
+
+    /**
+     * Obtiene todos los alumnos impactados por este entrenamiento
+     * (alumnos directos + alumnos de los grupos asignados)
+     */
+    public function getAllAlumnosAttribute()
+    {
+        $alumnosDirectos = $this->alumnos;
+        $alumnosGrupos = $this->grupos->flatMap->alumnos;
+
+        return $alumnosDirectos->concat($alumnosGrupos)->unique('id');
+    }
 }

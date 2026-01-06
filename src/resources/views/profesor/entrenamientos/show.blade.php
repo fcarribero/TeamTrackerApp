@@ -107,8 +107,12 @@
                         <div class="bg-gray-50 rounded-xl p-6 border border-gray-200 shadow-sm transition hover:shadow-md">
                             <div class="flex items-center justify-between mb-4 border-b border-gray-200 pb-3">
                                 <div class="flex items-center gap-3">
-                                    <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-bold">
-                                        {{ substr($resultado->alumno->nombre, 0, 1) }}
+                                    <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-bold overflow-hidden shrink-0 border border-gray-100">
+                                        @if($resultado->alumno->image)
+                                            <img src="{{ asset('storage/' . $resultado->alumno->image) }}" alt="{{ $resultado->alumno->nombre }}" class="w-full h-full object-cover">
+                                        @else
+                                            {{ substr($resultado->alumno->nombre, 0, 1) }}
+                                        @endif
                                     </div>
                                     <div>
                                         <p class="font-bold text-gray-900">{{ $resultado->alumno->nombre }} {{ $resultado->alumno->apellido }}</p>
