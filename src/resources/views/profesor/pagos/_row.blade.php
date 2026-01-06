@@ -14,13 +14,13 @@
 </td>
 <td class="px-6 py-4 text-right">
     <div class="flex items-center justify-end gap-2">
-        <a href="{{ route('pagos.edit', $pago->id) }}" class="p-2 text-gray-400 hover:text-blue-600 transition">
+        <a href="{{ route('pagos.edit', $pago->id) }}" class="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition">
             <i class="fas fa-edit"></i>
         </a>
         <form action="{{ route('pagos.destroy', $pago->id) }}" method="POST" class="inline" onsubmit="return confirm('¿Estás seguro de eliminar este pago?')">
             @csrf
             @method('DELETE')
-            <button type="submit" class="p-2 text-gray-400 hover:text-red-600 transition">
+            <button type="submit" class="p-2 text-red-600 hover:bg-red-50 rounded-lg transition">
                 <i class="fas fa-trash"></i>
             </button>
         </form>

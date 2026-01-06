@@ -94,13 +94,13 @@
                         @endif
                     </div>
                     <div class="flex items-center gap-2">
-                        <a href="{{ route('entrenamientos.edit', $entrenamiento->id) }}" class="p-2 text-gray-400 hover:text-blue-600 transition">
+                        <a href="{{ route('entrenamientos.edit', $entrenamiento->id) }}" class="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition">
                             <i class="fas fa-edit"></i>
                         </a>
                         <form action="{{ route('entrenamientos.destroy', $entrenamiento->id) }}" method="POST" class="inline" onsubmit="return confirm('¿Estás seguro de eliminar este entrenamiento?')">
                             @csrf
                             @method('DELETE')
-                            <button type="submit" class="p-2 text-gray-400 hover:text-red-600 transition">
+                            <button type="submit" class="p-2 text-red-600 hover:bg-red-50 rounded-lg transition">
                                 <i class="fas fa-trash"></i>
                             </button>
                         </form>

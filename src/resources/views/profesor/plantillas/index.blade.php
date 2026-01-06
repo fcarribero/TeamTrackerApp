@@ -23,13 +23,13 @@
                 <div class="flex items-center justify-between mb-4">
                     <h3 class="text-xl font-bold text-gray-900">{{ $plantilla->nombre }}</h3>
                     <div class="flex gap-2">
-                        <a href="{{ route('plantillas.edit', $plantilla->id) }}" class="text-gray-400 hover:text-blue-600 transition">
+                        <a href="{{ route('plantillas.edit', $plantilla->id) }}" class="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition">
                             <i class="fas fa-edit"></i>
                         </a>
                         <form action="{{ route('plantillas.destroy', $plantilla->id) }}" method="POST" class="inline" onsubmit="return confirm('¿Estás seguro de eliminar esta plantilla?')">
                             @csrf
                             @method('DELETE')
-                            <button type="submit" class="text-gray-400 hover:text-red-600 transition">
+                            <button type="submit" class="p-2 text-red-600 hover:bg-red-50 rounded-lg transition">
                                 <i class="fas fa-trash"></i>
                             </button>
                         </form>

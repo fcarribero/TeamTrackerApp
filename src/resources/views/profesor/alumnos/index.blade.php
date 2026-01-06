@@ -99,13 +99,13 @@
                             </td>
                             <td class="px-6 py-4 text-right">
                                 <div class="flex items-center justify-end gap-2">
-                                    <a href="{{ route('alumnos.edit', $alumno->id) }}" class="p-2 text-gray-400 hover:text-blue-600 transition" onclick="event.stopPropagation()">
+                                    <a href="{{ route('alumnos.edit', $alumno->id) }}" class="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition" onclick="event.stopPropagation()">
                                         <i class="fas fa-edit"></i>
                                     </a>
                                     <form action="{{ route('alumnos.destroy', $alumno->id) }}" method="POST" class="inline" onsubmit="return confirm('¿Estás seguro de remover este alumno de tus grupos?')">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="p-2 text-gray-400 hover:text-red-600 transition" onclick="event.stopPropagation()">
+                                        <button type="submit" class="p-2 text-red-600 hover:bg-red-50 rounded-lg transition" onclick="event.stopPropagation()">
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     </form>
