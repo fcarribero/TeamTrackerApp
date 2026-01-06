@@ -68,7 +68,17 @@
                         @endforeach
                         @if($pagosPendientes->isEmpty())
                             <tr x-show="activeTab === 'pendientes'" x-cloak>
-                                <td colspan="7" class="px-6 py-12 text-center text-gray-500">No tienes pagos pendientes</td>
+                                <td colspan="7" class="px-6 py-16 text-center">
+                                    <div class="flex flex-col items-center justify-center gap-3">
+                                        <div class="w-16 h-16 bg-green-100 text-green-500 rounded-full flex items-center justify-center text-2xl shadow-sm">
+                                            <i class="fas fa-check-circle"></i>
+                                        </div>
+                                        <div>
+                                            <p class="text-xl font-bold text-gray-900">¡Estás al día!</p>
+                                            <p class="text-gray-500">No tienes pagos pendientes. ¡Buen trabajo! 🚀</p>
+                                        </div>
+                                    </div>
+                                </td>
                             </tr>
                         @endif
 
@@ -80,7 +90,17 @@
                         @endforeach
                         @if($pagosRealizados->isEmpty())
                             <tr x-show="activeTab === 'realizados'" x-cloak>
-                                <td colspan="7" class="px-6 py-12 text-center text-gray-500">No tienes pagos realizados</td>
+                                <td colspan="7" class="px-6 py-16 text-center">
+                                    <div class="flex flex-col items-center justify-center gap-3">
+                                        <div class="w-16 h-16 bg-blue-100 text-blue-500 rounded-full flex items-center justify-center text-2xl shadow-sm">
+                                            <i class="fas fa-history"></i>
+                                        </div>
+                                        <div>
+                                            <p class="text-xl font-bold text-gray-900">Sin pagos realizados</p>
+                                            <p class="text-gray-500">Aún no tienes un historial de pagos registrados.</p>
+                                        </div>
+                                    </div>
+                                </td>
                             </tr>
                         @endif
 
@@ -92,7 +112,17 @@
                         @endforeach
                         @if($pagos->isEmpty())
                             <tr x-show="activeTab === 'todos'" x-cloak>
-                                <td colspan="7" class="px-6 py-12 text-center text-gray-500">No hay registros de pagos</td>
+                                <td colspan="7" class="px-6 py-16 text-center">
+                                    <div class="flex flex-col items-center justify-center gap-3">
+                                        <div class="w-16 h-16 bg-gray-100 text-gray-500 rounded-full flex items-center justify-center text-2xl shadow-sm">
+                                            <i class="fas fa-file-invoice"></i>
+                                        </div>
+                                        <div>
+                                            <p class="text-xl font-bold text-gray-900">No hay registros</p>
+                                            <p class="text-gray-500">No se encontraron registros de pagos en tu cuenta.</p>
+                                        </div>
+                                    </div>
+                                </td>
                             </tr>
                         @endif
                     </tbody>
