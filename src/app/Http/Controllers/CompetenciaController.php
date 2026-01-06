@@ -124,12 +124,15 @@ class CompetenciaController extends Controller
             ->orderBy('fecha', 'asc');
 
         if ($search) {
-            $query->whereHas('alumno', function($q) use ($search) {
-                $q->where(function($q) use ($search) {
-                    $q->where('nombre', 'like', "%{$search}%")
-                      ->orWhere('apellido', 'like', "%{$search}%")
-                      ->orWhere(\Illuminate\Support\Facades\DB::raw("CONCAT(nombre, ' ', apellido)"), 'like', "%{$search}%");
-                });
+            $query->where(function($q) use ($search) {
+                $q->where('nombre', 'like', "%{$search}%")
+                  ->orWhereHas('alumno', function($q) use ($search) {
+                      $q->where(function($q) use ($search) {
+                          $q->where('nombre', 'like', "%{$search}%")
+                            ->orWhere('apellido', 'like', "%{$search}%")
+                            ->orWhere(\Illuminate\Support\Facades\DB::raw("CONCAT(nombre, ' ', apellido)"), 'like', "%{$search}%");
+                      });
+                  });
             });
         }
 
@@ -146,6 +149,7 @@ class CompetenciaController extends Controller
     public function updateProfesor(Request $request, Competencia $competencia)
     {
         $request->validate([
+            'nombre' => 'required|string|max:255',
             'fecha' => 'required|date',
             'observaciones' => 'nullable|string',
             'plan_carrera' => 'nullable|string',
@@ -157,6 +161,7 @@ class CompetenciaController extends Controller
         ]);
 
         $competencia->update($request->only([
+            'nombre',
             'fecha',
             'observaciones',
             'plan_carrera',

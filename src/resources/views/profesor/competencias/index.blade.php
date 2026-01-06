@@ -22,7 +22,7 @@
                 </div>
                 <input type="text" name="search" value="{{ request('search') }}"
                        class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 text-sm"
-                       placeholder="Buscar por nombre o apellido del alumno...">
+                       placeholder="Buscar por competencia, nombre o apellido del alumno...">
             </div>
             <button type="submit" class="bg-gray-800 text-white px-6 py-2 rounded-lg hover:bg-gray-900 transition text-sm font-medium">
                 Buscar

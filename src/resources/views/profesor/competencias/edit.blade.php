@@ -26,6 +26,14 @@
 
             <div class="p-6 space-y-6">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Nombre -->
+                    <div class="space-y-2">
+                        <label for="nombre" class="block text-sm font-bold text-gray-700">Nombre de la Competencia</label>
+                        <input type="text" name="nombre" id="nombre" value="{{ old('nombre', $competencia->nombre) }}" required
+                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition"
+                               placeholder="Ej: Maratón de Buenos Aires">
+                    </div>
+
                     <!-- Fecha -->
                     <div class="space-y-2">
                         <label for="fecha" class="block text-sm font-bold text-gray-700">Fecha y Hora de la Competencia</label>
