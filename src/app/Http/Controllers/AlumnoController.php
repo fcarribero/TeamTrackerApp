@@ -44,6 +44,35 @@ class AlumnoController extends Controller
         return view('profesor.alumnos.index', compact('alumnos'));
     }
 
+    public function search(Request $request)
+    {
+        $search = $request->input('q');
+        $profesorId = auth()->id();
+
+        $query = auth()->user()->alumnos();
+
+        if ($search) {
+            $query->where(function($q) use ($search) {
+                $q->where('nombre', 'like', "%{$search}%")
+                  ->orWhere('apellido', 'like', "%{$search}%")
+                  ->orWhere(\Illuminate\Support\Facades\DB::raw("CONCAT(nombre, ' ', apellido)"), 'like', "%{$search}%");
+            });
+        }
+
+        $alumnos = $query->limit(10)->get()->map(function($alumno) {
+            return [
+                'id' => $alumno->id,
+                'nombre' => $alumno->nombre,
+                'apellido' => $alumno->apellido,
+                'nombre_completo' => $alumno->nombre . ' ' . $alumno->apellido,
+                'image' => $alumno->image ? asset('storage/' . $alumno->image) : null,
+                'inicial' => substr($alumno->nombre, 0, 1)
+            ];
+        });
+
+        return response()->json($alumnos);
+    }
+
     public function show(Request $request, $id)
     {
         $alumno = $this->alumnoService->getAlumnoWithDetails($id);

@@ -76,6 +76,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/dashboard/alumno/seleccionar-grupo', [GrupoController::class, 'setGrupo'])->name('grupos.set');
 
     // Rutas para Alumnos (Profesor)
+    Route::get('/dashboard/profesor/alumnos/search', [AlumnoController::class, 'search'])->name('alumnos.search');
     Route::resource('/dashboard/profesor/alumnos', AlumnoController::class)->names([
         'index' => 'alumnos.index',
         'create' => 'alumnos.create',
