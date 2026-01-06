@@ -51,16 +51,25 @@
                 <tbody class="divide-y divide-gray-100">
                     @forelse($competencias as $competencia)
                         <tr class="hover:bg-gray-50 transition">
-                            <td class="px-6 py-4">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold text-xs">
-                                        {{ substr($competencia->alumno->nombre, 0, 1) }}
-                                    </div>
-                                    <div>
+                        <td class="px-6 py-4">
+                            <div class="flex items-center gap-3">
+                                <div class="w-8 h-8 rounded-full overflow-hidden flex-shrink-0">
+                                    @if($competencia->alumno->image)
+                                        <img src="{{ asset('storage/' . $competencia->alumno->image) }}" alt="{{ $competencia->alumno->nombre }}" class="w-full h-full object-cover">
+                                    @else
+                                        <div class="w-full h-full bg-blue-500 flex items-center justify-center text-white font-bold text-xs">
+                                            {{ substr($competencia->alumno->nombre, 0, 1) }}
+                                        </div>
+                                    @endif
+                                </div>
+                                <div>
+                                    <div class="flex items-center gap-2">
                                         <p class="font-medium text-gray-900">{{ $competencia->alumno->nombre }} {{ $competencia->alumno->apellido }}</p>
+                                        <x-new-user-badge :user="$competencia->alumno" />
                                     </div>
                                 </div>
-                            </td>
+                            </div>
+                        </td>
                             <td class="px-6 py-4">
                                 <p class="font-medium text-gray-900">{{ $competencia->nombre }}</p>
                             </td>
