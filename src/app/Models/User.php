@@ -130,6 +130,9 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function isNewMember(): bool
     {
+        if ($this->isProfesor()) {
+            return false;
+        }
         return $this->created_at >= now()->subDays(30);
     }
 
