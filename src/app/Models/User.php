@@ -136,6 +136,16 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->created_at >= now()->subDays(30);
     }
 
+    public function sentMessages()
+    {
+        return $this->hasMany(Message::class, 'sender_id');
+    }
+
+    public function receivedMessages()
+    {
+        return $this->hasMany(Message::class, 'receiver_id');
+    }
+
     public function alumnos()
     {
         return $this->belongsToMany(User::class, 'profesor_alumno', 'profesor_id', 'alumno_id')->withTimestamps();

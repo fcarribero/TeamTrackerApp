@@ -121,6 +121,17 @@
                     <a id="tour-profesor-competencias" href="{{ route('competencias.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all {{ request()->routeIs('competencias.*') ? 'bg-white text-blue-600 shadow-lg' : 'text-blue-50 hover:bg-white/10' }}">
                         <i class="fas fa-medal w-5 text-center"></i> <span class="font-medium">Competencias</span>
                     </a>
+                    <a id="tour-profesor-mensajes" href="{{ route('mensajes.index') }}" class="flex items-center justify-between px-4 py-3 rounded-xl transition-all {{ request()->routeIs('mensajes.*') ? 'bg-white text-blue-600 shadow-lg' : 'text-blue-50 hover:bg-white/10' }}">
+                        <div class="flex items-center gap-3">
+                            <i class="fas fa-comment-dots w-5 text-center"></i> <span class="font-medium">Mensajes</span>
+                        </div>
+                        @php
+                            $totalUnread = \App\Models\Message::where('receiver_id', Auth::id())->where('is_read', false)->count();
+                        @endphp
+                        @if($totalUnread > 0)
+                            <span class="bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">{{ $totalUnread }}</span>
+                        @endif
+                    </a>
                     <a id="tour-profesor-anuncios" href="{{ route('anuncios.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all {{ request()->routeIs('anuncios.index') ? 'bg-white text-blue-600 shadow-lg' : 'text-blue-50 hover:bg-white/10' }}">
                         <i class="fas fa-bullhorn w-5 text-center"></i> <span class="font-medium">Anuncio</span>
                     </a>
@@ -145,6 +156,17 @@
                     </a>
                     <a id="tour-competencias" href="{{ route('alumno.competencias') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all {{ request()->routeIs('alumno.competencias') ? 'bg-white text-blue-600 shadow-lg' : 'text-blue-50 hover:bg-white/10' }}">
                         <i class="fas fa-medal w-5 text-center"></i> <span class="font-medium">Mis Competencias</span>
+                    </a>
+                    <a id="tour-mensajes" href="{{ route('mensajes.index') }}" class="flex items-center justify-between px-4 py-3 rounded-xl transition-all {{ request()->routeIs('mensajes.*') ? 'bg-white text-blue-600 shadow-lg' : 'text-blue-50 hover:bg-white/10' }}">
+                        <div class="flex items-center gap-3">
+                            <i class="fas fa-comment-dots w-5 text-center"></i> <span class="font-medium">Mensajes</span>
+                        </div>
+                        @php
+                            $totalUnread = \App\Models\Message::where('receiver_id', Auth::id())->where('is_read', false)->count();
+                        @endphp
+                        @if($totalUnread > 0)
+                            <span class="bg-amber-400 text-blue-900 text-[10px] font-bold px-1.5 py-0.5 rounded-full">{{ $totalUnread }}</span>
+                        @endif
                     </a>
                     <a id="tour-configuracion" href="{{ route('alumno.configuracion') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all {{ request()->routeIs('alumno.configuracion') ? 'bg-white text-blue-600 shadow-lg' : 'text-blue-50 hover:bg-white/10' }}">
                         <i class="fas fa-cog w-5 text-center"></i> <span class="font-medium">Configuración</span>

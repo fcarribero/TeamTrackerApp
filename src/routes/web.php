@@ -157,6 +157,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard/profesor/settings', [SettingController::class, 'index'])->name('settings.index');
     Route::post('/dashboard/profesor/settings', [SettingController::class, 'store'])->name('settings.store');
 
+    // Rutas para Mensajes
+    Route::get('/dashboard/mensajes', [\App\Http\Controllers\MessageController::class, 'index'])->name('mensajes.index');
+    Route::get('/dashboard/mensajes/{id}', [\App\Http\Controllers\MessageController::class, 'show'])->name('mensajes.show');
+    Route::post('/dashboard/mensajes', [\App\Http\Controllers\MessageController::class, 'store'])->name('mensajes.store');
+
     // Rutas para Perfil
     Route::get('/dashboard/profile', [\App\Http\Controllers\ProfileController::class, 'show'])->name('profile.show');
     Route::put('/dashboard/profile', [\App\Http\Controllers\ProfileController::class, 'update'])->name('profile.update');

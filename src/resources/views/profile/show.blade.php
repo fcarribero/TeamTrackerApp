@@ -34,7 +34,7 @@
                 <div class="relative inline-block">
                     <div class="w-24 h-24 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-bold text-3xl mx-auto mb-4 border-4 border-white shadow-md overflow-hidden">
                         @if($user->image)
-                            <img src="{{ asset('storage/' . $user->image) }}" alt="{{ $user->nombre }}" class="w-full h-full object-cover">
+                            <img src="{{ asset('storage/' . $user->image) }}" alt="{{ $user->nombre }} {{ $user->apellido }}" class="w-full h-full object-cover">
                         @else
                             {{ substr($user->nombre, 0, 1) }}
                         @endif
