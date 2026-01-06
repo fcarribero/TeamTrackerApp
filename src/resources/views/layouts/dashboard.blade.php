@@ -71,7 +71,6 @@
                         <div class="flex-1 overflow-hidden">
                             <div class="flex items-center gap-2">
                                 <p class="text-sm font-semibold truncate">{{ Auth::user()->nombre }} {{ Auth::user()->apellido }}</p>
-                                <x-new-user-badge :user="Auth::user()" />
                             </div>
                             @if(Auth::user()->rol === 'alumno')
                                 <p class="text-xs text-blue-200 truncate">DNI: {{ Auth::user()->dni ?? '-' }}</p>
@@ -163,19 +162,6 @@
                             <i class="fas fa-bell"></i>
                             <span class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
                         </button>
-                        <div class="h-8 w-[1px] bg-gray-200"></div>
-                        <div class="flex items-center gap-3">
-                            <div class="text-right hidden sm:block">
-                                <div class="flex items-center justify-end gap-2">
-                                    <x-new-user-badge :user="Auth::user()" />
-                                    <p class="text-sm font-medium text-gray-900">{{ Auth::user()->nombre }} {{ Auth::user()->apellido }}</p>
-                                </div>
-                                <p class="text-xs text-gray-500 capitalize">{{ Auth::user()->rol }}</p>
-                            </div>
-                            <div class="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center text-white font-bold">
-                                {{ substr(Auth::user()->nombre, 0, 1) }}
-                            </div>
-                        </div>
                     </div>
                 </div>
             </header>
