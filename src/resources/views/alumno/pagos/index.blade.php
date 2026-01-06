@@ -15,6 +15,9 @@
     </div>
 
     <div x-data="{ activeTab: 'pendientes' }" class="space-y-4">
+        @php
+            $mostrarColumnaEquipo = auth()->user()->grupos()->count() > 1;
+        @endphp
         <!-- Pestañas -->
         <div class="flex border-b border-gray-200">
             <button @click="activeTab = 'pendientes'"
@@ -45,7 +48,9 @@
                 <table class="w-full text-left">
                     <thead class="bg-gray-50 border-b border-gray-100">
                         <tr>
-                            <th class="px-6 py-4 text-sm font-semibold text-gray-900">Equipo</th>
+                            @if($mostrarColumnaEquipo)
+                                <th class="px-6 py-4 text-sm font-semibold text-gray-900">Equipo</th>
+                            @endif
                             <th class="px-6 py-4 text-sm font-semibold text-gray-900">Mes Correspondiente</th>
                             <th class="px-6 py-4 text-sm font-semibold text-gray-900">Monto</th>
                             <th class="px-6 py-4 text-sm font-semibold text-gray-900">Estado</th>
@@ -63,12 +68,12 @@
                         {{-- Pestaña Pendientes --}}
                         @foreach($pagosPendientes as $pago)
                             <tr x-show="activeTab === 'pendientes'" x-cloak>
-                                @include('alumno.pagos._row', ['pago' => $pago])
+                                @include('alumno.pagos._row', ['pago' => $pago, 'mostrarColumnaEquipo' => $mostrarColumnaEquipo])
                             </tr>
                         @endforeach
                         @if($pagosPendientes->isEmpty())
                             <tr x-show="activeTab === 'pendientes'" x-cloak>
-                                <td colspan="7" class="px-6 py-16 text-center">
+                                <td colspan="{{ $mostrarColumnaEquipo ? 7 : 6 }}" class="px-6 py-16 text-center">
                                     <div class="flex flex-col items-center justify-center gap-3">
                                         <div class="w-16 h-16 bg-green-100 text-green-500 rounded-full flex items-center justify-center text-2xl shadow-sm">
                                             <i class="fas fa-check-circle"></i>
@@ -85,12 +90,12 @@
                         {{-- Pestaña Realizados --}}
                         @foreach($pagosRealizados as $pago)
                             <tr x-show="activeTab === 'realizados'" x-cloak>
-                                @include('alumno.pagos._row', ['pago' => $pago])
+                                @include('alumno.pagos._row', ['pago' => $pago, 'mostrarColumnaEquipo' => $mostrarColumnaEquipo])
                             </tr>
                         @endforeach
                         @if($pagosRealizados->isEmpty())
                             <tr x-show="activeTab === 'realizados'" x-cloak>
-                                <td colspan="7" class="px-6 py-16 text-center">
+                                <td colspan="{{ $mostrarColumnaEquipo ? 7 : 6 }}" class="px-6 py-16 text-center">
                                     <div class="flex flex-col items-center justify-center gap-3">
                                         <div class="w-16 h-16 bg-blue-100 text-blue-500 rounded-full flex items-center justify-center text-2xl shadow-sm">
                                             <i class="fas fa-history"></i>
@@ -107,12 +112,12 @@
                         {{-- Pestaña Todos --}}
                         @foreach($pagos as $pago)
                             <tr x-show="activeTab === 'todos'" x-cloak>
-                                @include('alumno.pagos._row', ['pago' => $pago])
+                                @include('alumno.pagos._row', ['pago' => $pago, 'mostrarColumnaEquipo' => $mostrarColumnaEquipo])
                             </tr>
                         @endforeach
                         @if($pagos->isEmpty())
                             <tr x-show="activeTab === 'todos'" x-cloak>
-                                <td colspan="7" class="px-6 py-16 text-center">
+                                <td colspan="{{ $mostrarColumnaEquipo ? 7 : 6 }}" class="px-6 py-16 text-center">
                                     <div class="flex flex-col items-center justify-center gap-3">
                                         <div class="w-16 h-16 bg-gray-100 text-gray-500 rounded-full flex items-center justify-center text-2xl shadow-sm">
                                             <i class="fas fa-file-invoice"></i>

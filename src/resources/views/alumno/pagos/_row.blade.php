@@ -1,4 +1,6 @@
-<td class="px-6 py-4 font-medium text-gray-900">{{ $pago->equipo ? $pago->equipo->nombre : 'N/A' }}</td>
+@if($mostrarColumnaEquipo ?? true)
+    <td class="px-6 py-4 font-medium text-gray-900">{{ $pago->equipo ? $pago->equipo->nombre : 'N/A' }}</td>
+@endif
 <td class="px-6 py-4 text-gray-600">{{ ucfirst(\Carbon\Carbon::parse($pago->mesCorrespondiente)->locale('es')->translatedFormat('F Y')) }}</td>
 <td class="px-6 py-4 font-bold">${{ number_format($pago->monto, 2) }}</td>
 <td class="px-6 py-4">

@@ -63,7 +63,8 @@ class PagoController extends Controller {
 
     public function store(Request $request) {
         $data = $request->validate([
-            'alumnoId' => 'required|string|exists:users,id',
+            'alumnos' => 'required|array|min:1',
+            'alumnos.*' => 'required|string|exists:users,id',
             'monto' => 'required|numeric|min:0',
             'fechaPago' => 'nullable|date',
             'fechaVencimiento' => 'nullable|date',
@@ -72,10 +73,21 @@ class PagoController extends Controller {
             'notas' => 'nullable|string',
         ]);
 
-        $data['profesorId'] = auth()->id();
+        $profesorId = auth()->id();
+        $count = 0;
 
-        $this->service->create($data);
-        return redirect()->route('pagos.index')->with('success', 'Pago registrado correctamente');
+        foreach ($data['alumnos'] as $alumnoId) {
+            $pagoData = $data;
+            unset($pagoData['alumnos']);
+            $pagoData['alumnoId'] = $alumnoId;
+            $pagoData['profesorId'] = $profesorId;
+
+            $this->service->create($pagoData);
+            $count++;
+        }
+
+        $message = $count > 1 ? "Se han registrado $count pagos correctamente." : "Pago registrado correctamente.";
+        return redirect()->route('pagos.index')->with('success', $message);
     }
 
     public function edit($id) {
