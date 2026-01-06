@@ -18,9 +18,20 @@ class PagoController extends Controller {
         $this->grupoService = $grupoService;
     }
 
-    public function index() {
+    public function index(Request $request) {
         $profesorId = auth()->id();
-        $pagos = \App\Models\Pago::where('profesorId', $profesorId)->with('alumno')->get();
+        $search = $request->input('search');
+
+        $query = \App\Models\Pago::where('profesorId', $profesorId)->with('alumno');
+
+        if ($search) {
+            $query->whereHas('alumno', function($q) use ($search) {
+                $q->where('nombre', 'like', "%{$search}%")
+                  ->orWhere('apellido', 'like', "%{$search}%");
+            });
+        }
+
+        $pagos = $query->get();
 
         $mesActual = Carbon::now()->format('Y-m');
 
