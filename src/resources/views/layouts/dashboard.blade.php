@@ -11,6 +11,15 @@
     }
     $teamLogo = \App\Models\Setting::get('team_logo', null, $settingsUserId);
     $teamName = \App\Models\Setting::get('team_name', null, $settingsUserId);
+
+    $pagosPendientesCount = 0;
+    if ($user->rol === 'alumno') {
+        $pagosPendientesCount = $user->pagos()->whereIn('estado', ['pendiente', 'vencido'])->count();
+    } elseif ($user->rol === 'profesor') {
+        $pagosPendientesCount = \App\Models\Pago::where('profesorId', $user->id)
+            ->whereIn('estado', ['pendiente', 'vencido'])
+            ->count();
+    }
 @endphp
 <!DOCTYPE html>
 <html lang="es">
@@ -95,8 +104,13 @@
                     <a id="tour-profesor-grupos" href="/dashboard/profesor/grupos" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all {{ request()->is('dashboard/profesor/grupos*') ? 'bg-white text-blue-600 shadow-lg' : 'text-blue-50 hover:bg-white/10' }}">
                         <i class="fas fa-clipboard-list w-5 text-center"></i> <span class="font-medium">Grupos</span>
                     </a>
-                    <a id="tour-profesor-pagos" href="/dashboard/profesor/pagos" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all {{ request()->is('dashboard/profesor/pagos*') ? 'bg-white text-blue-600 shadow-lg' : 'text-blue-50 hover:bg-white/10' }}">
-                        <i class="fas fa-credit-card w-5 text-center"></i> <span class="font-medium">Pagos</span>
+                    <a id="tour-profesor-pagos" href="/dashboard/profesor/pagos" class="flex items-center justify-between px-4 py-3 rounded-xl transition-all {{ request()->is('dashboard/profesor/pagos*') ? 'bg-white text-blue-600 shadow-lg' : 'text-blue-50 hover:bg-white/10' }}">
+                        <div class="flex items-center gap-3">
+                            <i class="fas fa-credit-card w-5 text-center"></i> <span class="font-medium">Pagos</span>
+                        </div>
+                        @if($pagosPendientesCount > 0)
+                            <span class="flex h-2 w-2 rounded-full bg-amber-400 shadow-[0_0_8px_rgba(251,191,36,0.6)]"></span>
+                        @endif
                     </a>
                     <a id="tour-profesor-entrenamientos" href="/dashboard/profesor/entrenamientos" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all {{ request()->is('dashboard/profesor/entrenamientos*') ? 'bg-white text-blue-600 shadow-lg' : 'text-blue-50 hover:bg-white/10' }}">
                         <i class="fas fa-calendar w-5 text-center"></i> <span class="font-medium">Entrenamientos</span>
@@ -117,8 +131,17 @@
                     <a id="tour-entrenamientos" href="/dashboard/alumno/entrenamientos" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all {{ request()->is('dashboard/alumno/entrenamientos*') ? 'bg-white text-blue-600 shadow-lg' : 'text-blue-50 hover:bg-white/10' }}">
                         <i class="fas fa-calendar w-5 text-center"></i> <span class="font-medium">Mis Entrenamientos</span>
                     </a>
-                    <a id="tour-pagos" href="/dashboard/alumno/pagos" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all {{ request()->is('dashboard/alumno/pagos*') ? 'bg-white text-blue-600 shadow-lg' : 'text-blue-50 hover:bg-white/10' }}">
-                        <i class="fas fa-credit-card w-5 text-center"></i> <span class="font-medium">Mis Pagos</span>
+                    <a id="tour-pagos" href="/dashboard/alumno/pagos" class="flex items-center justify-between px-4 py-3 rounded-xl transition-all {{ request()->is('dashboard/alumno/pagos*') ? 'bg-white text-blue-600 shadow-lg' : 'text-blue-50 hover:bg-white/10' }}">
+                        <div class="flex items-center gap-3">
+                            <i class="fas fa-credit-card w-5 text-center"></i> <span class="font-medium">Mis Pagos</span>
+                        </div>
+                        @if($pagosPendientesCount > 0)
+                            <div class="flex items-center gap-2">
+                                <span class="text-[10px] font-bold bg-amber-400 text-blue-900 px-1.5 py-0.5 rounded-md shadow-sm">
+                                    {{ $pagosPendientesCount }}
+                                </span>
+                            </div>
+                        @endif
                     </a>
                     <a id="tour-competencias" href="{{ route('alumno.competencias') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all {{ request()->routeIs('alumno.competencias') ? 'bg-white text-blue-600 shadow-lg' : 'text-blue-50 hover:bg-white/10' }}">
                         <i class="fas fa-medal w-5 text-center"></i> <span class="font-medium">Mis Competencias</span>
