@@ -291,26 +291,16 @@
                     </div>
                 </div>
 
-                <div class="space-y-2">
-                    <label for="plantillaId" class="text-sm font-semibold text-gray-700">Plantilla (Opcional)</label>
-                    <select name="plantillaId" id="plantillaId"
-                            {{ $entrenamiento->plantillaId ? 'disabled' : '' }}
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition {{ $entrenamiento->plantillaId ? 'bg-gray-100 cursor-not-allowed' : '' }}">
-                        <option value="">Selecciona una plantilla</option>
-                        @foreach($plantillas as $plantilla)
-                            <option value="{{ $plantilla->id }}" {{ old('plantillaId', $entrenamiento->plantillaId) == $plantilla->id ? 'selected' : '' }}>
-                                {{ $plantilla->nombre }}
-                            </option>
-                        @endforeach
-                    </select>
-                    @if($entrenamiento->plantillaId)
-                        <p class="text-xs text-gray-500">La plantilla no se puede cambiar después de la creación.</p>
+                @if($entrenamiento->plantillaId)
+                    <div class="bg-blue-50 border border-blue-100 rounded-lg p-3 flex items-center gap-3">
+                        <i class="fas fa-copy text-blue-500 text-xs"></i>
+                        <p class="text-xs text-blue-800">
+                            Este entrenamiento se creó a partir de la plantilla:
+                            <span class="font-bold">{{ $entrenamiento->plantillaNombre ?? $entrenamiento->plantilla->nombre ?? 'N/A' }}</span>
+                        </p>
                         <input type="hidden" name="plantillaId" value="{{ $entrenamiento->plantillaId }}">
-                    @endif
-                    @error('plantillaId')
-                        <p class="text-red-500 text-xs">{{ $message }}</p>
-                    @enderror
-                </div>
+                    </div>
+                @endif
             </div>
 
             <div class="space-y-2">
