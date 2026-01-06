@@ -176,10 +176,10 @@
                     </div>
                 </div>
 
-                <div class="mt-8 pt-6 border-t border-gray-100 flex justify-end">
-                    <button type="submit" class="bg-blue-600 text-white px-8 py-3 rounded-xl hover:bg-blue-700 transition flex items-center gap-2 font-bold shadow-lg shadow-blue-200 hover:scale-105 transform active:scale-95">
-                        <i class="fas fa-save"></i>
-                        Guardar Configuración
+                <div class="bg-gray-50 p-6 border-t border-gray-100 flex justify-end mt-8">
+                    <button type="submit"
+                            class="bg-blue-600 text-white px-8 py-2 rounded-lg font-bold hover:bg-blue-700 transition shadow-lg shadow-blue-200">
+                        <i class="fas fa-save mr-2"></i> Guardar cambios
                     </button>
                 </div>
             </form>

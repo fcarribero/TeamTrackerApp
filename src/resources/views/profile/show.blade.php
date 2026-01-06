@@ -203,9 +203,10 @@
                                 </div>
                             @endif
                         </div>
-                        <div class="flex justify-end">
-                            <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg transition-all text-sm">
-                                Guardar Cambios
+                        <div class="bg-gray-50 p-6 border-t border-gray-100 flex justify-end">
+                            <button type="submit"
+                                    class="bg-blue-600 text-white px-8 py-2 rounded-lg font-bold hover:bg-blue-700 transition shadow-lg shadow-blue-200">
+                                <i class="fas fa-save mr-2"></i> Guardar cambios
                             </button>
                         </div>
                     </form>
@@ -249,9 +250,10 @@
                             </div>
                         </div>
 
-                        <div class="pt-2">
-                            <button type="submit" class="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 px-6 rounded-xl transition-all shadow-lg shadow-blue-100 flex items-center justify-center gap-2">
-                                <i class="fas fa-shield-alt"></i> Actualizar Contraseña
+                        <div class="bg-gray-50 p-6 border-t border-gray-100 flex justify-end">
+                            <button type="submit"
+                                    class="bg-blue-600 text-white px-8 py-2 rounded-lg font-bold hover:bg-blue-700 transition shadow-lg shadow-blue-200">
+                                <i class="fas fa-save mr-2"></i> Guardar cambios
                             </button>
                         </div>
                     </form>

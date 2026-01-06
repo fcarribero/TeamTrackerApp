@@ -80,14 +80,14 @@
                 @enderror
             </div>
 
-            <div class="pt-4 flex justify-end gap-3">
+            <div class="bg-gray-50 p-6 border-t border-gray-100 flex justify-end gap-3">
                 <a href="{{ route('grupos.index') }}"
-                   class="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition">
+                   class="px-6 py-2 rounded-lg border border-gray-300 text-gray-700 font-bold hover:bg-gray-100 transition">
                     Cancelar
                 </a>
                 <button type="submit"
-                        class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 shadow-lg shadow-blue-200 transition">
-                    Actualizar Grupo
+                        class="bg-blue-600 text-white px-8 py-2 rounded-lg font-bold hover:bg-blue-700 transition shadow-lg shadow-blue-200">
+                    <i class="fas fa-save mr-2"></i> Guardar cambios
                 </button>
             </div>
         </form>

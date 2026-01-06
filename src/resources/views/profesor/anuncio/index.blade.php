@@ -43,10 +43,10 @@
                     <label for="activo" class="text-sm text-gray-700">Mostrar anuncio inmediatamente</label>
                 </div>
 
-                <div class="pt-2">
-                    <button type="submit" class="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition flex items-center justify-center gap-2">
-                        <i class="fas fa-bullhorn"></i>
-                        {{ $anuncio ? 'Actualizar Anuncio' : 'Publicar Anuncio' }}
+                <div class="bg-gray-50 p-6 border-t border-gray-100 flex justify-end -mx-6 -mb-6 mt-4">
+                    <button type="submit"
+                            class="bg-blue-600 text-white px-8 py-2 rounded-lg font-bold hover:bg-blue-700 transition shadow-lg shadow-blue-200">
+                        <i class="fas fa-save mr-2"></i> Guardar cambios
                     </button>
                 </div>
             </form>

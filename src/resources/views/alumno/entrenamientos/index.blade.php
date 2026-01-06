@@ -268,7 +268,7 @@
 
                                     <div class="flex gap-3 pt-2">
                                         <button type="submit" class="flex-1 bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 font-bold transition shadow-lg shadow-green-100">
-                                            Guardar Devolución
+                                            Guardar cambios
                                         </button>
                                         <button type="button" @click="showFeedback = false" class="px-6 py-2 border border-gray-300 text-gray-600 rounded-lg hover:bg-gray-100 transition">
                                             Cancelar
@@ -482,7 +482,7 @@
 
                                         <div class="flex gap-3 pt-2">
                                             <button type="submit" class="flex-1 bg-gray-600 text-white px-6 py-2 rounded-lg hover:bg-gray-700 font-bold transition shadow-lg shadow-gray-100">
-                                                Guardar Devolución
+                                                Guardar cambios
                                             </button>
                                             <button type="button" @click="showFeedback = false" class="px-6 py-2 border border-gray-300 text-gray-600 rounded-lg hover:bg-gray-100 transition">
                                                 Cancelar

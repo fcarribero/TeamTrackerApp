@@ -85,7 +85,7 @@
                     Cancelar
                 </a>
                 <button type="submit" class="bg-blue-600 text-white px-8 py-2 rounded-lg font-bold hover:bg-blue-700 transition shadow-lg shadow-blue-200">
-                    <i class="fas fa-save mr-2"></i> Guardar Cambios
+                    <i class="fas fa-save mr-2"></i> Guardar cambios
                 </button>
             </div>
         </form>
