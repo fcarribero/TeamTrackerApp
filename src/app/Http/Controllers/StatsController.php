@@ -35,7 +35,7 @@ class StatsController extends Controller
         $enSieteDias = Carbon::today()->addDays(7);
 
         $proximosEntrenamientos = Entrenamiento::where('profesorId', $profesorId)
-            ->with(['alumnos', 'grupos'])
+            ->with(['alumnos', 'grupos.alumnos'])
             ->whereBetween('fecha', [$hoy, $enSieteDias])
             ->orderBy('fecha', 'asc')
             ->take(5)
@@ -43,7 +43,10 @@ class StatsController extends Controller
 
         $ultimosAlumnos = User::where('rol', 'alumno')->whereHas('grupos', function($q) use ($profesorId) {
             $q->where('profesorId', $profesorId);
-        })->orderBy('created_at', 'desc')
+        })->with(['grupos' => function($q) use ($profesorId) {
+            $q->where('profesorId', $profesorId);
+        }])
+            ->orderBy('created_at', 'desc')
             ->take(5)
             ->get();
 

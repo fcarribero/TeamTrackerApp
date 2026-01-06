@@ -44,11 +44,9 @@
                                 @endif
                             </div>
                             @if($entrenamiento->grupos->count() > 0)
-                                <div class="flex flex-wrap gap-1">
+                                <div class="flex flex-wrap gap-2">
                                     @foreach($entrenamiento->grupos as $grupo)
-                                        <span class="px-2 py-0.5 rounded text-[10px] font-bold text-white shadow-sm" style="background-color: {{ $grupo->color ?? '#3B82F6' }}">
-                                            {{ $grupo->nombre }}
-                                        </span>
+                                        <x-group-tag :grupo="$grupo" />
                                     @endforeach
                                 </div>
                             @endif

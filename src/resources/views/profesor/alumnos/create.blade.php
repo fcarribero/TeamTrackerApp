@@ -84,10 +84,7 @@
                         <label class="flex items-center gap-3 p-3 bg-white rounded-lg border border-gray-100 hover:border-blue-300 transition cursor-pointer">
                             <input type="checkbox" name="grupos[]" value="{{ $grupo->id }}"
                                    class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
-                            <div class="flex items-center gap-2">
-                                <div style="background-color: {{ $grupo->color ?? '#3B82F6' }};" class="w-3 h-3 rounded-full"></div>
-                                <span class="text-sm font-medium text-gray-900">{{ $grupo->nombre }}</span>
-                            </div>
+                            <x-group-tag :grupo="$grupo" />
                         </label>
                     @empty
                         <p class="col-span-full text-center text-gray-500 py-4 italic text-sm">No hay grupos creados</p>

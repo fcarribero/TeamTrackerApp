@@ -42,9 +42,7 @@
                                 </span>
                             @endforeach
                             @foreach($entrenamiento->grupos as $grupo)
-                                <span class="px-2 py-1 rounded text-[10px] font-medium text-white shadow-sm" style="background-color: {{ $grupo->color ?? '#3B82F6' }}">
-                                    <i class="fas fa-users mr-1"></i> {{ $grupo->nombre }}
-                                </span>
+                                <x-group-tag :grupo="$grupo" />
                             @endforeach
                         </div>
                     </div>

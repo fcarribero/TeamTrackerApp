@@ -85,11 +85,9 @@
                                 <span class="capitalize text-gray-600">{{ $alumno->sexo }}</span>
                             </td>
                             <td class="px-6 py-4">
-                                <div class="flex flex-wrap gap-1">
+                                <div class="flex flex-wrap gap-2">
                                     @forelse($alumno->grupos as $grupo)
-                                        <span class="px-2 py-0.5 rounded text-[10px] font-medium text-white" style="background-color: {{ $grupo->color ?? '#3B82F6' }}">
-                                            {{ $grupo->nombre }}
-                                        </span>
+                                        <x-group-tag :grupo="$grupo" />
                                     @empty
                                         <span class="text-xs text-gray-400">-</span>
                                     @endforelse

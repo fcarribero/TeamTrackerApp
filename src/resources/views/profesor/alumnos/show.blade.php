@@ -75,9 +75,7 @@
                         <p class="text-xs text-gray-400 uppercase font-semibold mb-2">Grupos</p>
                         <div class="flex flex-wrap gap-2">
                             @forelse($alumno->grupos as $grupo)
-                                <span class="px-2 py-1 rounded text-[10px] font-medium text-white" style="background-color: {{ $grupo->color ?? '#3B82F6' }}">
-                                    {{ $grupo->nombre }}
-                                </span>
+                                <x-group-tag :grupo="$grupo" />
                             @empty
                                 <span class="text-xs text-gray-500 italic">Sin grupos</span>
                             @endforelse
@@ -148,10 +146,11 @@
                                 <div class="flex items-center gap-2">
                                     <p class="text-xs text-gray-500">{{ $entrenamiento->plantillaNombre ?? 'Personalizado' }}</p>
                                     @if($entrenamiento->grupos->isNotEmpty())
-                                        <span class="text-[9px] bg-gray-100 text-gray-600 px-1 rounded flex items-center gap-1">
-                                            <i class="fas fa-users text-[8px]"></i>
-                                            {{ $entrenamiento->grupos->pluck('nombre')->implode(', ') }}
-                                        </span>
+                                        <div class="flex flex-wrap gap-1 mt-1">
+                                            @foreach($entrenamiento->grupos as $grupo)
+                                                <x-group-tag :grupo="$grupo" />
+                                            @endforeach
+                                        </div>
                                     @endif
                                 </div>
                             </div>

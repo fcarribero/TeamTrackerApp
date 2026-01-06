@@ -114,7 +114,7 @@
                                         <input type="checkbox" name="grupos[]" value="{{ $grupo->id }}"
                                                x-model="selectedGrupos"
                                                class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 pointer-events-none">
-                                        <span class="text-sm font-bold text-gray-800 truncate">{{ $grupo->nombre }}</span>
+                                        <x-group-tag :grupo="$grupo" />
                                     </div>
                                 @endforeach
                             </div>
