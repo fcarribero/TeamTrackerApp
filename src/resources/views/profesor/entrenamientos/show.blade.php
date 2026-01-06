@@ -117,7 +117,7 @@
                                             <p class="font-bold text-gray-900">{{ $resultado->alumno->nombre }} {{ $resultado->alumno->apellido }}</p>
                                             <x-new-user-badge :user="$resultado->alumno" />
                                         </div>
-                                        <p class="text-[10px] text-gray-500 uppercase tracking-tighter">Completado el {{ $resultado->fecha_realizado ? $resultado->fecha_realizado->isoFormat('D [de] MMMM H:i') : $resultado->updated_at->isoFormat('D [de] MMMM H:i') }}</p>
+                                        <p class="text-[10px] text-gray-500 uppercase tracking-tighter">Completado el {{ $resultado->fecha_realizado?->isoFormat('D [de] MMMM [a las] H:m') }}</p>
                                     </div>
                                 </div>
                                 <div class="text-right">
