@@ -4,8 +4,21 @@
     @include('partials.breadcrumbs', ['items' => [['label' => 'Mi Perfil']]])
 @endsection
 
+@push('styles')
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.5/croppie.min.css" />
+    <style>
+        .croppie-container .cr-viewport {
+            border: 4px solid #fff;
+            box-shadow: 0 0 0 2000px rgba(0,0,0,0.5);
+        }
+        .cr-boundary {
+            border-radius: 0.75rem;
+        }
+    </style>
+@endpush
+
 @section('content')
-<div class="max-w-4xl mx-auto space-y-6">
+<div class="max-w-4xl mx-auto space-y-6" x-data="profileImageCropper()">
     <div>
         <h1 class="text-3xl font-bold text-gray-900 flex items-center gap-2">
             <i class="fas fa-user-circle text-blue-500"></i>
@@ -18,8 +31,14 @@
         <!-- Sidebar Perfil -->
         <div class="space-y-6">
             <div class="bg-white rounded-xl shadow-md p-6 border border-gray-100 text-center">
-                <div class="w-24 h-24 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-bold text-3xl mx-auto mb-4 border-4 border-white shadow-md">
-                    {{ substr($user->nombre, 0, 1) }}
+                <div class="relative inline-block">
+                    <div class="w-24 h-24 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-bold text-3xl mx-auto mb-4 border-4 border-white shadow-md overflow-hidden">
+                        @if($user->image)
+                            <img src="{{ asset('storage/' . $user->image) }}" alt="{{ $user->nombre }}" class="w-full h-full object-cover">
+                        @else
+                            {{ substr($user->nombre, 0, 1) }}
+                        @endif
+                    </div>
                 </div>
                 <h2 class="text-xl font-bold text-gray-900">
                     {{ $user->nombre }} {{ $user->apellido }}
@@ -79,6 +98,36 @@
                     <form action="{{ route('profile.update') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
                         @csrf
                         @method('PUT')
+
+                        <!-- Imagen de Perfil -->
+                        <div class="bg-blue-50 p-4 rounded-xl border border-blue-100 mb-6">
+                            <label class="block text-sm font-bold text-blue-900 mb-2">
+                                <i class="fas fa-camera mr-2"></i> Foto de Perfil
+                            </label>
+                            <div class="flex items-center gap-4">
+                                <div class="shrink-0">
+                                    <template x-if="!croppedImage">
+                                        @if($user->image)
+                                            <img src="{{ asset('storage/' . $user->image) }}" alt="Preview" class="w-16 h-16 rounded-full object-cover border-2 border-white shadow-sm">
+                                        @else
+                                            <div class="w-16 h-16 rounded-full bg-blue-200 flex items-center justify-center text-blue-600 font-bold">
+                                                {{ substr($user->nombre, 0, 1) }}
+                                            </div>
+                                        @endif
+                                    </template>
+                                    <template x-if="croppedImage">
+                                        <img :src="croppedImage" class="w-16 h-16 rounded-full object-cover border-2 border-white shadow-sm">
+                                    </template>
+                                </div>
+                                <div class="flex-1">
+                                    <input type="file" id="image_input" accept="image/*" @change="onFileChange"
+                                           class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-700">
+                                    <input type="hidden" name="image_base64" x-model="croppedImage">
+                                    <p class="text-xs text-blue-600 mt-1">Recomendado: Cuadrada, JPG o PNG. Máx 2MB.</p>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                             <div class="space-y-1">
                                 <label class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Nombre</label>
@@ -210,5 +259,97 @@
             </div>
         </div>
     </div>
+
+    <!-- Modal de Recorte -->
+    <div x-show="showModal" class="fixed inset-0 z-[100] overflow-y-auto" x-cloak>
+        <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+            <div class="fixed inset-0 transition-opacity" aria-hidden="true" @click="showModal = false">
+                <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
+            </div>
+
+            <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+
+            <div class="inline-block align-bottom bg-white rounded-2xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+                <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                    <div class="sm:flex sm:items-start">
+                        <div class="mt-3 text-center sm:mt-0 sm:text-left w-full">
+                            <h3 class="text-xl leading-6 font-bold text-gray-900 mb-4 flex items-center gap-2">
+                                <i class="fas fa-crop-alt text-blue-500"></i>
+                                Ajustar Foto de Perfil
+                            </h3>
+                            <div class="mt-2 w-full">
+                                <div id="croppie-container" class="w-full"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse gap-2">
+                    <button type="button" @click="cropImage" class="w-full inline-flex justify-center rounded-xl border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-bold text-white hover:bg-blue-700 focus:outline-none sm:ml-3 sm:w-auto sm:text-sm transition-all">
+                        Confirmar Recorte
+                    </button>
+                    <button type="button" @click="showModal = false" class="mt-3 w-full inline-flex justify-center rounded-xl border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm transition-all">
+                        Cancelar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 @endsection
+
+@push('scripts')
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.5/croppie.min.js"></script>
+    <script>
+        function profileImageCropper() {
+            return {
+                showModal: false,
+                croppedImage: null,
+                croppieInstance: null,
+
+                onFileChange(e) {
+                    const files = e.target.files;
+                    if (files && files.length > 0) {
+                        const reader = new FileReader();
+                        reader.onload = (event) => {
+                            this.initCroppie(event.target.result);
+                        };
+                        reader.readAsDataURL(files[0]);
+                    }
+                },
+
+                initCroppie(imageSrc) {
+                    this.showModal = true;
+                    this.$nextTick(() => {
+                        const el = document.getElementById('croppie-container');
+                        if (this.croppieInstance) {
+                            this.croppieInstance.destroy();
+                        }
+                        this.croppieInstance = new Croppie(el, {
+                            viewport: { width: 200, height: 200, type: 'circle' },
+                            boundary: { width: 300, height: 300 },
+                            showZoomer: true,
+                            enableOrientation: true
+                        });
+                        this.croppieInstance.bind({
+                            url: imageSrc
+                        });
+                    });
+                },
+
+                cropImage() {
+                    this.croppieInstance.result({
+                        type: 'base64',
+                        size: 'viewport',
+                        format: 'jpeg',
+                        quality: 0.9
+                    }).then((base64) => {
+                        this.croppedImage = base64;
+                        this.showModal = false;
+                        // Reset file input to allow choosing the same file again if needed
+                        document.getElementById('image_input').value = '';
+                    });
+                }
+            }
+        }
+    </script>
+@endpush

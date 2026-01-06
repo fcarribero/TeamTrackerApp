@@ -61,8 +61,12 @@
             <div class="p-4 border-b border-white/20">
                 <div class="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
                     <div class="flex items-center gap-3">
-                        <div class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center text-white font-bold text-lg">
-                            {{ substr(Auth::user()->nombre, 0, 1) }}
+                        <div class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center text-white font-bold text-lg overflow-hidden shrink-0 border border-white/10">
+                            @if(Auth::user()->image)
+                                <img src="{{ asset('storage/' . Auth::user()->image) }}" alt="{{ Auth::user()->nombre }}" class="w-full h-full object-cover">
+                            @else
+                                {{ substr(Auth::user()->nombre, 0, 1) }}
+                            @endif
                         </div>
                         <div class="flex-1 overflow-hidden">
                             <p class="text-sm font-semibold truncate">{{ Auth::user()->nombre }} {{ Auth::user()->apellido }}</p>

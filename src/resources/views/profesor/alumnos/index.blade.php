@@ -68,8 +68,12 @@
                         <tr class="hover:bg-gray-50 transition cursor-pointer" onclick="window.location='{{ route('alumnos.show', $alumno->id) }}'">
                             <td class="px-6 py-4">
                                 <div class="flex items-center gap-3">
-                                    <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-bold">
-                                        {{ substr($alumno->nombre, 0, 1) }}
+                                    <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-bold overflow-hidden shrink-0 border border-gray-100">
+                                        @if($alumno->image)
+                                            <img src="{{ asset('storage/' . $alumno->image) }}" alt="{{ $alumno->nombre }}" class="w-full h-full object-cover">
+                                        @else
+                                            {{ substr($alumno->nombre, 0, 1) }}
+                                        @endif
                                     </div>
                                     <span class="font-medium text-gray-900">{{ $alumno->nombre }} {{ $alumno->apellido }}</span>
                                 </div>

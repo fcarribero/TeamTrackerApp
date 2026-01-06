@@ -26,8 +26,12 @@
         <div class="lg:col-span-1 space-y-6">
             <div class="bg-white rounded-xl shadow-md p-6 border border-gray-100">
                 <div class="flex flex-col items-center text-center">
-                    <div class="w-24 h-24 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-bold text-3xl mb-4">
-                        {{ substr($alumno->nombre, 0, 1) }}
+                    <div class="w-24 h-24 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-bold text-3xl mb-4 overflow-hidden border-4 border-white shadow-md shrink-0">
+                        @if($alumno->image)
+                            <img src="{{ asset('storage/' . $alumno->image) }}" alt="{{ $alumno->nombre }}" class="w-full h-full object-cover">
+                        @else
+                            {{ substr($alumno->nombre, 0, 1) }}
+                        @endif
                     </div>
                     <h2 class="text-xl font-bold">{{ $alumno->nombre }} {{ $alumno->apellido }}</h2>
                     <p class="text-gray-500 text-sm mb-1">{{ $alumno->dni ? 'DNI: ' . $alumno->dni : 'Sin DNI' }}</p>

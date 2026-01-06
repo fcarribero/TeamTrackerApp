@@ -27,6 +27,7 @@ class ProfileController extends Controller
         $rules = [
             'nombre' => 'required|string|max:255',
             'apellido' => 'required|string|max:255',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ];
 
         if ($user->rol === 'alumno') {
@@ -40,6 +41,22 @@ class ProfileController extends Controller
         }
 
         $data = $request->validate($rules);
+
+        if ($request->has('image_base64') && $request->image_base64) {
+            if ($user->image) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($user->image);
+            }
+
+            $image_service = new \App\Services\ImageService();
+            $path = $image_service->saveBase64($request->image_base64, 'profiles');
+            $data['image'] = $path;
+        } elseif ($request->hasFile('image')) {
+            if ($user->image) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($user->image);
+            }
+            $path = $request->file('image')->store('profiles', 'public');
+            $data['image'] = $path;
+        }
 
         if ($request->hasFile('certificado_medico')) {
             if ($user->certificado_medico) {
