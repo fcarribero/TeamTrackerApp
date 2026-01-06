@@ -25,9 +25,21 @@ class AlumnoController extends Controller
     public function index(Request $request)
     {
         $profesorId = auth()->id();
-        $alumnos = auth()->user()->alumnos()->with(['grupos' => function($q) use ($profesorId) {
+        $search = $request->input('search');
+
+        $query = auth()->user()->alumnos()->with(['grupos' => function($q) use ($profesorId) {
             $q->where('profesorId', $profesorId);
-        }])->get();
+        }]);
+
+        if ($search) {
+            $query->where(function($q) use ($search) {
+                $q->where('nombre', 'like', "%{$search}%")
+                  ->orWhere('apellido', 'like', "%{$search}%")
+                  ->orWhere(\Illuminate\Support\Facades\DB::raw("CONCAT(nombre, ' ', apellido)"), 'like', "%{$search}%");
+            });
+        }
+
+        $alumnos = $query->get();
 
         return view('profesor.alumnos.index', compact('alumnos'));
     }
