@@ -6,8 +6,11 @@
 
 @section('content')
 <div class="space-y-8">
-    <div>
-        <h1 class="text-3xl font-bold text-gray-900 mb-2">¡Bienvenido, {{ $alumno->nombre }}!</h1>
+    <div class="mb-2">
+        <div class="flex items-center gap-4">
+            <h1 class="text-3xl font-bold text-gray-900">¡Bienvenido, {{ $alumno->nombre }}!</h1>
+            <x-new-user-badge :user="$alumno" />
+        </div>
         <p class="text-gray-600">Aquí puedes ver tus entrenamientos y el estado de tus pagos</p>
     </div>
 

@@ -76,6 +76,7 @@
                                         @endif
                                     </div>
                                     <span class="font-medium text-gray-900">{{ $alumno->nombre }} {{ $alumno->apellido }}</span>
+                                    <x-new-user-badge :user="$alumno" />
                                 </div>
                             </td>
                             <td class="px-6 py-4">

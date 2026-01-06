@@ -14,7 +14,10 @@
             <a href="{{ route('alumnos.index') }}" class="text-gray-500 hover:text-gray-700">
                 <i class="fas fa-arrow-left"></i>
             </a>
-            <h1 class="text-3xl font-bold text-gray-900">{{ $alumno->nombre }} {{ $alumno->apellido }}</h1>
+            <div class="flex items-center gap-2">
+                <h1 class="text-3xl font-bold text-gray-900">{{ $alumno->nombre }} {{ $alumno->apellido }}</h1>
+                <x-new-user-badge :user="$alumno" />
+            </div>
         </div>
         <a href="{{ route('alumnos.edit', $alumno->id) }}" class="bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition flex items-center gap-2">
             <i class="fas fa-edit"></i>

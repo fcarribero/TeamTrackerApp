@@ -128,6 +128,11 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(Setting::class, 'userId');
     }
 
+    public function isNewMember(): bool
+    {
+        return $this->created_at >= now()->subDays(30);
+    }
+
     public function alumnos()
     {
         return $this->belongsToMany(User::class, 'profesor_alumno', 'profesor_id', 'alumno_id')->withTimestamps();

@@ -69,7 +69,10 @@
                             @endif
                         </div>
                         <div class="flex-1 overflow-hidden">
-                            <p class="text-sm font-semibold truncate">{{ Auth::user()->nombre }} {{ Auth::user()->apellido }}</p>
+                            <div class="flex items-center gap-2">
+                                <p class="text-sm font-semibold truncate">{{ Auth::user()->nombre }} {{ Auth::user()->apellido }}</p>
+                                <x-new-user-badge :user="Auth::user()" />
+                            </div>
                             @if(Auth::user()->rol === 'alumno')
                                 <p class="text-xs text-blue-200 truncate">DNI: {{ Auth::user()->dni ?? '-' }}</p>
                             @else
@@ -163,7 +166,10 @@
                         <div class="h-8 w-[1px] bg-gray-200"></div>
                         <div class="flex items-center gap-3">
                             <div class="text-right hidden sm:block">
-                                <p class="text-sm font-medium text-gray-900">{{ Auth::user()->nombre }} {{ Auth::user()->apellido }}</p>
+                                <div class="flex items-center justify-end gap-2">
+                                    <x-new-user-badge :user="Auth::user()" />
+                                    <p class="text-sm font-medium text-gray-900">{{ Auth::user()->nombre }} {{ Auth::user()->apellido }}</p>
+                                </div>
                                 <p class="text-xs text-gray-500 capitalize">{{ Auth::user()->rol }}</p>
                             </div>
                             <div class="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center text-white font-bold">

@@ -152,7 +152,10 @@
                             </div>
                         @endif
                         <div class="flex-1">
-                            <p class="font-medium text-gray-900">{{ $alumno->nombre }} {{ $alumno->apellido }}</p>
+                            <div class="flex items-center gap-2">
+                                <p class="font-medium text-gray-900">{{ $alumno->nombre }} {{ $alumno->apellido }}</p>
+                                <x-new-user-badge :user="$alumno" />
+                            </div>
                             <div class="flex flex-wrap gap-2 mt-1">
                                 @foreach($alumno->grupos as $grupo)
                                     <x-group-tag :grupo="$grupo" />
