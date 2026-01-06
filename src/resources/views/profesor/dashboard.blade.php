@@ -146,8 +146,8 @@
                         @if($alumno->image)
                             <img src="{{ asset('storage/' . $alumno->image) }}" alt="{{ $alumno->nombre }}" class="w-10 h-10 rounded-full object-cover">
                         @else
-                            <div class="bg-green-100 p-2 rounded-full text-green-600 w-10 h-10 flex items-center justify-center">
-                                <i class="fas fa-user"></i>
+                            <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-bold overflow-hidden shrink-0 border border-gray-100">
+                                {{ substr($alumno->nombre, 0,1) }}
                             </div>
                         @endif
                         <div class="flex-1">
